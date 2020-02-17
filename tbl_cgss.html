@@ -1,0 +1,243 @@
+<html>
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name=viewport content="width=device-width, initial-scale=1">
+<meta name="keywords" content="CGSS　ぼーだー　ボーダー　border">
+<title>デレステボーダー/CGSSBORDER(GOOGLECHART)</title>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-124912501-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-124912501-1');
+</script>
+    <!--"https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['annotationchart']}]}" -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+	<script src="./LIB/moment-with-locales.js"></script>
+	<script type="text/javascript" src="https://script.google.com/macros/s/AKfycbz55fDemdeSdeoURqPp_WWJJ4n3nBIuT1_PsBGVx8zUJDRET6LA/exec"></script>
+    <script type='text/javascript'>
+<!--
+google.charts.load("current",{packages:["annotationchart"]}),google.charts.setOnLoadCallback(drawChart);
+var column_data=[["date","日付"]],jisoku=[];
+function convert_google(e){for(var n=1;
+n<e[0].length;
+n++)column_data[n]=[],column_data[n][0]="number",column_data[n][1]=e[0][n];
+column_data.length=e[0].length;
+for(var t=[],o=0;
+o<e.length-1;
+o++){t[o]=[],t[o][0]=new Date(moment(e[o+1][0]).valueOf());
+for(n=1;
+n<e[0].length;
+n++)""==e[o+1][n]?t[o][n]=void 0:t[o][n]=e[o+1][n]}return t}function drawChart(){var l=new google.visualization.DataTable;
+
+document.getElementById("title").innerHTML="<h3>"+ibe+"ボーダー</h3>";
+var e=convert_google(BD);
+e.sort(function(e,n){return e[0]<n[0]?1:e[0]>n[0]?-1:0});
+
+var n=document.getElementById("SP").checked,t=document.TZ.HM.options[document.TZ.HM.selectedIndex].text;
+t="^"+t+"$",jisoku=[];
+for(var o=[],a="",i=0,r=0;
+i<e.length;
+i++)(a=(a=e[i][0]).getHours()+":"+("0"+a.getMinutes()).slice(-2)).match(t)&&(o[r]=i,r++);
+var u=[1];
+for(i=0;
+i<maxlen;
+i++)document.chbox.elements[i].checked?u[i+1]=1:u[i+1]=0;
+if(n){l.addColumn(column_data[0][0],column_data[0][1]);
+for(i=1;
+i<column_data.length;
+i++)u[i]&&(l.addColumn(column_data[i][0],column_data[i][1]),l.addColumn(column_data[i][0],"速度"));
+var c=0;
+if(0<o.length){for(i=0;
+i<o.length-1;
+i++){var d=1;
+jisoku[i]=[],jisoku[i][0]=e[o[i]][0];
+for(r=1;
+r<column_data.length;
+r++)u[r]&&(jisoku[i][2*d-1]=e[o[i]][r],0==(c=e[o[i]][r]-e[o[i+1]][r])&&(c=void 0),jisoku[i][2*d]=c,d++)}d=1;
+jisoku[i]=[],jisoku[i][0]=e[o[i]][0];
+for(r=1;
+r<column_data.length;
+r++)u[r]&&(jisoku[i][2*d-1]=e[o[i]][r],jisoku[i][2*d]=void 0,d++)}}else{for(i=0;
+i<column_data.length;
+i++)u[i]&&l.addColumn(column_data[i][0],column_data[i][1]);
+if(0<o.length)for(i=0;
+i<o.length;
+i++){d=1;
+jisoku[i]=[],jisoku[i][0]=e[o[i]][0];
+for(r=1;
+r<column_data.length;
+r++)u[r]&&(0<e[o[i]][r]?jisoku[i][d]=e[o[i]][r]:jisoku[i][d]=void 0,d++)}}l.addRows(jisoku),new google.visualization.DateFormat({pattern:"yyyy/MM/dd HH:mm"}).format(l,0);
+var m=new google.visualization.NumberFormat({pattern:"###,###"});
+if(n)for(i=1;
+i<2*(d-1)+1;
+i++)m.format(l,i);
+else for(i=1;
+i<d;
+i++)m.format(l,i);
+var s=new google.visualization.Table(document.getElementById("table_div"));
+s.draw(l,{sort:"disable",sortColumn:0,sortAscending:!1,page:"enable",pageSize:10,pagingSymbols:{prev:"前",next:"次"}});
+var g=new google.visualization.DataView(l),f=new google.visualization.AnnotationChart(document.getElementById("chart_div")),v={displayAnnotations:!0};
+f.draw(g,v),google.visualization.events.addListener(s,"select",function(){f.setSelection(s.getSelection())}),google.visualization.events.addListener(f,"select",function(){for(var e=f.getSelection(),n=0;
+n<e.length;
+n++)e[n].column=null;
+var t=f.getSelection()[0];
+if(null!=t){var o=t.row,a={sort:"disable",sortColumn:0,page:"enable",pageSize:10,pagingSymbols:{prev:"前",next:"次"},sortAscending:!0,startPage:parseInt(o/10)};
+s.draw(l,a)}s.setSelection(e)}),google.visualization.events.addListener(s,"sort",function(e){l.sort([{column:e.column,desc:!e.ascending}]),f.draw(l,v),table_option.sortAscending=e.ascending,table_option.sortColumn=e.column,s.draw(g,t_option),s.setSelection(null)})}var rank=[],maxlen=0;
+
+function CHmai(){rank=BD[0],maxlen=BD[0].length-1;
+for(var e=0;
+e<maxlen;
+e++)document.getElementById("L"+(e+1)).innerHTML=rank[e+1];
+return!1}
+
+window.onload=function(){
+CHmai();
+moment();
+if(title.indexOf("Parede")>0){
+CHitimai(1,score);
+}
+else{
+CHitimai(1,rankmai);
+}}
+
+var rankmai=["501位","2001位","10001位","20001位","60001位","120001位","300001位"],end=["1位","2位","3位","9位","10位","11位"];
+var score = ["スコア1位","スコア10位","スコア11位","スコア5001位","スコア10001位","スコア40001位","スコア50001位"]
+function CHitimai(e,n){var t=n;
+if(null!=n){for(var o=0;
+o<maxlen;
+o++)document.chbox.elements[o].checked=!1;
+for(var a=0;
+a<t.length;
+a++)for(o=0;
+o<maxlen;
+o++)if(t[a]==document.getElementById("L"+(o+1)).innerHTML){document.chbox.elements[o].checked=!0;
+break}}
+else for(o=0;
+o<maxlen;
+o++)document.chbox.elements[o].checked=!0;
+return e&&drawChart(),!1}
+
+function getHEAD(){for(var e=[],n=document.getElementById("SP").checked,t=[1],o=0;
+o<maxlen;
+o++)document.chbox.elements[o].checked?t[o+1]=1:t[o+1]=0;
+if(n){e.push(column_data[0][1]);
+for(o=1;
+o<column_data.length;
+o++)t[o]&&(e.push(column_data[o][1]),e.push("速度"))}else for(o=0;
+o<column_data.length;
+o++)t[o]&&e.push(column_data[o][1]);
+return e}
+function DLCSV(){for(var e="",n=getHEAD(),t=0;
+t<n.length;
+t++)e+=n[t]+",";
+e=e.slice(0,-1),e+="\r\n";
+for(var o=0;
+o<jisoku.length;
+o++){e+=moment(jisoku[o][0]).format("YYYY/MM/DD HH:mm")+",";
+for(t=1;t<jisoku[o].length;t++)e+=jisoku[o][t]+",";
+e=e.slice(0,-1),e+="\r\n"}TextDL(e,"border.csv")}function DLJSON(){var e=[];
+e[0]=[],e[0]=getHEAD(),TextDL(JSON.stringify(e.concat(jisoku)),"tokikdoru.txt")}function TextDL(n,t){b=new Blob([n],{type:"text/plain"}),a=document.createElement("a"),a.download=t,a.href=window.URL.createObjectURL(b),e=document.createEvent("MouseEvent"),e.initEvent("click",!0,!0),a.dispatchEvent(e)}
+
+setInterval("get_count()",1000);
+function get_count() {
+var t=moment(ibeend);var now=moment();var left_time=t-now;t= moment(left_time).valueOf()/1000;
+var timetxt= Math.floor(t/(3600*24)) +"日" +Math.floor( (t%(3600*24))/3600) + "時間"+Math.floor((t%3600)/60)+ "分" +Math.floor(t%60)+ "秒";
+var date=moment(ibeend).format();
+
+var prog=(moment.utc()-moment.utc(ibestart))/(moment.utc(ibeend)-moment.utc(ibestart))*100;
+
+var zan="終了:"+date +"まで残り"+timetxt +"("+prog.toFixed(2)+"%)";
+if(left_time<0){
+zan=date + "に終了しました～";
+}
+if(ibeend==""){
+zan ="イベント終了日が未確定です"
+}
+document.getElementById("left").innerHTML= zan;
+}
+
+-->
+</script>
+</head>
+<body>
+    <div id='title'></div>
+    <div id='left'></div>
+    <!--<div id='chart_div' style='width: 1200px; height: 600px;'></div>
+    <div id='table_div' style='width: 1200px; height: 400px;'></div>-->
+    <div id='chart_div' style='height: 400px;'></div>
+    <div id='table_div'></div>
+<input type="Submit" value="CSVダウンロード"   Generate" onclick="DLCSV();return false">
+<input type="Submit" value="JSONダウンロード"   Generate" onclick="DLJSON();return false">
+<form name="TZ">
+時間:
+<select name="HM" onChange="drawChart()">
+<option selected="selected" value="">(※制限なし)?[0-9]{1,2}:[0-9]{1,2}</option>
+<option value="">(※日次,0時起点)?^0:00</option>
+<option value="">(※日次,15時起点)?15:00</option>
+<option value="">(※日次,17時起点)?17:00</option>
+<option value="">(※日次,21時起点)?21:00</option>
+<option value="">-------------------------------</option>
+<option value="">(※日次,0時起点)?^0?0:00</option>
+<option value="">(※日次,1時起点)?^0?1:00</option>
+<option value="">(※日次,2時起点)?^0?2:00</option>
+<option value="">(※日次,3時起点)?^0?3:00</option>
+<option value="">(※日次,4時起点)?^0?4:00</option>
+<option value="">(※日次,5時起点)?^0?5:00</option>
+<option value="">(※日次,6時起点)?^0?6:00</option>
+<option value="">(※日次,7時起点)?^0?7:00</option>
+<option value="">(※日次,8時起点)?^0?8:00</option>
+<option value="">(※日次,9時起点)?^0?9:00</option>
+<option value="">(※日次,10時起点)10:00</option>
+<option value="">(※日次,11時起点)?11:00</option>
+<option value="">(※日次,12時起点)?12:00</option>
+<option value="">-------------------------------</option>
+<option value="">(※日次,13時起点)?13:00</option>
+<option value="">(※日次,14時起点)?14:00</option>
+<option value="">(※日次,15時起点)?15:00</option>
+<option value="">(※日次,14時起点)?14:00</option>
+<option value="">(※日次,15時起点)?15:00</option>
+<option value="">(※日次,16時起点)?16:00</option>
+<option value="">(※日次,17時起点)?17:00</option>
+<option value="">(※日次,18時起点)?18:00</option>
+<option value="">(※日次,19時起点)?19:00</option>
+<option value="">(※日次,20時起点)?20:00</option>
+<option value="">(※日次,21時起点)?21:00</option>
+<option value="">(※日次,22時起点)?22:00</option>
+<option value="">(※日次,23時起点)?23:00</option>
+</select>
+</form>
+<label for="SP"><input type="checkbox" value="SP" id="SP" onChange="drawChart()">速度表示</label>
+<form name="chbox" onChange="drawChart()">
+<b>表示対象</b><br>
+<label for="R1"><input type="checkbox"  checked="checked" value="S1" id="R1"><div id="L1" style="display: inline-block; _display: inline;">ランク1</div></label>
+<label for="R2"><input type="checkbox" checked="checked" value="S2" id="R2"><div id="L2" style="display: inline-block; _display: inline;">ランク2</div></label>
+<label for="R3"><input type="checkbox" checked="checked" value="S3" id="R3"><div id="L3" style="display: inline-block; _display: inline;">ランク3</div></label>
+<label for="R4"><input type="checkbox" checked="checked" value="S4" id="R4"><div id="L4"style="display: inline-block; _display: inline;">ランク4</div></label><br>
+<label for="R5"><input type="checkbox"checked="checked"value="S5" id="R5"><div id="L5"style="display: inline-block; _display: inline;">ランク5</div> </label>
+<label for="R6"><input type="checkbox" checked="checked" value="S6" id="R6"><div id="L6"style="display: inline-block; _display: inline;">ランク6</div></label>
+<label for="R7"><input type="checkbox" checked="checked" value="S7" id="R7"><div id="L7"style="display: inline-block; _display: inline;">ランク7</div></label>
+<label for="R8"><input type="checkbox" checked="checked" value="S8" id="R8"><div id="L8"style="display: inline-block; _display: inline;">ランク8</div></label><br>
+<label for="R9"><input type="checkbox" checked="checked" value="S9" id="R9"><div id="L9"style="display: inline-block; _display: inline;">ランク9</div></label>
+<label for="R10"><input type="checkbox"  checked="checked" value="S10" id="R10"><div id="L10" style="display: inline-block; _display: inline;">ランク10</div></label>
+<label for="R11"><input type="checkbox"  checked="checked" value="S11" id="R11"><div id="L11" style="display: inline-block; _display: inline;">ランク11</div></label>
+<label for="R12"><input type="checkbox" checked="checked" value="S12" id="R12"><div id="L12" style="display: inline-block; _display: inline;">ランク12</div></label><br>
+<label for="R13"><input type="checkbox" checked="checked" value="S13" id="R13"><div id="L13" style="display: inline-block; _display: inline;">ランク13</div></label>
+<label for="R14"><input type="checkbox" checked="checked" value="S14" id="R14"><div id="L14"style="display: inline-block; _display: inline;">ランク14</div></label>
+<label for="R15"><input type="checkbox"checked="checked"value="S15" id="R15"><div id="L15"style="display: inline-block; _display: inline;">ランク15</div> </label>
+<label for="R16"><input type="checkbox" checked="checked" value="S16" id="R16"><div id="L16"style="display: inline-block; _display: inline;">ランク16</div></label>
+</form>
+<input type="Submit" value="501位"   Generate" onclick="CHitimai(1,['501位']);return false">
+<input type="Submit" value="2001位"   Generate" onclick="CHitimai(1,['2001位']);return false">
+<input type="Submit" value="10001位"   Generate" onclick="CHitimai(1,['10001位']);return false">
+<input type="Submit" value="20001位"   Generate" onclick="CHitimai(1,['20001位']);return false">
+<input type="Submit" value="60001位"   Generate" onclick="CHitimai(1,['60001位']);return false">
+<input type="Submit" value="120001位"   Generate" onclick="CHitimai(1,['120001位']);return false">
+<input type="Submit" value="300001位"   Generate" onclick="CHitimai(1,['300001位']);return false">
+<input type="Submit" value="PTぼだ"   Generate" onclick="CHitimai(1,rankmai);return false">
+<input type="Submit" value="ハイスコア"   Generate" onclick="CHitimai(1,score);return false">
+<input type="Submit" value="ALL"   Generate" onclick="CHitimai(1,null);return false">
+</body>
+</html>

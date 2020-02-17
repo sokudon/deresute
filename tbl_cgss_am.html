@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>でれすてぼーだー/CGSSBORDER</title>
+    <link rel="stylesheet" href="./LIB/index.css" />
+  </head>
+  <script>
+  
+window.onload=function(){
+document.getElementById("title").innerHTML="<h3>"+ibe+"ボーダー</h3>";
+setInterval("get_count()",1000);
+}
+
+function get_count() {
+var t=moment(ibeend);var now=moment();var left_time=t-now;t= moment(left_time).valueOf()/1000;
+var timetxt= Math.floor(t/(3600*24)) +"日" +Math.floor( (t%(3600*24))/3600) + "時間"+Math.floor((t%3600)/60)+ "分" +Math.floor(t%60)+ "秒";
+var date=moment(ibeend).format();
+var zan="終了:"+date +"まで残り"+timetxt;
+if(left_time<0){
+zan=date + "に終了しました～";
+}
+document.getElementById("left").innerHTML= zan;
+}
+  
+  </script>
+  <body>
+    <div id='title'></div>
+    <div id='left'></div>
+    <div id="chartdiv"></div>
+      <script src="./LIB/core.js"></script>
+<script src="./LIB/moment-with-locales.js"></script>
+  <script src="./LIB/charts.js"></script>
+   <script src="./LIB/animated.js"></script>
+   <script src="https://script.googleusercontent.com/macros/echo?user_content_key=12Q6uNigkADJwiI0U78QqeZWte2v_ElW2gZLVQnK-s5NF15kt16iWCAJj7xRY4boFkM-RAnQ80WnIpenD4XLqJGEbAmDQYQkm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnNqTIcrYt_J1IxDXzHdjAfL-rWkZN3odhDT5mQlp5CraPoo0MoOGrru8mzDTCqnGIg&lib=MdiS5MrwHxBEpmPeUZXWSPHndBJ9ix56c"></script>
+   <script src="./LIB/amdraw.js"></script>
+
+  </body>
+</html>
