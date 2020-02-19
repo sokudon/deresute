@@ -275,12 +275,12 @@ function parse_json_date_utc(json_date)
     
     return timestamp -offset + get_timezone()  --2020-02-25 12:00:00 utc0◎
     
-    	  --text = tostring(get_timezone()/3600) 
+    	  --text = tostring(get_timezone()/3600) --windows時間うtc13でテスト
 		  --text = tostring(get_timezone()%60)
 		  --text = os.time()  					--2020-02-18 21:27:05 utc0  ostime+13,off+9でJST,utc現在時刻
 		  --text = os.time()+ get_timezone()  	--2020-02-19 10:48:47 utc0 
 		  --text = os.time(os.date("!*t", now)) --2020-02-18 08:27:59 utc0  
-		  --text = os.time{year = 2020, month = 2, day = 25, hour = 21}        --2020-02-25 07:00:00 utc0
+		  --text = os.time{year = 2020, month = 2, day = 25, hour = 21}        --2020-02-25 08:00:00 utc0
 		  --text = os.time{year = 2020, month = 2, day = 25, hour = 21} -3600*9  --2020-02-24 22:00:00 utc0
 		  --text = os.time{year = 2020, month = 2, day = 25, hour = 21}+ get_timezone() --2020-02-25 21:00:00 utc0
 		  --text = os.time{year = 2020, month = 2, day = 25, hour = 21}+ get_timezone()-3600*9  --2020-02-25 12:00:00 utc0
