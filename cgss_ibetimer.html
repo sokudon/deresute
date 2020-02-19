@@ -25,23 +25,30 @@ var ibemie=ibe;
 var tzm =tz.match(/-?\d+/g);
 var t_offset=0;
 var t_offset_min=0;
-if(tzm!=null){
+var ostime = document.getElementById("OF").checked;
+if(ostime){
+t_offset=-Math.floor(new Date().getTimezoneOffset()/60);
+t_offset_min=-(new Date().getTimezoneOffset()%60);
+date_fm="YYYY/MM/DD(ddd) HH:mm:ss [(UTC+"+ t_offset +":"+ ("0"+t_offset_min).slice(-2) +")";
+date_fm=date_fm.replace("+-","-");
+}
+else if(tzm!=null){
 t_offset=parseInt(tzm[0]);
 if(tzm[1]!=null){
 t_offset_min=(parseInt(tzm[1]));
 if(t_offset<0){
 t_offset_min=-t_offset_min;
-}
-}
-}
-   jtc=t_offset + t_offset_min/60;
-   if(tz!="UTC +09:00　大阪、札幌、東京"){
-   date_fm="YYYY/MM/DD(ddd) HH:mm [(" + tz.match(/UTC.*?:\d\d/) +")]";
+}}
+
+  if(tz!="UTC +09:00　大阪、札幌、東京"){
+   date_fm="YYYY/MM/DD(ddd) HH:mm:ss [(" + tz.match(/UTC.*?:\d\d/) +")]";
    }
-   else{
+} 
+   
+   jtc=t_offset + t_offset_min/60;
+   if(jtc==9){
    date_fm="YYYY/MM/DD(ddd) HH:mm:ss ([JST,UTC+9:00])";//現在時刻フォーマット
    }
-   
    var diff=(moment()-moment.utc())/1000/3600;
    
 	var t=moment(ibeowari).add("Hours",diff-jtc);//現地時間
@@ -64,11 +71,11 @@ t_offset_min=-t_offset_min;
 	+Math.floor((t%3600)/60)+ "分" 
 	+Math.floor(t%60)+ "秒";
 	
-	timetxt=timetxt.replace(/([0-9]|^)0日/,"");
+	timetxt=timetxt.replace(/^0日/,"");
 	if(timetxt.indexOf("NaN")>=0){
 	timetxt="----";
 	}
-	
+
    var ibetime=(moment.utc(ibeowari)-moment.utc(ibekaishi))/1000;
 	var kaishi="経過時間:";
 	var esps=(moment.utc()- moment.utc(ibekaishi))/1000;
@@ -102,7 +109,7 @@ date_fm=date_fm.replace(/\(J.+/,"");
    if(prog>100){
    prog=100;
    }
-   
+
 	//文字色
 	var text_color = "black";
 	//画面出力
@@ -113,9 +120,9 @@ date_fm=date_fm.replace(/\(J.+/,"");
 	+zan +timetxt+"<br><br>"
 	+"開始時間:" +moment.utc(ibekaishi).add("Hours",jtc).format(date_fm)+"<br>"
 	+"終了時間:" +moment.utc(ibeowari).add("Hours",jtc).format(date_fm)+"<br></font><br>";
-	//+"イベ進捗率:"+ prog +"%"
-	
-	
+	//+"イベ進捗率:"+ prog +"%;"
+	//;
+
 	document.getElementById("ibe").innerHTML ="<font size=\"20\">"+ ibemie +"</font>";
 
 }
@@ -136,6 +143,7 @@ function changeBoxColor( newColor ) {
     document.getElementById('bg').style.backgroundColor = newColor;
 }
 
+
 //https://twitter.com/intent/tweet?
 
 //Twitterボタン
@@ -146,8 +154,7 @@ function toTwitter() {
 	s=s.replace(/<br>/gm,"\r\n");
 	s=s.replace(/<.*?>/gm,"");
 	s=s.replace(/\r\n\r\n/gm,"\r\n");
-	s=s+"\r\nhttp://sokudon.s17.xrea.com/csss_ibetimer.html\r\n#でれすてタイマー";
-	
+	s=s+"\r\nhttp://sokudon.s17.xrea.com/cgss_ibetimer.html\r\n#でれすてタイマー";
 	
 	if (url == "") {
 		url = "http://twitter.com/share?text=" + encodeURIComponent(s);
@@ -174,6 +181,7 @@ M$より機械翻訳とはいえ
 
 <p align="center"><a href="javascript:toTwitter()"><img src="./" alt="Send to Twitter" width="61" height="23" border="0"></a></p>
 <b>タイムゾーン</b><br>
+<label for="OF"><input type="checkbox" checked="checked" value="NEW" id="OF"">OSのタイムゾーンを優先する<br></label><br>
 <select name="owata">
 <option value="">UTC -12:00　国際日付変更線西側</option>
 <option value="">UTC -11:00　ミッドウェー島</option>
@@ -200,13 +208,13 @@ M$より機械翻訳とはいえ
 <option value="">UTC -02:00　中央大西洋</option>
 <option value="">UTC -01:00　アゾレス諸島</option>
 <option value="">UTC -01:00　カーボベルデ諸島</option>
-<option value="">UTC　ダブリン、エジンバラ、リスボン、ロンドン、グリニッジ標準時、世界協定時刻</option>
-<option value="">UTC　モンロビア、レイキャビク</option>
-<option value="">UTC +1:00　サニーベイル, カリフォルニア州、ブラチスラバ、ブダペスト、Ljubljana、プラハ</option>
-<option value="">UTC +1:00　サラエボ、Skopje、ワルシャワ、Zagreb</option>
-<option value="">UTC +1:00　ブリュッセル、コペンハーゲン、マドリッド、パリ</option>
-<option value="">UTC +1:00　アムステルダム、ベルリン、ベルン、ローマ、ストックホルム、ウィーン</option>
-<option value="">UTC +1:00　西中央アフリカ</option>
+<option value="">UTC +00:00　 ダブリン、エジンバラ、リスボン、ロンドン、グリニッジ標準時、世界協定時刻</option>
+<option value="">UTC +00:00　モンロビア、レイキャビク</option>
+<option value="">UTC +01:00　サニーベイル, カリフォルニア州、ブラチスラバ、ブダペスト、Ljubljana、プラハ</option>
+<option value="">UTC +01:00　サラエボ、Skopje、ワルシャワ、Zagreb</option>
+<option value="">UTC +01:00　ブリュッセル、コペンハーゲン、マドリッド、パリ</option>
+<option value="">UTC +01:00　アムステルダム、ベルリン、ベルン、ローマ、ストックホルム、ウィーン</option>
+<option value="">UTC +01:00　西中央アフリカ</option>
 <option value="">UTC +02:00　ミンスク</option>
 <option value="">UTC +02:00　カイロ</option>
 <option value="">UTC +02:00　ヘルシンキ、キエフ、リガ、ソフィア、Tallinn、Vilnius</option>
@@ -254,7 +262,6 @@ M$より機械翻訳とはいえ
 <option value="">UTC +14:00　サモア夏</option>
 </select>
 </form>
-
 
 <p>クロマキー合成、背景色
     <input type="button" value="緑色に変更する" onclick="changeBoxColor('#008000');">
