@@ -1,5 +1,6 @@
 -- parse json https://gist.github.com/zwh8800/9b0442efadc97408ffff248bc8573064
 --original timer https://obsproject.com/forum/resources/advanced-timer.637/
+--OBS用デレステ終了時間イベントタイマー,CGSS EVENT TIMER LEF TIME
 
 obs           = obslua
 source_name   = ""
@@ -256,7 +257,7 @@ end
 
 
 function lefttime(dt)  
-	local t=parse_json_date_utc(dt) -os.time() + get_timezone()
+	local t=parse_json_date_utc(dt) -os.time() 
 	return  t
 end
 
@@ -272,7 +273,18 @@ function parse_json_date_utc(json_date)
       if offsetsign == "-" then offset = offset * -1 end
     end
     
-    return timestamp -offset
+    return timestamp -offset + get_timezone()  --2020-02-25 12:00:00 utc0◎
+    
+    	  --text = tostring(get_timezone()/3600) 
+		  --text = tostring(get_timezone()%60)
+		  --text = os.time()  					--2020-02-18 21:27:05 utc0  ostime+13,off+9でJST,utc現在時刻
+		  --text = os.time()+ get_timezone()  	--2020-02-19 10:48:47 utc0 
+		  --text = os.time(os.date("!*t", now)) --2020-02-18 08:27:59 utc0  
+		  --text = os.time{year = 2020, month = 2, day = 25, hour = 21}        --2020-02-25 07:00:00 utc0
+		  --text = os.time{year = 2020, month = 2, day = 25, hour = 21} -3600*9  --2020-02-24 22:00:00 utc0
+		  --text = os.time{year = 2020, month = 2, day = 25, hour = 21}+ get_timezone() --2020-02-25 21:00:00 utc0
+		  --text = os.time{year = 2020, month = 2, day = 25, hour = 21}+ get_timezone()-3600*9  --2020-02-25 12:00:00 utc0
+	
 end
 
 function get_timezone()
