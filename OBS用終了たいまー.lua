@@ -42,6 +42,9 @@ end
 function set_time_text()
 	local text = format
 
+	local t= lefttime(finaltime) --切り替え修正
+		total = t*10
+		
 	local tenths   = math.floor(total % 10)
 	local seconds  = math.floor((total / 10) % 60)
 	local minutes  = math.floor((total / 600) % 60)
