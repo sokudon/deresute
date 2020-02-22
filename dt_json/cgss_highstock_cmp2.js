@@ -140,7 +140,8 @@ $('#container').highcharts('StockChart', {
         $button501 = $('#50001'),
         $button12 = $('#20001'),
         $button13 = $('#60001'),
-        $button14 = $('#120001'),
+        $button14 = $('#120001'), 
+         $buttonmd = $('#md'),
         $buttonal = $('#all');
 		
 	function houji(d){
@@ -228,33 +229,40 @@ var dtf=[
 ];
 //dtd=1;
 
+
 var youbi =['日', '月', '火', '水', '木', '金', '土'];
+
+function utc_adjust(bd){
+for(var i=0;i< bd.length;i++){
+for(var j=0;j< bd[i].data.length;j++){
+bd[i].data[j][0] +=jst-timezone;
+}}
+
+return bd;
+}
 
 
 function GETTIMEx(a){
 var k= new Date(a);
-var d=(k.getDate()-1);
-var h=(k.getHours());
-var m=k.getMinutes();
+var d=(k.getDate()-1);var h=k.getHours();var m=k.getMinutes();
 if(m){return m+"分";}
 if(h){return h+"時";}
 
 return d+"日";
-
-
 }
 
 
 //PM表示を改造
 function GETTIMEZ(a){
-a =a  -Date.UTC(2014,0,1,9,0)+ibe_kaishi+9*3600*1000;
-var k= new Date(a);
-var s= 
-(k.getMonth()+1) +"月"+
-(k.getDate()) +"日 "+
-youbi[k.getDay()] +" "+
-(k.getHours()) +"時" +
-k.getMinutes() +"分";
+a =a  -Date.UTC(2014,0,1,0,0)+ibe_kaishi+jst-(-timezone+jst);
+var k= moment(a);//new Date(a);
+var s= moment(k).format("MM月DD日HH時mm分ZZ");
+//var k= moment(a);//new Date(a);
+//(k.getMonth()+1) +"月"+
+//(k.getDate()) +"日 "+
+//youbi[k.getDay()] +" "+
+//(k.getHours()) +"時" +
+//k.getMinutes() +"分";
 
 return s;
 }
@@ -263,7 +271,7 @@ function GETdiff(chart){
 var a= chart.x;
 var k= new Date(a);
 var d=(k.getDate()-1)+"日目";
-var h=(k.getHours())+"時";
+var h=moment(k).format("HH時")//(k.getHours())+"時";//
 var m=k.getMinutes()+"分";
 
 var s="";

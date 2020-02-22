@@ -1,6 +1,11 @@
 -- parse json https://gist.github.com/zwh8800/9b0442efadc97408ffff248bc8573064
 --original timer https://obsproject.com/forum/resources/advanced-timer.637/
 --OBS用デレステ終了時間イベントタイマー,CGSS EVENT TIMER LEF TIME
+--終了時間は以下のサイトをコピペしてください（）
+--http://sokudon.s17.xrea.com/sekai.html
+--http://sokudon.s17.xrea.com/sekai-dere.html
+--
+
 
 obs           = obslua
 source_name   = ""

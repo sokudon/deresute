@@ -1,6 +1,6 @@
 
 $(function () {
-Highcharts.setOptions({global: { useUTC: false},
+Highcharts.setOptions({global: { useUTC: true},
 // http://architect-wat.hatenablog.jp/entry/20130320/1363786174　日本語化ここを参考
       lang: {  // 言語設定
         rangeSelectorZoom: '表示範囲',
@@ -18,7 +18,8 @@ Highcharts.setOptions({global: { useUTC: false},
         months: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
         weekdays: ['日', '月', '火', '水', '木', '金', '土'],
         numericSymbols: null,   // 1000を1kと表示しない,
-        thousandsSep: ","
+        thousandsSep: ",",
+        useUTC: true
       }
 
  });
@@ -142,7 +143,8 @@ var chart = $('#container').highcharts(),
         $button501 = $('#50001'),
         $button12 = $('#20001'),
         $button13 = $('#60001'),
-        $button14 = $('#120001'),
+        $button14 = $('#120001'),   
+         $buttonmd = $('#md'),
         $buttonal = $('#all');
 		
 	function houji(d){
@@ -301,15 +303,24 @@ s+="</table>";
 
 return s;
 
+}
 
+function utc_adjust(bd){
+for(var i=0;i< bd.length;i++){
+for(var j=0;j< bd[i].data.length;j++){
+bd[i].data[j][0] +=jst-timezone;
+}}
+
+return bd;
 }
 
 
 function GETTIMEx(a){
-var k= new Date(a);
-var d=(k.getDate()-1);
-var h=(k.getHours());
-var m=k.getMinutes();
+//var k= new Date(a);
+var s= moment(a).utc();//.format("MM月DD日HH時mm分ZZ"); 
+var d=(s.format("D")-1);//(k.getDate()-1);
+var h=s.format("h");//(k.getHours());
+var m=s.format("m");//k.getMinutes();
 if(m){return m+"分";}
 if(h){return h+"時";}
 
@@ -320,14 +331,14 @@ return d+"日";
 
 //PM表示を改造
 function GETTIMEZ(a){
-a =ibe_kaishi+ibe_owari-a -9*3600*1000;
+a =ibe_kaishi+ibe_owari-a;
 var k= new Date(a);
-var s= 
-(k.getMonth()+1) +"月"+
-(k.getDate()) +"日 "+
-youbi[k.getDay()] +" "+
-(k.getHours()) +"時" +
-k.getMinutes() +"分";
+var s= moment(k).format("MM月DD日HH時mm分ZZ"); 
+//(k.getMonth()+1) +"月"+
+//(k.getDate()) +"日 "+
+//youbi[k.getDay()] +" "+
+//(k.getHours()) +"時" +
+//k.getMinutes() +"分";
 
 return s;
 }
@@ -341,7 +352,7 @@ function addc(a){
 function convert_left_time(bd){
 
 var end = ibe_owari;
-var ini = Date.UTC(2014,0,1,-9,0);
+var ini = Date.UTC(2014,0,1,0,0)-timezone;
 for(var j=0;j< bd.length;j++){
 if(bd[j].name.match(/[a-zA-Zあ-ン\-\/]+/)!=null){
 end = bd[j].data[bd[j].data.length-1][0]

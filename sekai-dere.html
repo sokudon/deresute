@@ -1,0 +1,77 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>でれすて(終了)時刻世界時計</title>
+<link href="./LIB/tbl.css" type="text/css" rel="stylesheet">
+<link rel="stylesheet" href="./LIB/style.css" type="text/css" media="print, projection, screen">
+</head>
+<script src="./LIB/jquery-latest.js" type="text/javascript"></script> 
+<script src="./LIB/moment-with-locales.js"></script>
+<script src="https://script.google.com/macros/s/AKfycbz55fDemdeSdeoURqPp_WWJJ4n3nBIuT1_PsBGVx8zUJDRET6LA/exec"></script>
+<!--<script src="settei.txt"></script>-->
+<script>
+<!--
+window.onload = function () {
+//get_count();
+timer_update = 500;
+setInterval("get_count()",timer_update);
+
+ var ss=   "ＯＳ時間での終了時間；"+moment(ibeend).format("YYYY-MM-DDTHH:mm:ss.SSSZZ")+"<br>";
+     ss += "日本時間での終了時間；"+moment(ibeend).utc().add("Hours",9).format("YYYY-MM-DDTHH:mm:ss.SSS+0900");
+document.getElementById("end").innerHTML=ss;}
+
+function UTC(i){
+var tm="";
+if(i>0){
+tm="-"+("0"+i).slice(-2);
+}
+else{
+tm="+"+("0"+(-i)).slice(-2);
+}
+return  tm+":00"
+}
+
+function get_count() {
+	var tt=ibeend;//undefinedで現在時刻
+	var t=undefined;//undefinedで現在時刻
+	var st="";
+	var diff=9;//jst
+	
+var ostime = document.getElementById("OF").checked;
+	for(var i=-14;i<15;i++){
+	if(ostime){
+	st += moment.utc().add("Hours",-i).format("YYYY-MM-DDTHH:mm:ss.SSS") +UTC(i)
+	+ "\t"+moment(tt).utc().add("Hours",-i ).format("YYYY-MM-DDTHH:mm:ss.SSS") +UTC(i)
+	+"\t" + (-i)+":00\t"
+	+(-i- diff)+":00\r\n";
+	}
+	else{
+	st += moment.utc().add("Hours",-i).format("YYYY/MM/DD HH:mm:ss")
+	+ "\t"+moment(tt).utc().add("Hours",-i).format("YYYY/MM/DD HH:mm:ss") 
+	+"\t" + (-i)+":00\t"
+	+(-i- diff)+":00\r\n";
+	}
+	}
+	st = st.replace(/(.*?)\t(.*?)\t9:00/,"<b>$1</b>\t<b>$2</b>\t<b>9:00</b>");
+	st = st.replace(/\r\n/gm,"	</td></tr><tr><td>");
+	st = "<tr><td>" + st.replace(/\t/gm,"</td><td>");
+	st = st.replace(/<tr><td>$/,"");
+	
+	var header="<th>現在時刻</th><th>終了時刻</th><th>UTC</th><th>JSTとの時差</th>"
+	var  ss="<table id=\"sampleTable\" class=\"tablesorter\">"
++"<thead><tr>" +header
++"</tr></thead><tbody>"
++st+"</tbody></table>";
+	
+	//画面出力
+	document.getElementById("tt").innerHTML =ss;
+}
+//
+-->
+</script>
+<body>
+<h1>でれすて(終了)時刻世界時計</h1>
+
+<label for="OF"><input type="checkbox" checked="checked" value="NEW" id="OF"">ISO8601形式で表示<br></label><div id="end"></div><br>
+<span class="black">終了時刻各国の現地時間(endtime)　　(+9が日本japan,+1がイギリス夏時間 UKsummer,-4がニューヨーク夏時間 newyork summer)</span>;
+<span id="tt">現在時刻:</span>
+</body>
+</htm>
