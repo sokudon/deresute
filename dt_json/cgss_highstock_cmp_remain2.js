@@ -1,6 +1,6 @@
 
 $(function () {
-Highcharts.setOptions({global: { useUTC: true},
+Highcharts.setOptions({global: { useUTC: false},
 // http://architect-wat.hatenablog.jp/entry/20130320/1363786174　日本語化ここを参考
       lang: {  // 言語設定
         rangeSelectorZoom: '表示範囲',
@@ -19,7 +19,7 @@ Highcharts.setOptions({global: { useUTC: true},
         weekdays: ['日', '月', '火', '水', '木', '金', '土'],
         numericSymbols: null,   // 1000を1kと表示しない,
         thousandsSep: ",",
-        useUTC: true
+        //useUTC: true
       }
 
  });
