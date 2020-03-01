@@ -26,7 +26,7 @@ border[i]['name'] = base[i]['name'];
 border[i]["data"] = base[i]['data'];//.concat(real[i]['data']);
 }
 
-var border_data=border.concat(compare);
+var border_data=utc_adjust(border.concat(compare));
 convert_left_time(border_data);
 
 -->
