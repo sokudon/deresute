@@ -61,7 +61,7 @@ function isDST(J)
 end
 
 function JPday(date,t)
-  local jp_day={"日","月","火","水","木","金","土"} --2020/03/21から％Jがクラッシュなので％V
+  local jp_day={"日","月","火","水","木","金","土"}
   local dt = os.date("*t",t)
   
   if (get_timezone_the_day() == 9*3600) then --動作は日本時間のときだけ
@@ -96,21 +96,25 @@ function parse_jp_era(date)
   local t = os.time()
   
   if (string.find(date,"%%UTC")) then
-  local tu = os.time()  - get_timezone_the_day() + (tonumber(utc)*3600)
+  local jp_day={"日","月","火","水","木","金","土"}
+  local tu = os.time()  + (tonumber(utc)*3600)
   local u =string.format("%+03d",tonumber(utc))
-    local dateu='%Y/%m/%d(%Vw)%X(UTC'..u..':00),%a' --%z系はOS依存のため使用不可
-  	dateu=JPday(dateu,tu)  
+    local dateu='!%Y/%m/%d(%a)%X(UTC'..u..':00)' --%z系はOS依存のため使用不可
+    
+    --local dt = os.date("!*t",tu) --%Vwを使いたいとき utcの時間で曜日を取得する必要がある
+	--dateu= string.gsub(dateu, "%%Vw",jp_day[dt.wday])
+	
   	datestring = os.date(dateu,tu)
   	date =string.gsub(date, "%%UTC",datestring)
   end
   if (string.find(date,"%%ISOZ")) then
-  local dateu='!%Y/%m/%dT%XZ,%a'    --%z系はOS依存のため使用不可
-  	dateu=JPday(dateu,t)
+  local dateu='!%Y/%m/%dT%XZ %a'    --%z系はOS依存のため使用不可
+  
   	datestring = os.date(dateu, t)
   	date =string.gsub(date, "%%ISO%w",datestring)
   end
   if (string.find(date,"%%ISO")) then
-    local dateu='%Y/%m/%dT%X%zz,%a'
+    local dateu='%Y/%m/%dT%X%zz %a'
   	dateu=JPday(dateu,t)
   	datestring = os.date(dateu, t)
   	date =string.gsub(date, "%%ISO",datestring)
