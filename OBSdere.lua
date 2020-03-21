@@ -1,11 +1,5 @@
 -- parse json https://gist.github.com/zwh8800/9b0442efadc97408ffff248bc8573064
 --original timer https://obsproject.com/forum/resources/advanced-timer.637/
---OBS用デレステ終了時間イベントタイマー,CGSS EVENT TIMER LEF TIME
---終了時間は以下のサイトをコピペしてください（）
---http://sokudon.s17.xrea.com/sekai.html
---http://sokudon.s17.xrea.com/sekai-dere.html
---
-
 
 obs           = obslua
 source_name   = ""
@@ -47,9 +41,9 @@ end
 function set_time_text()
 	local text = format
 
-	local t= lefttime(finaltime) --切り替え修正
+	local t= lefttime(finaltime)
 		total = t*10
-		
+
 	local tenths   = math.floor(total % 10)
 	local seconds  = math.floor((total / 10) % 60)
 	local minutes  = math.floor((total / 600) % 60)
@@ -281,23 +275,24 @@ function parse_json_date_utc(json_date)
       if offsetsign == "-" then offset = offset * -1 end
     end
     
-    return timestamp -offset + get_timezone()  --2020-02-25 12:00:00 utc0◎
+    local temp = os.date("*t",timestamp)
     
-    	  --text = tostring(get_timezone()/3600) --windows時間うtc13でテスト
-		  --text = tostring(get_timezone()%60)
-		  --text = os.time()  					--2020-02-18 21:27:05 utc0  ostime+13,off+9でJST,utc現在時刻
-		  --text = os.time()+ get_timezone()  	--2020-02-19 10:48:47 utc0 
-		  --text = os.time(os.date("!*t", now)) --2020-02-18 08:27:59 utc0  
-		  --text = os.time{year = 2020, month = 2, day = 25, hour = 21}        --2020-02-25 08:00:00 utc0
-		  --text = os.time{year = 2020, month = 2, day = 25, hour = 21} -3600*9  --2020-02-24 22:00:00 utc0
-		  --text = os.time{year = 2020, month = 2, day = 25, hour = 21}+ get_timezone() --2020-02-25 21:00:00 utc0
-		  --text = os.time{year = 2020, month = 2, day = 25, hour = 21}+ get_timezone()-3600*9  --2020-02-25 12:00:00 utc0
-	
+    if(temp.isdst) then  --パースした時刻がサマーがしらべる
+    offset = offset -3600
+    end
+    
+    return timestamp -offset + get_timezone()
+    --return timestamp -offset + get_timezone_the_day()_the_day()
+end
+
+function get_timezone_the_day()
+  local diff = (os.date("%z")/100)*3600 + (os.date("%z")%100)*3600
+  return diff  --サマー有りタイムゾーン時差情報 現在時間
 end
 
 function get_timezone()
   local now = os.time()
-  return os.difftime(now, os.time(os.date("!*t", now)))
+  return os.difftime(now, os.time(os.date("!*t", now))) --サマーなしタイムゾーン時差情報 現在時間
 end
 
 function settings_modified(props, prop, settings)

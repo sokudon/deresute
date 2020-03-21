@@ -12,37 +12,48 @@ utc           = 0
 -- Function to set the time text
 function get_timezone()
   local now = os.time()
-  return os.difftime(now, os.time(os.date("!*t", now)))
+  return os.difftime(now, os.time(os.date("!*t", now))) --サマーなしタイムゾーン時差情報
+end
+
+function get_timezone_the_day()
+  local diff = (os.date("%z")/100)*3600 + (os.date("%z")%100)*3600
+  return diff  --サマー有りタイムゾーン時差情報
 end
 
 function parse_jp_era(date)
   local dt = os.date("*t")
- if (string.find(date,"%%U")) then
+  
+  if (string.find(date,"%%U")) then
   local t = os.time()+utc*3600 -get_timezone()
   	return os.date('%x %X(UTC'..utc.."00)", t)
+  
   else if (get_timezone() == 9*3600) then
-  local jp_day={"日","月","火","水","木","金","土"}
-  date= string.gsub(date, "%%Jw",jp_day[dt.wday])
-  date= string.gsub(date, "%%JW",jp_day[dt.wday].."曜日")
-  date= string.gsub(date, "%%JR","令和"..(dt.year-2018).."年")
-  date= string.gsub(date, "%%Jr","R"..(dt.year-2018))  --%Jr/%Y/%m/%d(%Jw)%X
-  --date= string.gsub(date, "%%JH","平成"..(dt.year-1988).."年")
-  --date= string.gsub(date, "%%Jh","H"..(dt.year-1988))
-  --date= string.gsub(date, "%%JT","大正"..(dt.year-1911).."年")
-  --date= string.gsub(date, "%%Jt","T"..(dt.year-1911))
-  else
-   date= string.gsub(date, "%%J%w","")
-   date= "%%J?はJST,UTC+9での動作限定です"
+  local jp_day={"日","月","火","水","木","金","土"} --2020/03/21から％Jがクラッシュ
+  date= string.gsub(date, "%%Vw",jp_day[dt.wday])
+  date= string.gsub(date, "%%VW",jp_day[dt.wday].."曜日")
+  date= string.gsub(date, "%%VR","令和"..(dt.year-2018).."年")
+  date= string.gsub(date, "%%Vr","R"..(dt.year-2018))  --%Jr/%Y/%m/%d(%Jw)%X
+  --date= string.gsub(date, "%%VH","平成"..(dt.year-1988).."年")
+  --date= string.gsub(date, "%%Vh","H"..(dt.year-1988))
+  --date= string.gsub(date, "%%VS","昭和"..(dt.year-1924).."年")
+  --date= string.gsub(date, "%%Vs","S"..(dt.year-1925))
+  --date= string.gsub(date, "%%VT","大正"..(dt.year-1911).."年")
+  --date= string.gsub(date, "%%J\Vt","T"..(dt.year-1911))
+  --else
+  -- date= string.gsub(date, "%%J%w","")
+  -- date= "%%J?はJST,UTC+9での動作限定です"
   end
   date= string.gsub(date, "%%Z", (get_timezone()/3600)..(get_timezone()%60)) --timezone タイムゾーン時差情報 %Y/%m/%d(%Jw)%X(UTC%z)
- end
-  
+ end 
+
   return os.date(date)
 end
 
 --%U    worldtime set UTCsetting,　UTC標準時から設定どおりの時間を表示　他の%無視して優先順位一位
---%Z    timezone,degit JST is 0900　タイムゾーン時差情報 %Y/%m/%d(%Jw)%X(UTC%z)
-
+--%Z    timezone,degit JST is 0900　timezoneサマーなしタイムゾーン時差情報  %Y/%m/%d(%Jw)%X(UTC%z)
+--%z    timezone,osdateのサマータイム有り
+-- "％V" 週番号
+--os.date（ "％j"、tm）-年の日を取得する
 --%a	abbreviated weekday name (e.g., Wed)
 --%A	full weekday name (e.g., Wednesday)
 --%b	abbreviated month name (e.g., Sep)
