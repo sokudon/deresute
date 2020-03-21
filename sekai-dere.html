@@ -15,7 +15,11 @@ timer_update = 500;
 setInterval("get_count()",timer_update);
 
  var ss=   "ＯＳ時間での終了時間；"+moment(ibeend).format("YYYY-MM-DDTHH:mm:ss.SSSZZ")+"<br>";
-     ss += "日本時間での終了時間；"+moment(ibeend).utc().add("Hours",9).format("YYYY-MM-DDTHH:mm:ss.SSS+0900");
+     ss += "日本時間での終了時間；"+moment(ibeend).utc().add("Hours",9).format("YYYY-MM-DDTHH:mm:ss.SSS+0900")+"<br><br>";
+    ss += "ＯＳ時間での開始時間；"+moment(ibestart).format("YYYY-MM-DDTHH:mm:ss.SSSZZ")+"<br>";
+     ss += "日本時間での開始時間；"+moment(ibestart).utc().add("Hours",9).format("YYYY-MM-DDTHH:mm:ss.SSS+0900");
+     
+	ss= ss.replace(/Invalid date/gm,"--(未確定)");
 document.getElementById("end").innerHTML=ss;}
 
 function UTC(i){
@@ -31,6 +35,7 @@ return  tm+":00"
 
 function get_count() {
 	var tt=ibeend;//undefinedで現在時刻
+	var ts= ibestart;//undefinedで現在時刻
 	var t=undefined;//undefinedで現在時刻
 	var st="";
 	var diff=9;//jst
@@ -39,12 +44,14 @@ var ostime = document.getElementById("OF").checked;
 	for(var i=-14;i<15;i++){
 	if(ostime){
 	st += moment.utc().add("Hours",-i).format("YYYY-MM-DDTHH:mm:ss.SSS") +UTC(i)
+	+ "\t"+moment(ts).utc().add("Hours",-i ).format("YYYY-MM-DDTHH:mm:ss.SSS") +UTC(i)
 	+ "\t"+moment(tt).utc().add("Hours",-i ).format("YYYY-MM-DDTHH:mm:ss.SSS") +UTC(i)
 	+"\t" + (-i)+":00\t"
 	+(-i- diff)+":00\r\n";
 	}
 	else{
 	st += moment.utc().add("Hours",-i).format("YYYY/MM/DD HH:mm:ss")
+	+ "\t"+moment(ts).utc().add("Hours",-i).format("YYYY/MM/DD HH:mm:ss") 
 	+ "\t"+moment(tt).utc().add("Hours",-i).format("YYYY/MM/DD HH:mm:ss") 
 	+"\t" + (-i)+":00\t"
 	+(-i- diff)+":00\r\n";
@@ -54,8 +61,9 @@ var ostime = document.getElementById("OF").checked;
 	st = st.replace(/\r\n/gm,"	</td></tr><tr><td>");
 	st = "<tr><td>" + st.replace(/\t/gm,"</td><td>");
 	st = st.replace(/<tr><td>$/,"");
+	st = st.replace(/Invalid date/gm,"--(未確定)");
 	
-	var header="<th>現在時刻</th><th>終了時刻</th><th>UTC</th><th>JSTとの時差</th>"
+	var header="<th>現在時刻</th><th>開始時刻</th><th>終了時刻</th><th>UTC</th><th>JSTとの時差</th>"
 	var  ss="<table id=\"sampleTable\" class=\"tablesorter\">"
 +"<thead><tr>" +header
 +"</tr></thead><tbody>"
