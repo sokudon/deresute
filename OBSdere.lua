@@ -259,7 +259,7 @@ end
 
 
 function lefttime(dt)  
-	local t=parse_json_date_utc(dt) -os.time() 
+	local t=parse_json_date_utc(dt) ---os.time() 
 	return  t
 end
 
@@ -275,14 +275,13 @@ function parse_json_date_utc(json_date)
       if offsetsign == "-" then offset = offset * -1 end
     end
     
-    local temp = os.date("*t",timestamp)
+    --local temp = os.date("*t",timestamp)
+    --if(temp.isdst) then  --パースした時刻がサマーがしらべる
+    --offset = offset -3600
+    --end
+    --return timestamp + get_timezone() -offset
     
-    if(temp.isdst) then  --パースした時刻がサマーがしらべる
-    offset = offset -3600
-    end
-    
-    return timestamp -offset + get_timezone()
-    --return timestamp -offset + get_timezone_the_day()_the_day()
+    return timestamp + get_timezone_offset(timestamp) -offset
 end
 
 function get_timezone_the_day()
@@ -290,9 +289,22 @@ function get_timezone_the_day()
   return diff  --サマー有りタイムゾーン時差情報 現在時間
 end
 
+--http://lua-users.org/wiki/TimeZone
 function get_timezone()
   local now = os.time()
   return os.difftime(now, os.time(os.date("!*t", now))) --サマーなしタイムゾーン時差情報 現在時間
+end
+
+function get_tzoffset(timezone)
+  local h, m = math.modf(timezone / 3600)
+  return string.format("%+.4d", 100 * h + 60 * m)
+end
+
+function get_timezone_offset(ts)  --サマー有りタイムゾーン時差情報 当時の時間
+	local utcdate   = os.date("!*t", ts)
+	local localdate = os.date("*t", ts)
+	localdate.isdst = false -- this is the trick
+	return os.difftime(os.time(localdate), os.time(utcdate))
 end
 
 function settings_modified(props, prop, settings)
