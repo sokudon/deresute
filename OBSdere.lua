@@ -259,7 +259,7 @@ end
 
 
 function lefttime(dt)  
-	local t=parse_json_date_utc(dt) ---os.time() 
+	local t=parse_json_date_utc(dt) - os.time() 
 	return  t
 end
 
