@@ -29,7 +29,7 @@ var ostime = document.getElementById("OF").checked;
 if(ostime){
 t_offset=-Math.floor(new Date().getTimezoneOffset()/60);
 t_offset_min=-(new Date().getTimezoneOffset()%60);
-date_fm="YYYY/MM/DD(ddd) HH:mm:ss [(UTC+"+ t_offset +":"+ ("0"+t_offset_min).slice(-2) +")";
+date_fm="YYYY/MM/DD(ddd) HH:mm:ss (UTC+"+ t_offset +":"+ ("0"+t_offset_min).slice(-2) +")";
 date_fm=date_fm.replace("+-","-");
 }
 else if(tzm!=null){
@@ -41,7 +41,7 @@ t_offset_min=-t_offset_min;
 }}
 
   if(tz!="UTC +09:00　大阪、札幌、東京"){
-   date_fm="YYYY/MM/DD(ddd) HH:mm:ss [(" + tz.match(/UTC.*?:\d\d/) +")]";
+   date_fm="YYYY/MM/DD(ddd) HH:mm:ss (" + tz.match(/UTC.*?:\d\d/) +")";
    }
 } 
    
@@ -52,7 +52,11 @@ t_offset_min=-t_offset_min;
    var diff=(moment()-moment.utc())/1000/3600;
    
 	var t=moment(ibeowari).add("Hours",diff-jtc);//現地時間
-	var now=moment.utc().add("Hours",jtc);
+	var now=moment.utc().add("Hours",jtc);	
+	if(ostime){
+	now=moment();
+	date_fm="YYYY/MM/DD(ddd) HH:mm:ss (UTCZ"+addDST(now)+")";
+	}
 	
 	var left_time=moment.utc(ibeowari)-moment.utc();
 	
@@ -113,18 +117,32 @@ date_fm=date_fm.replace(/\(J.+/,"");
 	//文字色
 	var text_color = "black";
 	//画面出力
-	document.getElementById("cdt_now").innerHTML = "<font size=\"20\">"
+	timest = "<font size=\"20\">"
 	+"現在時刻:"
 	+now.format(date_fm)+"<br>"
 	+kaishi +esps+"("+prog +"%)<br>"
-	+zan +timetxt+"<br><br>"
-	+"開始時間:" +moment.utc(ibekaishi).add("Hours",jtc).format(date_fm)+"<br>"
+	+zan +timetxt+"<br><br>";
+	if(ostime){
+	timest +="開始時間:" +moment(ibekaishi).format(date_fm).replace(/UTC(.\d\d)(\d\d)/,"UTC$1:$2")+"<br>"
+	+"終了時間:" +moment(ibeowari).format(date_fm).replace(/UTC(.\d\d)(\d\d)/,"UTC$1:$2")+"<br>";
+	}
+	else{
+	timest +="開始時間:" +moment.utc(ibekaishi).add("Hours",jtc).format(date_fm)+"<br>"
 	+"終了時間:" +moment.utc(ibeowari).add("Hours",jtc).format(date_fm)+"<br></font><br>";
+	}
 	//+"イベ進捗率:"+ prog +"%;"
 	//;
-
+	document.getElementById("cdt_now").innerHTML=timest;
 	document.getElementById("ibe").innerHTML ="<font size=\"20\">"+ ibemie +"</font>";
 
+}
+
+function addDST(t){
+ var s="";
+ if(moment(t).isDST()){
+ s = ",[DST]";
+ }
+ return s;
 }
 
 function getDevice(){

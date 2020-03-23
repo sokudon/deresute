@@ -19,6 +19,15 @@
 	<script type="text/javascript" src="https://script.google.com/macros/s/AKfycbz55fDemdeSdeoURqPp_WWJJ4n3nBIuT1_PsBGVx8zUJDRET6LA/exec"></script>
     <script type='text/javascript'>
 <!--
+//https://developers.google.com/chart/interactive/docs/reference
+//pattern [Optional] String pattern that was used by a data source to format numeric, date, or time column values. This is for reference only; you probably won't need to read the pattern, and it isn't required to exist. The Google Visualization client does not use this value (it reads the cell's formatted value). If the DataTable has come from a data source in response to a query with a format clause, the pattern you specified in that clause will probably be returned in this value. The recommended pattern standards are the ICU DecimalFormat and SimpleDateFormat .
+//https://unicode-org.github.io/icu-docs/apidoc/released/icu4j/com/ibm/icu/text/SimpleDateFormat.html
+//https://unicode-org.github.io/icu-docs/apidoc/released/icu4j/com/ibm/icu/text/DecimalFormat.html
+var dateformat="yyyy/MM/dd HH:mm";
+if((moment(ibestart).isDST())^(moment(ibeend).isDST())){//片方だけサマータイムのとき時差つきデフォルト
+dateformat="yyyy/MM/dd HH:mmZ";
+}
+
 google.charts.load("current",{packages:["annotationchart"]}),google.charts.setOnLoadCallback(drawChart);
 var column_data=[["date","日付"]],jisoku=[];
 function convert_google(e){for(var n=1;
@@ -37,10 +46,23 @@ var e=convert_google(BD);
 e.sort(function(e,n){return e[0]<n[0]?1:e[0]>n[0]?-1:0});
 
 var n=document.getElementById("SP").checked,t=document.TZ.HM.options[document.TZ.HM.selectedIndex].text;
+
+var Tz=document.getElementById("TZ").checked;
+if(Tz){
+dateformat="yyyy/MM/dd HH:mmZ";
+}
+else{
+dateformat="yyyy/MM/dd HH:mm";
+}
+
 t="^"+t+"$",jisoku=[];
-for(var o=[],a="",i=0,r=0;
-i<e.length;
-i++)(a=(a=e[i][0]).getHours()+":"+("0"+a.getMinutes()).slice(-2)).match(t)&&(o[r]=i,r++);
+for(var o=[],a="",i=0,r=0;i<e.length;i++){
+var dt=moment(e[i][0]);
+if(dt.isDST()){dt=dt.add("Hours",-1);}
+if(dt.format("H:mm").match(t)){
+o[r]=i;
+r++;
+}}
 var u=[1];
 for(i=0;
 i<maxlen;
@@ -69,8 +91,10 @@ i++){d=1;
 jisoku[i]=[],jisoku[i][0]=e[o[i]][0];
 for(r=1;
 r<column_data.length;
-r++)u[r]&&(0<e[o[i]][r]?jisoku[i][d]=e[o[i]][r]:jisoku[i][d]=void 0,d++)}}l.addRows(jisoku),new google.visualization.DateFormat({pattern:"yyyy/MM/dd HH:mm"}).format(l,0);
+r++)u[r]&&(0<e[o[i]][r]?jisoku[i][d]=e[o[i]][r]:jisoku[i][d]=void 0,d++)}}l.addRows(jisoku),new google.visualization.DateFormat({pattern:dateformat}).format(l,0);
 var m=new google.visualization.NumberFormat({pattern:"###,###"});
+
+
 if(n)for(i=1;
 i<2*(d-1)+1;
 i++)m.format(l,i);
@@ -139,23 +163,32 @@ o<jisoku.length;
 o++){e+=moment(jisoku[o][0]).format("YYYY/MM/DD HH:mm")+",";
 for(t=1;t<jisoku[o].length;t++)e+=jisoku[o][t]+",";
 e=e.slice(0,-1),e+="\r\n"}TextDL(e,"border.csv")}function DLJSON(){var e=[];
-e[0]=[],e[0]=getHEAD(),TextDL(JSON.stringify(e.concat(jisoku)),"tokikdoru.txt")}function TextDL(n,t){b=new Blob([n],{type:"text/plain"}),a=document.createElement("a"),a.download=t,a.href=window.URL.createObjectURL(b),e=document.createEvent("MouseEvent"),e.initEvent("click",!0,!0),a.dispatchEvent(e)}
+e[0]=[],e[0]=getHEAD(),TextDL(JSON.stringify(e.concat(jisoku)),"cgssbd.txt")}function TextDL(n,t){b=new Blob([n],{type:"text/plain"}),a=document.createElement("a"),a.download=t,a.href=window.URL.createObjectURL(b),e=document.createEvent("MouseEvent"),e.initEvent("click",!0,!0),a.dispatchEvent(e)}
 
 setInterval("get_count()",1000);
 function get_count() {
 var t=moment(ibeend);var now=moment();var left_time=t-now;t= moment(left_time).valueOf()/1000;
 var timetxt= Math.floor(t/(3600*24)) +"日" +Math.floor( (t%(3600*24))/3600) + "時間"+Math.floor((t%3600)/60)+ "分" +Math.floor(t%60)+ "秒";
-var date=moment(ibeend).format();
+var datend=moment(ibeend).format();
+var datest=moment(ibestart).format();
+
 
 var prog=(moment.utc()-moment.utc(ibestart))/(moment.utc(ibeend)-moment.utc(ibestart))*100;
 
-var zan="終了:"+date +"まで残り"+timetxt +"("+prog.toFixed(2)+"%)";
+var dstst="";
+var dsten="";
+if(moment(ibestart).isDST()){dstst="(DST,夏時間)";}
+if(moment(ibeend).isDST()){dsten="(DST,夏時間)";}
+
+var zan="開始:"+datest +dstst +"<br>"
++"終了:"+datend +dsten +"まで残り"+timetxt +"("+prog.toFixed(2)+"%)";
 if(left_time<0){
-zan=date + "に終了しました～";
+zan=datend +dsten + "に終了しました～";
 }
 if(ibeend==""){
 zan ="イベント終了日が未確定です"
 }
+
 document.getElementById("left").innerHTML= zan;
 }
 
@@ -207,9 +240,42 @@ document.getElementById("left").innerHTML= zan;
 <option value="">(※日次,21時起点)?21:00</option>
 <option value="">(※日次,22時起点)?22:00</option>
 <option value="">(※日次,23時起点)?23:00</option>
-</select>
+<option value="">(※日次,0時起点)?^0:00</option>
+<option value="">(※日次,15時起点)?15:00</option>
+<option value="">(※日次,17時起点)?17:00</option>
+<option value="">(※日次,21時起点)?21:00</option>
+<option value="">-----------DST,夏時間用----------</option>
+<option value="">(※日次,DST夏時間0時起点)?23:00</option>
+<option value="">(※日次,DST夏時間1時起点)?^0?0:00</option>
+<option value="">(※日次,DST夏時間2時起点)?^0?1:00</option>
+<option value="">(※日次,DST夏時間3時起点)?^0?2:00</option>
+<option value="">(※日次,DST夏時間4時起点)?^0?3:00</option>
+<option value="">(※日次,DST夏時間5時起点)?^0?4:00</option>
+<option value="">(※日次,DST夏時間6時起点)?^0?5:00</option>
+<option value="">(※日次,DST夏時間7時起点)?^0?6:00</option>
+<option value="">(※日次,DST夏時間8時起点)?^0?7:00</option>
+<option value="">(※日次,DST夏時間9時起点)?^0?8:00</option>
+<option value="">(※日次,DST夏時間10時起点)?^0?9:00</option>
+<option value="">(※日次,DST夏時間11時起点)10:00</option>
+<option value="">(※日次,DST夏時間12時起点)?11:00</option>
+<option value="">(※日次,DST夏時間13時起点)?12:00</option>
+<option value="">--------------------------------</option>
+<option value="">(※日次,DST夏時間14時起点)?13:00</option>
+<option value="">(※日次,DST夏時間15時起点)?14:00</option>
+<option value="">(※日次,DST夏時間14時起点)?15:00</option>
+<option value="">(※日次,DST夏時間15時起点)?14:00</option>
+<option value="">(※日次,DST夏時間16時起点)?15:00</option>
+<option value="">(※日次,DST夏時間17時起点)?16:00</option>
+<option value="">(※日次,DST夏時間18時起点)?17:00</option>
+<option value="">(※日次,DST夏時間19時起点)?18:00</option>
+<option value="">(※日次,DST夏時間20時起点)?19:00</option>
+<option value="">(※日次,DST夏時間21時起点)?20:00</option>
+<option value="">(※日次,DST夏時間22時起点)?21:00</option>
+<option value="">(※日次,DST夏時間23時起点)?22:00</option>
+</select>※夏時間の場合日次参照は+1hになります()
 </form>
 <label for="SP"><input type="checkbox" value="SP" id="SP" onChange="drawChart()">速度表示</label>
+<label for="TZ"><input type="checkbox" id="TZ" onChange="drawChart()">時差付き情報</label>
 <form name="chbox" onChange="drawChart()">
 <b>表示対象</b><br>
 <label for="R1"><input type="checkbox"  checked="checked" value="S1" id="R1"><div id="L1" style="display: inline-block; _display: inline;">ランク1</div></label>
