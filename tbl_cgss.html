@@ -56,13 +56,31 @@ dateformat="yyyy/MM/dd HH:mm";
 }
 
 t="^"+t+"$",jisoku=[];
+var standart_time_diff=getSTD(e[0][0]);//今年と年次の標準時間を求める、UTC+=(HH):mmのHHだけ
+
 for(var o=[],a="",i=0,r=0;i<e.length;i++){
+
+var dt=moment.utc(e[i][0]).add("Hours",standart_time_diff);
+var HHmm=dt.format("H:mm");
+
+/* //ro-karu時間で修正
 var dt=moment(e[i][0]);
-if(dt.isDST()){dt=dt.add("Hours",-1);}
-if(dt.format("H:mm").match(t)){
+//dt=dt.add("Hours",-1);　/サン?マータイム/越境時注意喚起 -3600も同じ
+;//moment("2020/03/08 03:00)がmoment("2020/03/08 02:00)の幻2時でぱーすされてしまい
+;//unixタイムでは幻2時=/サン?マータイム/実施直前1時とおなじになる（）
+;//https://stackoverflow.com/questions/56263239/how-to-ignore-dst-when-parsing-string-to-time-time-parse-in-ruby
+if(dt.isDST()){
+HHmm  =parseInt(dt.format("H"))-1;
+if(HHmm<0){HHmm+=24;}
+HHmm +=dt.format(":mm");
+}
+*/
+
+if(HHmm.match(t)){
 o[r]=i;
 r++;
 }}
+
 var u=[1];
 for(i=0;
 i<maxlen;
@@ -192,6 +210,30 @@ zan ="イベント終了日が未確定です"
 document.getElementById("left").innerHTML= zan;
 }
 
+
+function getSTD(dt){//次年度分までのタイムゾーンQS
+var year=new Date(dt).getFullYear();
+var yearN=parseInt(year)+1;
+var yTZ=[];
+for(var i =0;i<12;i++){
+yTZ[i]=[];yTZ[i][1]=i+1;
+yTZ[i][0]= Math.trunc(new Date(year+"/"+ ("0"+(i+1)).slice(-2) +"/01 00:00").getTimezoneOffset())/-60;//30分情報は無視する
+}
+for(var i =0;i<12;i++){
+yTZ[i+12]=[];yTZ[i+12][1]="N"+(i+1);
+yTZ[i+12][0] =Math.trunc(new Date(yearN+"/"+ ("0"+(i+1)).slice(-2) +"/01 00:00").getTimezoneOffset())/-60;
+}
+
+yTZ.sort(function(a, b) { return a[0] - b[0]; }); 
+
+return yTZ[0][0];
+}
+
+// Math.trunc() - JavaScript | MDN https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Math/trunc
+Math.trunc = Math.trunc || function(x) {
+  return x < 0 ? Math.ceil(x) : Math.floor(x);
+}
+
 -->
 </script>
 </head>
@@ -223,7 +265,7 @@ document.getElementById("left").innerHTML= zan;
 <option value="">(※日次,7時起点)?^0?7:00</option>
 <option value="">(※日次,8時起点)?^0?8:00</option>
 <option value="">(※日次,9時起点)?^0?9:00</option>
-<option value="">(※日次,10時起点)10:00</option>
+<option value="">(※日次,10時起点)?10:00</option>
 <option value="">(※日次,11時起点)?11:00</option>
 <option value="">(※日次,12時起点)?12:00</option>
 <option value="">-------------------------------</option>
@@ -244,6 +286,7 @@ document.getElementById("left").innerHTML= zan;
 <option value="">(※日次,15時起点)?15:00</option>
 <option value="">(※日次,17時起点)?17:00</option>
 <option value="">(※日次,21時起点)?21:00</option>
+
 <option value="">-----------DST,夏時間用----------</option>
 <option value="">(※日次,DST夏時間0時起点)?23:00</option>
 <option value="">(※日次,DST夏時間1時起点)?^0?0:00</option>
@@ -256,12 +299,10 @@ document.getElementById("left").innerHTML= zan;
 <option value="">(※日次,DST夏時間8時起点)?^0?7:00</option>
 <option value="">(※日次,DST夏時間9時起点)?^0?8:00</option>
 <option value="">(※日次,DST夏時間10時起点)?^0?9:00</option>
-<option value="">(※日次,DST夏時間11時起点)10:00</option>
+<option value="">(※日次,DST夏時間11時起点)?10:00</option>
 <option value="">(※日次,DST夏時間12時起点)?11:00</option>
 <option value="">(※日次,DST夏時間13時起点)?12:00</option>
 <option value="">--------------------------------</option>
-<option value="">(※日次,DST夏時間14時起点)?13:00</option>
-<option value="">(※日次,DST夏時間15時起点)?14:00</option>
 <option value="">(※日次,DST夏時間14時起点)?15:00</option>
 <option value="">(※日次,DST夏時間15時起点)?14:00</option>
 <option value="">(※日次,DST夏時間16時起点)?15:00</option>
@@ -272,6 +313,123 @@ document.getElementById("left").innerHTML= zan;
 <option value="">(※日次,DST夏時間21時起点)?20:00</option>
 <option value="">(※日次,DST夏時間22時起点)?21:00</option>
 <option value="">(※日次,DST夏時間23時起点)?22:00</option>
+
+<option value="">------------UTC+HH:30のやつ---------------</option>
+<option value="">(※日次,0時起点)?^0?0:30</option>
+<option value="">(※日次,1時起点)?^0?1:30</option>
+<option value="">(※日次,2時起点)?^0?2:30</option>
+<option value="">(※日次,3時起点)?^0?3:30</option>
+<option value="">(※日次,4時起点)?^0?4:30</option>
+<option value="">(※日次,5時起点)?^0?5:30</option>
+<option value="">(※日次,6時起点)?^0?6:30</option>
+<option value="">(※日次,7時起点)?^0?7:30</option>
+<option value="">(※日次,8時起点)?^0?8:30</option>
+<option value="">(※日次,9時起点)?^0?9:30</option>
+<option value="">(※日次,10時起点)?10:30</option>
+<option value="">(※日次,11時起点)?11:30</option>
+<option value="">(※日次,12時起点)?12:30</option>
+<option value="">-------------------------------</option>
+<option value="">(※日次,13時起点)?13:30</option>
+<option value="">(※日次,14時起点)?14:30</option>
+<option value="">(※日次,15時起点)?15:30</option>
+<option value="">(※日次,14時起点)?14:30</option>
+<option value="">(※日次,15時起点)?15:30</option>
+<option value="">(※日次,16時起点)?16:30</option>
+<option value="">(※日次,17時起点)?17:30</option>
+<option value="">(※日次,18時起点)?18:30</option>
+<option value="">(※日次,19時起点)?19:30</option>
+<option value="">(※日次,20時起点)?20:30</option>
+<option value="">(※日次,21時起点)?21:30</option>
+<option value="">(※日次,22時起点)?22:30</option>
+<option value="">(※日次,23時起点)?23:30</option>
+<option value="">(※日次,0時起点)?^0:30</option>
+<option value="">(※日次,15時起点)?15:30</option>
+<option value="">(※日次,17時起点)?17:30</option>
+<option value="">(※日次,21時起点)?21:30</option>
+<option value="">-----------UTC+HH:30のやつDST,夏時間用----------</option>
+<option value="">(※日次,DST夏時間0時起点)?23:30</option>
+<option value="">(※日次,DST夏時間1時起点)?^0?0:30</option>
+<option value="">(※日次,DST夏時間2時起点)?^0?1:30</option>
+<option value="">(※日次,DST夏時間3時起点)?^0?2:30</option>
+<option value="">(※日次,DST夏時間4時起点)?^0?3:30</option>
+<option value="">(※日次,DST夏時間5時起点)?^0?4:30</option>
+<option value="">(※日次,DST夏時間6時起点)?^0?5:30</option>
+<option value="">(※日次,DST夏時間7時起点)?^0?6:30</option>
+<option value="">(※日次,DST夏時間8時起点)?^0?7:30</option>
+<option value="">(※日次,DST夏時間9時起点)?^0?8:30</option>
+<option value="">(※日次,DST夏時間10時起点)?^0?9:30</option>
+<option value="">(※日次,DST夏時間11時起点)?10:30</option>
+<option value="">(※日次,DST夏時間12時起点)?11:30</option>
+<option value="">(※日次,DST夏時間13時起点)?12:30</option>
+<option value="">--------------------------------</option>
+<option value="">(※日次,DST夏時間14時起点)?15:30</option>
+<option value="">(※日次,DST夏時間15時起点)?14:30</option>
+<option value="">(※日次,DST夏時間16時起点)?15:30</option>
+<option value="">(※日次,DST夏時間17時起点)?16:30</option>
+<option value="">(※日次,DST夏時間18時起点)?17:30</option>
+<option value="">(※日次,DST夏時間19時起点)?18:30</option>
+<option value="">(※日次,DST夏時間20時起点)?19:30</option>
+<option value="">(※日次,DST夏時間21時起点)?20:30</option>
+<option value="">(※日次,DST夏時間22時起点)?21:30</option>
+<option value="">(※日次,DST夏時間23時起点)?22:30</option>
+<option value="">------------UTC+HH:45のやつ（カトマンズ、ユークラ、チャタム諸島)---------------</option>
+<option value="">(※日次,0時起点)?^0?0:45</option>
+<option value="">(※日次,1時起点)?^0?1:45</option>
+<option value="">(※日次,2時起点)?^0?2:45</option>
+<option value="">(※日次,3時起点)?^0?3:45</option>
+<option value="">(※日次,4時起点)?^0?4:45</option>
+<option value="">(※日次,5時起点)?^0?5:45</option>
+<option value="">(※日次,6時起点)?^0?6:45</option>
+<option value="">(※日次,7時起点)?^0?7:45</option>
+<option value="">(※日次,8時起点)?^0?8:45</option>
+<option value="">(※日次,9時起点)?^0?9:45</option>
+<option value="">(※日次,10時起点)?10:45</option>
+<option value="">(※日次,11時起点)?11:45</option>
+<option value="">(※日次,12時起点)?12:45</option>
+<option value="">-------------------------------</option>
+<option value="">(※日次,13時起点)?13:45</option>
+<option value="">(※日次,14時起点)?14:45</option>
+<option value="">(※日次,15時起点)?15:45</option>
+<option value="">(※日次,14時起点)?14:45</option>
+<option value="">(※日次,15時起点)?15:45</option>
+<option value="">(※日次,16時起点)?16:45</option>
+<option value="">(※日次,17時起点)?17:45</option>
+<option value="">(※日次,18時起点)?18:45</option>
+<option value="">(※日次,19時起点)?19:45</option>
+<option value="">(※日次,20時起点)?20:45</option>
+<option value="">(※日次,21時起点)?21:45</option>
+<option value="">(※日次,22時起点)?22:45</option>
+<option value="">(※日次,23時起点)?23:45</option>
+<option value="">(※日次,0時起点)?^0:45</option>
+<option value="">(※日次,15時起点)?15:45</option>
+<option value="">(※日次,17時起点)?17:45</option>
+<option value="">(※日次,21時起点)?21:45</option>
+<option value="">-----------UTC+HH:45のやつDST,夏時間用----------</option>
+<option value="">(※日次,DST夏時間0時起点)?23:45</option>
+<option value="">(※日次,DST夏時間1時起点)?^0?0:45</option>
+<option value="">(※日次,DST夏時間2時起点)?^0?1:45</option>
+<option value="">(※日次,DST夏時間3時起点)?^0?2:45</option>
+<option value="">(※日次,DST夏時間4時起点)?^0?3:45</option>
+<option value="">(※日次,DST夏時間5時起点)?^0?4:45</option>
+<option value="">(※日次,DST夏時間6時起点)?^0?5:45</option>
+<option value="">(※日次,DST夏時間7時起点)?^0?6:45</option>
+<option value="">(※日次,DST夏時間8時起点)?^0?7:45</option>
+<option value="">(※日次,DST夏時間9時起点)?^0?8:45</option>
+<option value="">(※日次,DST夏時間10時起点)?^0?9:45</option>
+<option value="">(※日次,DST夏時間11時起点)?10:45</option>
+<option value="">(※日次,DST夏時間12時起点)?11:45</option>
+<option value="">(※日次,DST夏時間13時起点)?12:45</option>
+<option value="">--------------------------------</option>
+<option value="">(※日次,DST夏時間14時起点)?15:45</option>
+<option value="">(※日次,DST夏時間15時起点)?14:45</option>
+<option value="">(※日次,DST夏時間16時起点)?15:45</option>
+<option value="">(※日次,DST夏時間17時起点)?16:45</option>
+<option value="">(※日次,DST夏時間18時起点)?17:45</option>
+<option value="">(※日次,DST夏時間19時起点)?18:45</option>
+<option value="">(※日次,DST夏時間20時起点)?19:45</option>
+<option value="">(※日次,DST夏時間21時起点)?20:45</option>
+<option value="">(※日次,DST夏時間22時起点)?21:45</option>
+<option value="">(※日次,DST夏時間23時起点)?22:45</option>
 </select>※夏時間の場合日次参照は+1hになります()
 </form>
 <label for="SP"><input type="checkbox" value="SP" id="SP" onChange="drawChart()">速度表示</label>
