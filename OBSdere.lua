@@ -259,7 +259,7 @@ end
 
 
 function lefttime(dt)  
-	local t=parse_json_date_utc(dt) - os.time() 
+	local t=parse_json_date_utc(dt) -os.time() 
 	return  t
 end
 
@@ -281,12 +281,16 @@ function parse_json_date_utc(json_date)
     --end
     --return timestamp + get_timezone() -offset
     
+    --return timestamp + get_timezone_the_day() -offset
+    
     return timestamp + get_timezone_offset(timestamp) -offset
 end
 
 function get_timezone_the_day()
-  local diff = (os.date("%z")/100)*3600 + (os.date("%z")%100)*3600
-  return diff  --サマー有りタイムゾーン時差情報 現在時間
+  local hh = tonumber(string.format("%d",(tonumber(os.date("%z"))/100)))
+  local mm= ((tonumber(os.date("%z"))-100*hh)/60)*3600
+  local hhmm = hh*3600 +mm
+  return hhmm  --サマー有りタイムゾーン時差情報
 end
 
 --http://lua-users.org/wiki/TimeZone
