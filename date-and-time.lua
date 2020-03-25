@@ -34,6 +34,13 @@ function get_timezone_offset(ts)  --サマー有りタイムゾーン時差情�
 	return os.difftime(os.time(localdate), os.time(utcdate))
 end
 
+function get_timezone_offsetnDST(ts)  --サマーなしタイムゾーン時差情報 当時の時間
+	local utcdate   = os.date("!*t", ts)
+	local localdate = os.date("*t", ts)
+	--localdate.isdst = false -- this is the trick
+	return os.difftime(os.time(localdate), os.time(utcdate))
+end
+
 function get_timezone_the_day()
   local hh = tonumber(string.format("%d",(tonumber(os.date("%z"))/100)))
   local mm= ((tonumber(os.date("%z"))-100*hh)/60)*3600
@@ -53,9 +60,9 @@ function isDST(J)
 	return st
 end
 
-function JPday(date)
+function JPday(date,t)
   local jp_day={"日","月","火","水","木","金","土"} --2020/03/21から％Jがクラッシュなので％V
-  local dt = os.date("*t")
+  local dt = os.date("*t",t)
   
   if (get_timezone_the_day() == 9*3600) then --動作は日本時間のときだけ
   	date= string.gsub(date, "%%VR","令和"..(dt.year-2018).."年")
@@ -74,7 +81,7 @@ function JPday(date)
   date= string.gsub(date, "%%VW",jp_day[dt.wday].."曜日") 
   date= string.gsub(date, "%%ZZ", get_tzoffset_sepa(get_timezone())) --timezone タイムゾーン時差情報標準時、サマータイムなし 
   date= string.gsub(date, "%%Z",  get_tzoffset(get_timezone())) --timezone タイムゾーン時差情報標準時、サマータイムなし 
-  date= string.gsub(date, "%%zz", get_tzoffset_sepa(get_timezone_the_day())) --timezone タイムゾーン時差情報標準時、サマータイムなし %Y/%m/%d(%Jw)%X(UTC%z)
+  date= string.gsub(date, "%%zz", get_tzoffset_sepa(get_timezone_the_day())) --timezone タイムゾーン時差情報夏時間こみ
 
   date= string.gsub(date, "%%V%w","和暦はJST限")  ----令和しょりなし
   
@@ -86,30 +93,30 @@ function parse_jp_era(date)
   
   date= string.gsub(date, "%%[EJKLNOPQfikloqv]","")	--フリーズ文字 %%[EJKLNOPQfikloqsv]
   
+  local t = os.time()
+  
   if (string.find(date,"%%UTC")) then
-  local t = os.time()  - get_timezone_the_day() + (tonumber(utc)*3600)
-  local u =string.format("%+02d",tonumber(utc))
-    local dateu='20%x(%Vw)%X(UTC'..u..':00)'
-  	dateu=JPday(dateu)
-  	datestring = os.date(dateu, t)
+  local tu = os.time()  - get_timezone_the_day() + (tonumber(utc)*3600)
+  local u =string.format("%+03d",tonumber(utc))
+    local dateu='%Y/%m/%d(%Vw)%X(UTC'..u..':00),%a' --%z系はOS依存のため使用不可
+  	dateu=JPday(dateu,tu)  
+  	datestring = os.date(dateu,tu)
   	date =string.gsub(date, "%%UTC",datestring)
   end
   if (string.find(date,"%%ISOZ")) then
-  local t = os.time()
-  local dateu='!%Y/%m/%dT%XZ'
-  	dateu=JPday(dateu)
+  local dateu='!%Y/%m/%dT%XZ,%a'    --%z系はOS依存のため使用不可
+  	dateu=JPday(dateu,t)
   	datestring = os.date(dateu, t)
   	date =string.gsub(date, "%%ISO%w",datestring)
   end
   if (string.find(date,"%%ISO")) then
-  local t = os.time()
-    local dateu='%Y/%m/%dT%X%zz'
-  	dateu=JPday(dateu)
+    local dateu='%Y/%m/%dT%X%zz,%a'
+  	dateu=JPday(dateu,t)
   	datestring = os.date(dateu, t)
   	date =string.gsub(date, "%%ISO",datestring)
   end
   
-  date=JPday(date)
+  date=JPday(date,t)
 
   return os.date(date)
 end
