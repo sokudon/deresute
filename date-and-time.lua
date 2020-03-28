@@ -9,6 +9,12 @@ format_string = ""
 activated     = false
 utc           = 0
 
+--あいますようそがないので無理やり追加（）
+--https://script.googleusercontent.com/macros/echo?user_content_key=ETKjv48buN5rK2r4wpjCSZET2OQiIV-y3T_Yo1sO9RWDb2j2bNXU4Zw-vXPSLkT2PAEmtVq1qbpiIQBE2mWH2GtjwIj1WZRCm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnImdhCglA_bw00zKJV-3uMxFhM94xSIKcykYkHTwB1nSW4GadiCkn1G8mzDTCqnGIg&lib=Mp89x2A3ZSHn80Z0KafsZgXndBJ9ix56c
+imashead ={"ゲーム名","稼働","機種","終わり"}
+imas ={{"THE IDOLM@STER","2005-07-25T15:00:00.000Z","アーケード",""},{"THE IDOLM@STER","2007-01-24T15:00:00.000Z","Xbox 360",""},{"THE IDOLM@STER LIVE FOR YOU!","2008-02-27T15:00:00.000Z","Xbox 360",""},{"THE IDOLM@STER SP","2009-02-18T15:00:00.000Z","PSP",""},{"THE IDOLM@STER Dearly Stars","2009-09-16T15:00:00.000Z","DS",""},{"アイドルマスター モバイル","2010-12-20T15:00:00.000Z","フィーチャー・フォン","2016-03-30T15:00:00.000Z"},{"THE IDOLM@STER 2","2011-02-23T15:00:00.000Z","Xbox 360",""},{"THE IDOLM@STER 2","2011-10-26T15:00:00.000Z","PS3",""},{"アイドルマスター シンデレラガールズ","2011-11-27T15:00:00.000Z","Mobage",""},{"アイドルマスター モバイルi","2012-03-29T15:00:00.000Z","iOS","2016-01-17T15:00:00.000Z"},{"THE IDOLM@STER SHINY FESTA","2012-10-24T15:00:00.000Z","PSP",""},{"アイドルマスター ミリオンライブ!","2013-02-26T15:00:00.000Z","GREE","2018-03-19T03:00:00.000Z"},{"THE IDOLM@STER SHINY FESTA","2013-04-21T15:00:00.000Z","iOS",""},{"アイマスチャンネル","2013-10-01T15:00:00.000Z","PS3",""},{"アイドルマスター ワンフォーオール","2014-05-14T15:00:00.000Z","PS3",""},{"アイドルマスター SideM","2014-07-16T15:00:00.000Z","Mobage",""},{"韓国版アイドルマスターシンデレラガールズ","2014-12-01T15:00:00.000Z","Mobage","2016-03-14T06:00:00.000Z"},{"アイドルマスター シンデレラガールズ スターライトステージ","2015-09-02T15:00:00.000Z","iOS、Android",""},{"アイドルマスター マストソングス 赤盤/青盤","2015-12-09T15:00:00.000Z","PS Vita",""},{"アイドルマスター プラチナスターズ","2016-07-27T15:00:00.000Z","PS4",""},{"アイドルマスター シンデレラガールズ ビューイングレボリューション","2016-10-12T15:00:00.000Z","PS VR",""},{"アイドルマスター ミリオンライブ! シアターデイズ","2017-06-28T15:00:00.000Z","iOS、Android",""},{"アイドルマスター SideM LIVE ON ST@GE!","2017-08-29T15:00:00.000Z","iOS、Android",""},{"アイドルマスター ステラステージ","2017-12-20T15:00:00.000Z","PS4",""},{"アイドルマスター シャイニーカラーズ","2018-04-23T15:00:00.000Z","enza",""},{"ミリシタ海外版","2019-08-29T15:00:00.000Z","iOS、Android",""}}
+
+
 -- Function to set the time text
 
 --http://lua-users.org/wiki/TimeZone
@@ -34,11 +40,38 @@ function get_timezone_offset(ts)  --サマー有りタイムゾーン時差情�
 	return os.difftime(os.time(localdate), os.time(utcdate))
 end
 
-function get_timezone_offsetnDST(ts)  --サマーなしタイムゾーン時差情報 当時の時間
-	local utcdate   = os.date("!*t", ts)
-	local localdate = os.date("*t", ts)
-	--localdate.isdst = false -- this is the trick
-	return os.difftime(os.time(localdate), os.time(utcdate))
+
+function lefttime(dt) 
+	local t=parse_json_date_utc(dt) -os.time() 
+	return  t
+end
+
+function elaspted(dt) 
+	local t=-parse_json_date_utc(dt) +os.time() 
+	return  t
+end
+
+function parse_json_date_utc(json_date)
+    local pattern = "(%d+)%-(%d+)%-(%d+)%a(%d+)%:(%d+)%:([%d%.]+)([Z%+%-])(%d?%d?)%:?(%d?%d?)"
+    local year, month, day, hour, minute, 
+        seconds, offsetsign, offsethour, offsetmin = json_date:match(pattern)
+    local timestamp = os.time{year = year, month = month, 
+        day = day, hour = hour, min = minute, sec = seconds}
+    local offset = 0
+    if offsetsign ~= 'Z' then
+      offset = tonumber(offsethour) * 3600 + tonumber(offsetmin)*60
+      if offsetsign == "-" then offset = offset * -1 end
+    end
+    
+    --local temp = os.date("*t",timestamp)
+    --if(temp.isdst) then  --パースした時刻がサマーがしらべる
+    --offset = offset -3600  --0.5サマータイムもあるので（）、オーストラリアだと使えないかも
+    --end
+    --return timestamp + get_timezone() -offset
+    
+    --return timestamp + get_timezone_the_day() -offset
+    
+    return timestamp + get_timezone_offset(timestamp) -offset
 end
 
 function get_timezone_the_day()
@@ -91,10 +124,65 @@ end
 function parse_jp_era(date)
   local datestring=""
   
-  date= string.gsub(date, "%%[EJKLNOPQfikloqv]","")	--フリーズ文字 %%[EJKLNOPQfikloqsv]
+  date= string.gsub(date, "%%[EJKLNOPQfkloqv]","")	--フリーズ文字 %%[EJKLNOPQfikloqsv]
   
   local t = os.time()
   
+  if (string.find(date,"%%i")) then
+  
+   local inum = 18     --imas[1] AC
+   local tu = elaspted(imas[inum][2])
+   local gm = imas[inum][1] .."("..imas[inum][3]..")%%n開始から" 
+   
+   --local tu = elaspted(imas[inum][4])
+   --local gm = imas[inum][1] .."("..imas[inum][3]..")%%nサ終から" --サ終わりの時刻情報があるときのみ
+   
+   --in の番号
+--1={{"THE IDOLM@STER","2005-07-25T15:00:00.000Z","アーケード",""
+--,{"THE IDOLM@STER","2007-01-24T15:00:00.000Z","Xbox 360",""
+--,{"THE IDOLM@STER LIVE FOR YOU!","2008-02-27T15:00:00.000Z","Xbox 360",""
+--,{"THE IDOLM@STER SP","2009-02-18T15:00:00.000Z","PSP",""
+--5,{"THE IDOLM@STER Dearly Stars","2009-09-16T15:00:00.000Z","DS",""
+--,{"アイドルマスター モバイル","2010-12-20T15:00:00.000Z","フィーチャー・フォン","2016-03-30T15:00:00.000Z"
+--,{"THE IDOLM@STER 2","2011-02-23T15:00:00.000Z","Xbox 360",""
+--,{"THE IDOLM@STER 2","2011-10-26T15:00:00.000Z","PS3",""
+--,{"アイドルマスター シンデレラガールズ","2011-11-27T15:00:00.000Z","Mobage",""
+--10,{"アイドルマスター モバイルi","2012-03-29T15:00:00.000Z","iOS","2016-01-17T15:00:00.000Z"
+--,{"THE IDOLM@STER SHINY FESTA","2012-10-24T15:00:00.000Z","PSP",""
+--,{"アイドルマスター ミリオンライブ!","2013-02-26T15:00:00.000Z","GREE","2018-03-19T03:00:00.000Z"
+--,{"THE IDOLM@STER SHINY FESTA","2013-04-21T15:00:00.000Z","iOS",""
+--,{"アイマスチャンネル","2013-10-01T15:00:00.000Z","PS3",""
+--15,{"アイドルマスター ワンフォーオール","2014-05-14T15:00:00.000Z","PS3",""
+--,{"アイドルマスター SideM","2014-07-16T15:00:00.000Z","Mobage",""
+--,{"韓国版アイドルマスターシンデレラガールズ","2014-12-01T15:00:00.000Z","Mobage","2016-03-14T06:00:00.000Z"
+--,{"アイドルマスター シンデレラガールズ スターライトステージ","2015-09-02T15:00:00.000Z","iOS、Android",""
+--,{"アイドルマスター マストソングス 赤盤/青盤","2015-12-09T15:00:00.000Z","PS Vita",""
+--20,{"アイドルマスター プラチナスターズ","2016-07-27T15:00:00.000Z","PS4",""
+--,{"アイドルマスター シンデレラガールズ ビューイングレボリューション","2016-10-12T15:00:00.000Z","PS VR",""
+--,{"アイドルマスター ミリオンライブ! シアターデイズ","2017-06-28T15:00:00.000Z","iOS、Android",""
+--,{"アイドルマスター SideM LIVE ON ST@GE!","2017-08-29T15:00:00.000Z","iOS、Android",""
+--,{"アイドルマスター ステラステージ","2017-12-20T15:00:00.000Z","PS4",""
+--25,{"アイドルマスター シャイニーカラーズ","2018-04-23T15:00:00.000Z","enza",""
+--,{"ミリシタ海外版","2019-08-29T15:00:00.000Z","iOS、Android",""
+
+   
+   local total = tu*10
+
+	--local tenths   = math.floor(total % 10)
+	--local seconds  = math.floor((total / 10) % 60)
+	local minutes  = math.floor((total / 600) % 60)
+	local hours    = math.floor((total / 36000) % 24)
+	local idays     = math.floor(total / 864000)
+	local days     = math.floor(idays%365)
+	local years    = math.floor(total/(864000*365))
+
+	--local hours_infinite  = math.floor(total / 36000)
+	--local seconds_infinite  = math.floor(total / 10)
+	--local minutes_infinite  = math.floor(total / 600)
+   
+   local ep = years.."年"..days.."日".. hours.."時".. minutes.."分"
+  	date =string.gsub(date, "%%i",gm..ep)
+  end
   if (string.find(date,"%%UTC")) then
   local jp_day={"日","月","火","水","木","金","土"}
   local tu = os.time()  + (tonumber(utc)*3600)

@@ -1,0 +1,188 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>あいますげーむたいまー改</title>
+<head>
+</head>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<script src="./LIB/moment-with-locales.js"></script>
+<script  type="text/javascript" src="https://script.googleusercontent.com/macros/echo?user_content_key=yKlNtB0m82El8ySZ1t46GKNi2YI2JtH6_Ba8Bj3CYA_tq7weSpuYxFibPYVf0-h3jzkXaKbaeLHra79trL501FNd7_VJh7UNm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnPrjrzOqG57A42W18Wxz1WDP-eBihPx5SsKk9bfVywybSSQhmxvfOQqhL5HLwlai3E9OlGKLMLnt&lib=MvrSijJWbMSM_kaRZox9WvnndBJ9ix56c"></script>
+<script>
+<!--
+window.onload = function() {
+createSelectBox();
+};
+
+
+function createSelectBox(){
+ 
+  //連想配列をループ処理で値を取り出してセレクトボックスにセットする
+  for(var i=2;i<gamedata.length;i++){
+    let op = document.createElement("option");
+    op.value = "";  //value値
+    op.text = gamedata[i][0] + "(" + gamedata[i][2] +")";   //テキスト値
+    document.getElementById("sel1").appendChild(op);
+  }
+};
+
+	
+timer_update = 500;
+setInterval("get_count()",timer_update);
+var game =1;
+
+function getind(){
+game =document.gm.gm.options.selectedIndex;
+}
+
+
+function get_count() {
+	ibeowari =gamedata[game][3];
+	ibekaishi=gamedata[game][1];
+    ibemie = gamedata[game][0] +"("+gamedata[game][2] +")"
+	
+   var jtc=9;
+   var jtc_sm=11;
+  
+   
+   if(jtc==9){
+   date_fm="YYYY/MM/DD(ddd) HH:mm:ss ([UTC+9:00])";//現在時刻フォーマット
+   }
+   var diff=(moment()-moment.utc())/1000/3600;
+   
+	var t=moment(ibeowari).add("Hours",diff-jtc);//現地時間
+	var now=moment.utc().add("Hours",jtc);	
+
+	
+	var left_time=moment.utc(ibeowari)-moment.utc();
+	
+	var zan="残り時間:"
+	if(left_time<0){
+	left_time=-left_time;
+	zan="サ終から:"
+	}
+	
+	
+	
+	t= moment(left_time).valueOf()/1000;
+	
+	var yend="("+ Math.floor(t/(3600*24)/365) +"年" +Math.floor(t/(3600*24)%365) +"日)";
+	
+	var timetxt= Math.floor(t/(3600*24)) +"日" + yend
+	+Math.floor( (t%(3600*24))/3600) + "時間" 
+	+Math.floor((t%3600)/60)+ "分" 
+	+Math.floor(t%60)+ "秒";
+	
+	timetxt=timetxt.replace(/^0日/,"");
+
+   var ibetime=(moment.utc(ibeowari)-moment.utc(ibekaishi))/1000;
+	var kaishi="経過時間:";
+	var esps=(moment.utc()- moment.utc(ibekaishi))/1000;
+	if(esps<0){
+	esps=-esps;
+	kaishi="開始まで:"
+	}
+	
+	var yelas="("+ Math.floor(esps/(3600*24)/365) +"年" +Math.floor(esps/(3600*24)%365) +"日)";
+	esps= Math.floor(esps/(3600*24)) +"日"+ yelas +Math.floor( (esps%(3600*24))/3600)  +"時間"+ Math.floor((esps%3600)/60) +"分" + Math.floor(esps%60) +"秒";
+	if(esps.indexOf("NaN")>=0){
+	esps="----";
+	}
+	
+	moment.locale("ja", {
+ weekdays: ["日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"],
+ weekdaysShort: ["日", "月", "火", "水", "木", "金", "土"]
+ });
+
+if(getDevice()){
+
+date_fm=date_fm.replace(/\(J.+/,"");
+}
+
+
+
+	//文字色
+	var text_color = "black";
+	//画面出力
+	timest = "<font size=\"20\">"
+	+"現在時刻:"
+	+now.format(date_fm)+"<br>"
+	+kaishi +esps+"<br>";
+	
+	if(timetxt.indexOf("NaN")<0){
+	timest +=zan +timetxt+"<br><br>";
+	}
+	
+	timest +="開始日時:" +moment.utc(ibekaishi).add("Hours",jtc).format(date_fm)+"<br>";
+	
+	if(ibeowari!=""){
+	timest +="サービス終了:" +moment.utc(ibeowari).add("Hours",jtc).format(date_fm)+"<br>";
+	}
+	
+	document.getElementById("cdt_now").innerHTML=timest+"</font><br>";
+	document.getElementById("ibe").innerHTML ="<font size=\"20\">"+ ibemie +"</font>";
+
+}
+
+
+function getDevice(){
+    var ua = navigator.userAgent;
+    if(ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0 || ua.indexOf('Android') > 0 && ua.indexOf('Mobile') > 0){
+        return 'sp';
+    }else if(ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0){
+        return 'tab';
+    }
+            return null;
+}
+
+function changeBoxColor( newColor ) {
+    //document.getElementById('ibe').style.backgroundColor = newColor;
+    //document.getElementById('cdt_now').style.backgroundColor = newColor;
+    document.getElementById('bg').style.backgroundColor = newColor;
+}
+
+
+//https://twitter.com/intent/tweet?
+
+//Twitterボタン
+function toTwitter() {
+	var url = "";
+    
+    s=document.getElementById("ibe").innerHTML+"<br>"+document.getElementById("cdt_now").innerHTML;
+	s=s.replace(/<br>/gm,"\r\n");
+	s=s.replace(/<.*?>/gm,"");
+	s=s.replace(/\r\n\r\n/gm,"\r\n");
+	s=s+"\r\nhttp://sokudon.s17.xrea.com/ibetimer.html\r\n#みりしタイマー";
+	
+	if (url == "") {
+		url = "http://twitter.com/share?text=" + encodeURIComponent(s);
+	} else {
+		url = "http://twitter.com/share?url=" + url + "&text=" + encodeURIComponent(s);
+	}
+	window.open(url,"_blank","width=600,height=300");
+}
+-->
+</script>
+<body id="bg">
+<h1>あいますげーむいべたいまー改(年は365日)</h1>
+<span id="ibe">ibe</span><br>
+<span id="cdt_now">text</span><br><br>
+
+<p align="center"><a href="javascript:toTwitter()"><img src="./" alt="Send to Twitter" width="61" height="23" border="0"></a></p>
+
+<form name="gm">
+<select name="gm" id="sel1" onChange="getind();">
+<option>--ゲーム名--</option>
+<option selected="selected">アイドルマスター(AC)</option>
+</select>
+</form>
+
+
+<p>クロマキー合成、背景色
+    <input type="button" value="緑色に変更する" onclick="changeBoxColor('#008000');">
+    <input type="button" value="青色に変更する" onclick="changeBoxColor('#0000ff');">
+    <input type="button" value="黄色に変更する" onclick="changeBoxColor('#ffff00');">
+    <input type="button" value="赤色に変更する" onclick="changeBoxColor('#ff0000');">
+    <input type="button" value="淡い緑色に戻す" onclick="changeBoxColor('#ccffcc');">
+    <input type="button" value="白色に戻す" onclick="changeBoxColor('#ffffff');">
+</p>
+
+</body>
+</html>
