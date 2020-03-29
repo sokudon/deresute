@@ -130,14 +130,14 @@ function parse_jp_era(date)
   
   if (string.find(date,"%%i")) then
   
-   local inum = 18     --imas[1] AC
+   local inum = 1     --imas[1] AC
    local tu = elaspted(imas[inum][2])
    local gm = imas[inum][1] .."("..imas[inum][3]..")%%n開始から" 
    
    --local tu = elaspted(imas[inum][4])
    --local gm = imas[inum][1] .."("..imas[inum][3]..")%%nサ終から" --サ終わりの時刻情報があるときのみ
    
-   --in の番号
+   --inum の番号
 --1={{"THE IDOLM@STER","2005-07-25T15:00:00.000Z","アーケード",""
 --,{"THE IDOLM@STER","2007-01-24T15:00:00.000Z","Xbox 360",""
 --,{"THE IDOLM@STER LIVE FOR YOU!","2008-02-27T15:00:00.000Z","Xbox 360",""
@@ -179,9 +179,17 @@ function parse_jp_era(date)
 	--local hours_infinite  = math.floor(total / 36000)
 	--local seconds_infinite  = math.floor(total / 10)
 	--local minutes_infinite  = math.floor(total / 600)
+	 local dateu='!%m%d'       --(%a)%X(UTC+09:00)'
+	local nst =os.date(dateu,os.time()+9*3600)
+	local tt = parse_json_date_utc(imas[inum][2])+9*3600
+	local ist =os.date(dateu,tt)
+	local nenme =""
+	if(nst==ist)then
+	nenme = ","..years.."周年"
+	end
    
    local ep = years.."年"..days.."日".. hours.."時".. minutes.."分"
-  	date =string.gsub(date, "%%i",gm..ep)
+  	date =string.gsub(date, "%%i",gm..ep ..nenme)
   end
   if (string.find(date,"%%UTC")) then
   local jp_day={"日","月","火","水","木","金","土"}
@@ -223,6 +231,7 @@ end
 --%UTC%n%c%DST%n%x%X%z%n%s%n%ISO%n%ISOZ%n%VR%m月%d日(%Vw)%H時%M分%S秒
 
 --独自拡張
+--%i	  あいますの記念日の時間からの経過時間,フリーズ防止
 --%UTC    worldtime set UTCsetting,	UTC標準時からUI設定の時間を表示,サマータイムは非対応
 --%ISO    ISO8601表示ローカル時間
 --%ISOZ   ISO8601表示UTC時間

@@ -237,7 +237,7 @@ datest=moment.utc(ibestart).add("Hours",gcharttz).format().replace("+00:00",tzm[
 var zan="開始:"+datest +dstst +"<br>"
 +"終了:"+datend +dsten +"まで残り"+timetxt +"("+prog.toFixed(2)+"%)";
 if(left_time<0){
-zan +="終了:"+datend +dsten + "に終了しました～";
+zan ="終了:"+datend +dsten + "に終了しました～";
 }
 if(ibeend==""){
 zan ="イベント終了日が未確定です"

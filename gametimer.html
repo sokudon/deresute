@@ -33,10 +33,20 @@ game =document.gm.gm.options.selectedIndex;
 }
 
 
+function leapYD(s){
+if(moment(s).isLeapYear() && moment.utc(s).add("Hours",9).format("MMDD")=="0229"){
+s = moment(s).add("Days",-1);
+}
+return s;
+}
+
 function get_count() {
 	ibeowari =gamedata[game][3];
 	ibekaishi=gamedata[game][1];
-    ibemie = gamedata[game][0] +"("+gamedata[game][2] +")"
+    ibemie = gamedata[game][0] +"("+gamedata[game][2] +")";
+    
+    //ibeowari= leapYD(ibeowari);
+    //ibekaishi= leapYD(ibekaishi);
 	
    var jtc=9;
    var jtc_sm=11;
@@ -51,7 +61,7 @@ function get_count() {
 	var now=moment.utc().add("Hours",jtc);	
 
 	
-	var left_time=moment.utc(ibeowari)-moment.utc();
+	var left_time=moment.utc(ibeowari.replace(/\d\d:\d\d/,"00:00"))-moment.utc();//命日計算、HH:mmは除去
 	
 	var zan="残り時間:"
 	if(left_time<0){
@@ -81,20 +91,19 @@ function get_count() {
 	}
 	
 	var yelas="("+ Math.floor(esps/(3600*24)/365) +"年" +Math.floor(esps/(3600*24)%365) +"日)";
-	esps= Math.floor(esps/(3600*24)) +"日"+ yelas +Math.floor( (esps%(3600*24))/3600)  +"時間"+ Math.floor((esps%3600)/60) +"分" + Math.floor(esps%60) +"秒";
-	if(esps.indexOf("NaN")>=0){
-	esps="----";
+	var espst= Math.floor(esps/(3600*24)) +"日"+ yelas +Math.floor( (esps%(3600*24))/3600)  +"時間"+ Math.floor((esps%3600)/60) +"分" + Math.floor(esps%60) +"秒";
+	if(espst.indexOf("NaN")>=0){
+	espst="----";
 	}
 	
 	moment.locale("ja", {
- weekdays: ["日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"],
- weekdaysShort: ["日", "月", "火", "水", "木", "金", "土"]
- });
+ 	weekdays: ["日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"],
+ 	weekdaysShort: ["日", "月", "火", "水", "木", "金", "土"]
+	 });
 
-if(getDevice()){
-
-date_fm=date_fm.replace(/\(J.+/,"");
-}
+	if(getDevice()){
+		date_fm=date_fm.replace(/\(J.+/,"");
+	}
 
 
 
@@ -104,23 +113,44 @@ date_fm=date_fm.replace(/\(J.+/,"");
 	timest = "<font size=\"20\">"
 	+"現在時刻:"
 	+now.format(date_fm)+"<br>"
-	+kaishi +esps+"<br>";
+	+kaishi +espst+"<br>";
 	
 	if(timetxt.indexOf("NaN")<0){
 	timest +=zan +timetxt+"<br><br>";
 	}
 	
 	timest +="開始日時:" +moment.utc(ibekaishi).add("Hours",jtc).format(date_fm)+"<br>";
-	
-	if(ibeowari!=""){
-	timest +="サービス終了:" +moment.utc(ibeowari).add("Hours",jtc).format(date_fm)+"<br>";
+	var kinen="";
+	if(moment.utc(ibekaishi).add("Hours",jtc).format("MMDD")==moment.utc().add("Hours",jtc).format("MMDD")){
+	 kinen +=  Math.floor(esps/(3600*24)/365) +"周年日";
 	}
 	
+	if(ibeowari!=""){
+	timest +="サ終日時:" +moment.utc(ibeowari).add("Hours",jtc).format(date_fm)+"<br>";
+	if(moment.utc(ibeowari).add("Hours",jtc).format("MMDD")==moment.utc().add("Hours",jtc).format("MMDD")){
+	 kinen +=  meiniti(Math.floor(t/(3600*24)/365));
+	}
+	}
+	
+	
+	
 	document.getElementById("cdt_now").innerHTML=timest+"</font><br>";
-	document.getElementById("ibe").innerHTML ="<font size=\"20\">"+ ibemie +"</font>";
+	document.getElementById("ibe").innerHTML ="<font size=\"20\">"+ ibemie +kinen+"</font>";
 
 }
 
+function meiniti(t){
+var mei=[
+[1,"一周忌"],[2,"三回忌"],[6,"七回忌"],[12,"十三回忌"],[16,"十七回忌"],[22,"二十三回忌"],[26,"二十七回忌"],
+[32,"三十三回忌"],[36,"三十七回忌"],[42,"四十三回忌"],[46,"四十七回忌"],[49,"五十回忌"],[99,"百回忌"]
+];
+for(var i=0;i<mei.length;i++){
+if(mei[i][0]==t){
+return mei[i][1];
+}}
+
+return "命日" +t +"年目";
+}
 
 function getDevice(){
     var ua = navigator.userAgent;
