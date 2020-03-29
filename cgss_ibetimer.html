@@ -55,7 +55,7 @@ t_offset_min=-t_offset_min;
 	var now=moment.utc().add("Hours",jtc);	
 	if(ostime){
 	now=moment();
-	date_fm="YYYY/MM/DD(ddd) HH:mm:ss (UTCZ"+addDST(now)+")";
+	date_fm="YYYY/MM/DD(ddd) HH:mm:ss (UTCZ)";
 	}
 	
 	var left_time=moment.utc(ibeowari)-moment.utc();
@@ -119,12 +119,18 @@ date_fm=date_fm.replace(/\(J.+/,"");
 	//画面出力
 	timest = "<font size=\"20\">"
 	+"現在時刻:"
-	+now.format(date_fm)+"<br>"
-	+kaishi +esps+"("+prog +"%)<br>"
+	if(ostime){
+	timest += now.format(date_fm)
+	+ addDST(now)+"<br>";
+	}
+	else{
+	timest += now.format(date_fm)+"<br>";
+	}
+	timest += kaishi +esps+"("+prog +"%)<br>"
 	+zan +timetxt+"<br><br>";
 	if(ostime){
-	timest +="開始時間:" +moment(ibekaishi).format(date_fm).replace(/UTC(.\d\d)(\d\d)/,"UTC$1:$2")+"<br>"
-	+"終了時間:" +moment(ibeowari).format(date_fm).replace(/UTC(.\d\d)(\d\d)/,"UTC$1:$2")+"<br>";
+	timest +="開始時間:" +moment(ibekaishi).format(date_fm).replace(/UTC(.\d\d)(\d\d)/,"UTC$1:$2")+addDST(ibekaishi)+"<br>"
+	+"終了時間:" +moment(ibeowari).format(date_fm).replace(/UTC(.\d\d)(\d\d)/,"UTC$1:$2")+addDST(ibeowari)+"<br>"
 	}
 	else{
 	timest +="開始時間:" +moment.utc(ibekaishi).add("Hours",jtc).format(date_fm)+"<br>"
@@ -140,7 +146,7 @@ date_fm=date_fm.replace(/\(J.+/,"");
 function addDST(t){
  var s="";
  if(moment(t).isDST()){
- s = ",[DST]";
+ s = "(DST)";
  }
  return s;
 }

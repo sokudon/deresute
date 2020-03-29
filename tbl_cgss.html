@@ -29,6 +29,9 @@ if((moment(ibestart).isDST())^(moment(ibeend).isDST())){//片方だけサマー�
 dateformat="yyyy/MM/dd HH:mmZ";
 }
 
+var gcharttz = null;//ぐぐるチャートのタイムゾーン,nullでOS自動現地変換,0utc 9jst -4EDT -5EST
+
+
 google.charts.load("current",{packages:["annotationchart"]}),google.charts.setOnLoadCallback(drawChart);
 var column_data=[["date","日付"]],jisoku=[];
 function convert_google(e){for(var n=1;
@@ -47,6 +50,7 @@ var e=convert_google(BD);
 e.sort(function(e,n){return e[0]<n[0]?1:e[0]>n[0]?-1:0});
 
 var n=document.getElementById("SP").checked,t=document.TZ.HM.options[document.TZ.HM.selectedIndex].text;
+gcharttz=gchartTZ();
 
 var TZ=document.getElementById("TZ").checked;
 if(TZ){
@@ -58,7 +62,7 @@ dateformat="yyyy/MM/dd HH:mm";
 
 t="^"+t+"$",jisoku=[];
 var time_diff=getSTD(e[0][0]);
-var type=[0,9,time_diff.std,time_diff.dst];
+var type=[0,9,time_diff.std,time_diff.dst,gcharttz];
 standart_time_diff=type[document.TZPT.PT.selectedIndex];
 
 //(現地終了時間H':m')?00:00 内部参照UTC
@@ -96,7 +100,9 @@ document.getElementById("debug").innerHTML="確認用デバッグ時間:UTC"
 +",LOCAL" 
 + moment.utc(e[o[0]][0]).add("Hours",type[2]).format("H:mm")
 +",LOCALDST" 
-+ moment.utc(e[o[0]][0]).add("Hours",type[3]).format("H:mm");
++ moment.utc(e[o[0]][0]).add("Hours",type[3]).format("H:mm")
++",GCHART" 
++ moment.utc(e[o[0]][0]).add("Hours",type[4]).format("H:mm");
 
 
 
@@ -128,7 +134,7 @@ i++){d=1;
 jisoku[i]=[],jisoku[i][0]=e[o[i]][0];
 for(r=1;
 r<column_data.length;
-r++)u[r]&&(0<e[o[i]][r]?jisoku[i][d]=e[o[i]][r]:jisoku[i][d]=void 0,d++)}}l.addRows(jisoku),new google.visualization.DateFormat({pattern:dateformat}).format(l,0);
+r++)u[r]&&(0<e[o[i]][r]?jisoku[i][d]=e[o[i]][r]:jisoku[i][d]=void 0,d++)}}l.addRows(jisoku),new google.visualization.DateFormat({pattern:dateformat,'timeZone':gcharttz}).format(l,0);
 var m=new google.visualization.NumberFormat({pattern:"###,###"});
 
 
@@ -201,7 +207,7 @@ o<jisoku.length;
 o++){e+=moment(jisoku[o][0]).format("YYYY/MM/DD HH:mm")+",";
 for(t=1;t<jisoku[o].length;t++)e+=jisoku[o][t]+",";
 e=e.slice(0,-1),e+="\r\n"}TextDL(e,"border.csv")}function DLJSON(){var e=[];
-e[0]=[],e[0]=getHEAD(),TextDL(JSON.stringify(e.concat(jisoku)),"tokikdoru.txt")}function TextDL(n,t){b=new Blob([n],{type:"text/plain"}),a=document.createElement("a"),a.download=t,a.href=window.URL.createObjectURL(b),e=document.createEvent("MouseEvent"),e.initEvent("click",!0,!0),a.dispatchEvent(e)}
+e[0]=[],e[0]=getHEAD(),TextDL(JSON.stringify(e.concat(jisoku)),"cgssbd.txt")}function TextDL(n,t){b=new Blob([n],{type:"text/plain"}),a=document.createElement("a"),a.download=t,a.href=window.URL.createObjectURL(b),e=document.createEvent("MouseEvent"),e.initEvent("click",!0,!0),a.dispatchEvent(e)}
 
 setInterval("get_count()",1000);
 function get_count() {
@@ -215,8 +221,18 @@ var prog=(moment.utc()-moment.utc(ibestart))/(moment.utc(ibeend)-moment.utc(ibes
 
 var dstst="";
 var dsten="";
+var ostime = document.getElementById("OF").checked;
+if(ostime){
 if(moment(ibestart).isDST()){dstst="(DST,夏時間)";}
 if(moment(ibeend).isDST()){dsten="(DST,夏時間)";}
+}
+else{
+var tz=document.tzone.owata.options[document.tzone.owata.selectedIndex].text;
+var tzm =tz.match(/\+?-?\d+:\d+/g);
+datend=moment.utc(ibeend).add("Hours",gcharttz).format().replace("+00:00",tzm[0]);
+datest=moment.utc(ibestart).add("Hours",gcharttz).format().replace("+00:00",tzm[0]);
+
+}
 
 var zan="開始:"+datest +dstst +"<br>"
 +"終了:"+datend +dsten +"まで残り"+timetxt +"("+prog.toFixed(2)+"%)";
@@ -236,7 +252,7 @@ var yearN=parseInt(year)+1;
 var yTZ=[];
 for(var i =0;i<12;i++){
 yTZ[i]=[];yTZ[i][1]=i+1;
-yTZ[i][0]= (new Date(year+"/"+ ("0"+(i+1)).slice(-2) +"/01 00:00").getTimezoneOffset())/-60;//少数も残すように変更
+yTZ[i][0]= (new Date(year+"/"+ ("0"+(i+1)).slice(-2) +"/01 00:00").getTimezoneOffset())/-60;
 }
 for(var i =0;i<12;i++){
 yTZ[i+12]=[];yTZ[i+12][1]="N"+(i+1);
@@ -255,8 +271,34 @@ return timezone;
 
 // Math.trunc() - JavaScript | MDN https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Math/trunc
 //Math.trunc = Math.trunc || function(x) {
-//return x < 0 ? Math.ceil(x) : Math.floor(x);
+//  return x < 0 ? Math.ceil(x) : Math.floor(x);
 //}
+
+function gchartTZ(){
+   var jtc=9;
+   var jtc_sm=11;
+   var tz=document.tzone.owata.options[document.tzone.owata.selectedIndex].text;
+var tzm =tz.match(/-?\d+/g);
+var t_offset=0;
+var t_offset_min=0;
+var ostime = document.getElementById("OF").checked;
+if(ostime){
+	return null;//現地時間に変換
+}
+else if(tzm!=null){
+t_offset=parseInt(tzm[0]);
+if(tzm[1]!=null){
+t_offset_min=(parseInt(tzm[1]));
+if(t_offset<0){
+t_offset_min=-t_offset_min;
+}}
+
+} 
+   
+   jtc=t_offset + t_offset_min/60;
+
+	return jtc;
+}
 
 -->
 </script>
@@ -458,7 +500,7 @@ return timezone;
 </form>
 
 <label for="SP"><input type="checkbox" value="SP" id="SP" onchange="drawChart()">速度表示</label>
-<label for="TZ"><input type="checkbox" id="TZ" checked="checked" onchange="drawChart()">時差付き情報</label>
+<label for="TZ"><input type="checkbox" id="TZ" onchange="drawChart()">時差付き情報</label>
 <form name="chbox" onchange="drawChart()">
 <b>表示対象</b><br>
 <label for="R1"><input type="checkbox" checked="checked" value="S1" id="R1"><div id="L1" style="display: inline-block; _display: inline;">1位</div></label>
@@ -492,15 +534,100 @@ return timezone;
 <input type="Submit" value="ALL" generate"="" onclick="CHitimai(1,null);return false">
 <br><br>
 <form name="TZPT">
-内部時計参照パターン:
+<b>内部時計参照パターン</b>
 <select name="PT" onchange="drawChart()">
 <option value="">(現地終了時間H':m')?00:00 内部参照UTC</option>
 <option value="">(現地終了時間H':m')?09:00 内部参照JST</option>
 <option selected="selected" value="">(現地終了時間H':m')?H':m' 内部参照現地時間LOCAL　標準時差</option>
 <option value="">(現地終了時間H!:m!)?H!:m! 内部参照現地時間LOCLALDST サマータイム</option>
+<option value="">(ぐぐる終了時間Hg:mg)?Hg:mg 内部参照ぐぐるチャートのじかん</option>
 </select>
 <br>
 <div id="debug">確認用デバッグ時間:----</div>
 ※夏時間の場合日次参照は+1hになります(),オーストラリアのロードハウ島は0.5時間
+</form>
+
+<form name="tzone">
+<b>ググるチャートのタイムゾーン</b><br>
+<label for="OF"><input type="checkbox" checked="checked" value="NEW" id="OF" onchange="drawChart()">OSのタイムゾーンを優先する<br></label><br>
+<select name="owata" onchange="drawChart()">
+<option value="">UTC -12:00　国際日付変更線西側</option>
+<option value="">UTC -11:00　ミッドウェー島</option>
+<option value="">UTC -10:00　ハワイ</option>
+<option value="">UTC -09:00　アラスカ</option>
+<option value="">UTC -08:00　(米国およびカナダ　; ティファナティファナ</option>
+<option value="">UTC -07:00　山岳部標準時:(米国およびカナダ　</option>
+<option value="">UTC -07:00　チワワ、ラパス、マサトラン</option>
+<option value="">UTC -07:00　アリゾナ州</option>
+<option value="">UTC -06:00　中部標準:(米国およびカナダ　</option>
+<option value="">UTC -06:00　サスカチェワン</option>
+<option value="">UTC -06:00　グアダラハラ、メキシコシティ、モンテレー</option>
+<option value="">UTC -06:00　中央アメリカ</option>
+<option value="">UTC -05:00　(米国およびカナダ）、東部標準時</option>
+<option value="">UTC -05:00　インディアナ (東部　</option>
+<option value="">UTC -05:00　ボゴタ、リマ、Quito</option>
+<option value="">UTC -04:00　大西洋標準:(カナダ　</option>
+<option value="">UTC -04:00　ジョージタウン、ラパス、サンフアン</option>
+<option value="">UTC -04:00　サンティアゴ</option>
+<option value="">UTC -03:30　ニューファンドランド</option>
+<option value="">UTC -03:00　ブラジリア</option>
+<option value="">UTC -03:00　ジョージタウン</option>
+<option value="">UTC -03:00　グリーンランド</option>
+<option value="">UTC -02:00　中央大西洋</option>
+<option value="">UTC -01:00　アゾレス諸島</option>
+<option value="">UTC -01:00　カーボベルデ諸島</option>
+<option value="">UTC +00:00　 ダブリン、エジンバラ、リスボン、ロンドン、グリニッジ標準時、世界協定時刻</option>
+<option value="">UTC +00:00　モンロビア、レイキャビク</option>
+<option value="">UTC +01:00　サニーベイル, カリフォルニア州、ブラチスラバ、ブダペスト、Ljubljana、プラハ</option>
+<option value="">UTC +01:00　サラエボ、Skopje、ワルシャワ、Zagreb</option>
+<option value="">UTC +01:00　ブリュッセル、コペンハーゲン、マドリッド、パリ</option>
+<option value="">UTC +01:00　アムステルダム、ベルリン、ベルン、ローマ、ストックホルム、ウィーン</option>
+<option value="">UTC +01:00　西中央アフリカ</option>
+<option value="">UTC +02:00　ミンスク</option>
+<option value="">UTC +02:00　カイロ</option>
+<option value="">UTC +02:00　ヘルシンキ、キエフ、リガ、ソフィア、Tallinn、Vilnius</option>
+<option value="">UTC +02:00　アテネ、ブカレスト、イスタンブール</option>
+<option value="">UTC +02:00　エルサレム</option>
+<option value="">UTC +02:00　ハラレ、プレトリア</option>
+<option value="">UTC +03:00　モスクワ、サンクト ペテルスブルグ、ボルゴグラード</option>
+<option value="">UTC +03:00　クウェート、リヤド</option>
+<option value="">UTC +03:00　ナイロビ</option>
+<option value="">UTC +03:00　バグダッド</option>
+<option value="">UTC +03:30　テヘラン</option>
+<option value="">UTC +04:00　アブダビ、マスカット</option>
+<option value="">UTC +04:00　バクー、トビリシ、エレバン</option>
+<option value="">UTC +04:30　カブール</option>
+<option value="">UTC +05:00　エカテリンブルク</option>
+<option value="">UTC +05:00　タシケント</option>
+<option value="">UTC +05:30　チェンナイ、カルカッタ、ムンバイ、ニューデリー</option>
+<option value="">UTC +05:45　カトマンズ</option>
+<option value="">UTC +06:00　アスタナ、ダッカ</option>
+<option value="">UTC +06:00　スリジャヤワルダナプラコッテ</option>
+<option value="">UTC +06:00　アルマアトイ、ノボシビルスク</option>
+<option value="">UTC +06:30　ヤンゴン (ラングーン　</option>
+<option value="">UTC +07:00　バンコク、ハノイ、ジャカルタ</option>
+<option value="">UTC +07:00　クラスノヤルスク</option>
+<option value="">UTC +08:00　北京、重慶、ホンコン、ウルムチ</option>
+<option value="">UTC +08:00　マレーシア. クアラルンプール、シンガポール</option>
+<option value="">UTC +08:00　台北</option>
+<option value="">UTC +08:00　パース</option>
+<option value="">UTC +08:00　イルクーツク、ウランバートル</option>
+<option value="">UTC +09:00　ソウル</option>
+<option selected="selected" value="">UTC +09:00　大阪、札幌、東京</option>
+<option value="">UTC +09:00　ヤクーツク</option>
+<option value="">UTC +09:30　ダーウィン</option>
+<option value="">UTC +09:30　アデレード</option>
+<option value="">UTC +10:00　キャンベラ、メルボルン、シドニー</option>
+<option value="">UTC +10:00　ブリスベン</option>
+<option value="">UTC +10:00　ホバート</option>
+<option value="">UTC +10:00　ウラジオ ストック</option>
+<option value="">UTC +10:00　グアム、ポートモレスビー</option>
+<option value="">UTC +11:00　大阪、札幌、東京(仮:サマータイム)</option>
+<option value="">UTC +11:00　マガダン、ソロモン諸島、ニューカレドニア</option>
+<option value="">UTC +12:00　フィジー、カムチャツカ、マーシャル諸島</option>
+<option value="">UTC +12:00　オークランド、ウェリントン</option>
+<option value="">UTC +13:00　キリバス、サモア、トケラウ、トンガ、ニュージーランド夏、フィジー夏</option>
+<option value="">UTC +14:00　サモア夏</option>
+</select>
 </form>
 </body></html>
