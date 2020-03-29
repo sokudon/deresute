@@ -25,6 +25,7 @@
 //https://unicode-org.github.io/icu-docs/apidoc/released/icu4j/com/ibm/icu/text/DecimalFormat.html
 var dateformat="yyyy/MM/dd HH:mm";
 if((moment(ibestart).isDST())^(moment(ibeend).isDST())){//片方だけサマータイムのとき時差つきデフォルト
+//document.getElementById("TZ").checked=true;
 dateformat="yyyy/MM/dd HH:mmZ";
 }
 
@@ -47,8 +48,8 @@ e.sort(function(e,n){return e[0]<n[0]?1:e[0]>n[0]?-1:0});
 
 var n=document.getElementById("SP").checked,t=document.TZ.HM.options[document.TZ.HM.selectedIndex].text;
 
-var Tz=document.getElementById("TZ").checked;
-if(Tz){
+var TZ=document.getElementById("TZ").checked;
+if(TZ){
 dateformat="yyyy/MM/dd HH:mmZ";
 }
 else{
@@ -56,7 +57,15 @@ dateformat="yyyy/MM/dd HH:mm";
 }
 
 t="^"+t+"$",jisoku=[];
-var standart_time_diff=getSTD(e[0][0]);//今年と年次の標準時間を求める、UTC+=(HH):mmのHHだけ
+var time_diff=getSTD(e[0][0]);
+var type=[0,9,time_diff.std,time_diff.dst];
+standart_time_diff=type[document.TZPT.PT.selectedIndex];
+
+//(現地終了時間H':m')?00:00 内部参照UTC
+//(現地終了時間H':m')?09:00 内部参照JST
+//(現地終了時間H':m')?H':m' 内部参照現地時間　標準時差
+//(現地終了時間H!:m!)?H!:m! 内部参照現地時間DSTサマータイム
+//https://www.jtb.co.jp/kaigai_guide/report/AU/2015/10/summer-time.html
 
 for(var o=[],a="",i=0,r=0;i<e.length;i++){
 
@@ -80,6 +89,16 @@ if(HHmm.match(t)){
 o[r]=i;
 r++;
 }}
+document.getElementById("debug").innerHTML="確認用デバッグ時間:UTC" 
++ moment.utc(e[o[0]][0]).add("Hours",type[0]).format("H:mm")
++",JST"
++ moment.utc(e[o[0]][0]).add("Hours",type[1]).format("H:mm")
++",LOCAL" 
++ moment.utc(e[o[0]][0]).add("Hours",type[2]).format("H:mm")
++",LOCALDST" 
++ moment.utc(e[o[0]][0]).add("Hours",type[3]).format("H:mm");
+
+
 
 var u=[1];
 for(i=0;
@@ -138,12 +157,13 @@ return!1}
 window.onload=function(){
 CHmai();
 moment();
-if(title.indexOf("Parede")>0){
+if(ibe.indexOf("Parede")>0){
 CHitimai(1,score);
 }
 else{
 CHitimai(1,rankmai);
-}}
+}
+}
 
 var rankmai=["501位","2001位","10001位","20001位","60001位","120001位","300001位"],end=["1位","2位","3位","9位","10位","11位"];
 var score = ["スコア1位","スコア10位","スコア11位","スコア5001位","スコア10001位","スコア40001位","スコア50001位"]
@@ -181,7 +201,7 @@ o<jisoku.length;
 o++){e+=moment(jisoku[o][0]).format("YYYY/MM/DD HH:mm")+",";
 for(t=1;t<jisoku[o].length;t++)e+=jisoku[o][t]+",";
 e=e.slice(0,-1),e+="\r\n"}TextDL(e,"border.csv")}function DLJSON(){var e=[];
-e[0]=[],e[0]=getHEAD(),TextDL(JSON.stringify(e.concat(jisoku)),"cgssbd.txt")}function TextDL(n,t){b=new Blob([n],{type:"text/plain"}),a=document.createElement("a"),a.download=t,a.href=window.URL.createObjectURL(b),e=document.createEvent("MouseEvent"),e.initEvent("click",!0,!0),a.dispatchEvent(e)}
+e[0]=[],e[0]=getHEAD(),TextDL(JSON.stringify(e.concat(jisoku)),"tokikdoru.txt")}function TextDL(n,t){b=new Blob([n],{type:"text/plain"}),a=document.createElement("a"),a.download=t,a.href=window.URL.createObjectURL(b),e=document.createEvent("MouseEvent"),e.initEvent("click",!0,!0),a.dispatchEvent(e)}
 
 setInterval("get_count()",1000);
 function get_count() {
@@ -201,7 +221,7 @@ if(moment(ibeend).isDST()){dsten="(DST,夏時間)";}
 var zan="開始:"+datest +dstst +"<br>"
 +"終了:"+datend +dsten +"まで残り"+timetxt +"("+prog.toFixed(2)+"%)";
 if(left_time<0){
-zan=datend +dsten + "に終了しました～";
+zan +="終了:"+datend +dsten + "に終了しました～";
 }
 if(ibeend==""){
 zan ="イベント終了日が未確定です"
@@ -210,45 +230,48 @@ zan ="イベント終了日が未確定です"
 document.getElementById("left").innerHTML= zan;
 }
 
-
 function getSTD(dt){//次年度分までのタイムゾーンQS
 var year=new Date(dt).getFullYear();
 var yearN=parseInt(year)+1;
 var yTZ=[];
 for(var i =0;i<12;i++){
 yTZ[i]=[];yTZ[i][1]=i+1;
-yTZ[i][0]= Math.trunc(new Date(year+"/"+ ("0"+(i+1)).slice(-2) +"/01 00:00").getTimezoneOffset())/-60;//30分情報は無視する
+yTZ[i][0]= (new Date(year+"/"+ ("0"+(i+1)).slice(-2) +"/01 00:00").getTimezoneOffset())/-60;//少数も残すように変更
 }
 for(var i =0;i<12;i++){
 yTZ[i+12]=[];yTZ[i+12][1]="N"+(i+1);
-yTZ[i+12][0] =Math.trunc(new Date(yearN+"/"+ ("0"+(i+1)).slice(-2) +"/01 00:00").getTimezoneOffset())/-60;
+yTZ[i+12][0] =(new Date(yearN+"/"+ ("0"+(i+1)).slice(-2) +"/01 00:00").getTimezoneOffset())/-60;
 }
 
 yTZ.sort(function(a, b) { return a[0] - b[0]; }); 
 
-return yTZ[0][0];
+var timezone={};
+timezone.std=yTZ[0][0];
+yTZ.sort(function(a, b) { return -a[0]+b[0]; }); 
+timezone.dst=yTZ[0][0];
+
+return timezone;
 }
 
 // Math.trunc() - JavaScript | MDN https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Math/trunc
-Math.trunc = Math.trunc || function(x) {
-  return x < 0 ? Math.ceil(x) : Math.floor(x);
-}
+//Math.trunc = Math.trunc || function(x) {
+//return x < 0 ? Math.ceil(x) : Math.floor(x);
+//}
 
 -->
 </script>
-</head>
 <body>
-    <div id='title'></div>
+<div id='title'></div>
     <div id='left'></div>
     <!--<div id='chart_div' style='width: 1200px; height: 600px;'></div>
     <div id='table_div' style='width: 1200px; height: 400px;'></div>-->
     <div id='chart_div' style='height: 400px;'></div>
     <div id='table_div'></div>
-<input type="Submit" value="CSVダウンロード"   Generate" onclick="DLCSV();return false">
-<input type="Submit" value="JSONダウンロード"   Generate" onclick="DLJSON();return false">
+    <input type="Submit" value="CS" generate"="" onclick="DLCSV();return false">
+<input type="Submit" value="JSO" generate"="" onclick="DLJSON();return false">
 <form name="TZ">
 時間:
-<select name="HM" onChange="drawChart()">
+<select name="HM" onchange="drawChart()">
 <option selected="selected" value="">(※制限なし)?[0-9]{1,2}:[0-9]{1,2}</option>
 <option value="">(※日次,0時起点)?^0:00</option>
 <option value="">(※日次,15時起点)?15:00</option>
@@ -372,6 +395,7 @@ Math.trunc = Math.trunc || function(x) {
 <option value="">(※日次,DST夏時間21時起点)?20:30</option>
 <option value="">(※日次,DST夏時間22時起点)?21:30</option>
 <option value="">(※日次,DST夏時間23時起点)?22:30</option>
+
 <option value="">------------UTC+HH:45のやつ（カトマンズ、ユークラ、チャタム諸島)---------------</option>
 <option value="">(※日次,0時起点)?^0?0:45</option>
 <option value="">(※日次,1時起点)?^0?1:45</option>
@@ -430,38 +454,53 @@ Math.trunc = Math.trunc || function(x) {
 <option value="">(※日次,DST夏時間21時起点)?20:45</option>
 <option value="">(※日次,DST夏時間22時起点)?21:45</option>
 <option value="">(※日次,DST夏時間23時起点)?22:45</option>
-</select>※夏時間の場合日次参照は+1hになります()
+</select>
 </form>
-<label for="SP"><input type="checkbox" value="SP" id="SP" onChange="drawChart()">速度表示</label>
-<label for="TZ"><input type="checkbox" id="TZ" onChange="drawChart()">時差付き情報</label>
-<form name="chbox" onChange="drawChart()">
+
+<label for="SP"><input type="checkbox" value="SP" id="SP" onchange="drawChart()">速度表示</label>
+<label for="TZ"><input type="checkbox" id="TZ" checked="checked" onchange="drawChart()">時差付き情報</label>
+<form name="chbox" onchange="drawChart()">
 <b>表示対象</b><br>
-<label for="R1"><input type="checkbox"  checked="checked" value="S1" id="R1"><div id="L1" style="display: inline-block; _display: inline;">ランク1</div></label>
-<label for="R2"><input type="checkbox" checked="checked" value="S2" id="R2"><div id="L2" style="display: inline-block; _display: inline;">ランク2</div></label>
-<label for="R3"><input type="checkbox" checked="checked" value="S3" id="R3"><div id="L3" style="display: inline-block; _display: inline;">ランク3</div></label>
-<label for="R4"><input type="checkbox" checked="checked" value="S4" id="R4"><div id="L4"style="display: inline-block; _display: inline;">ランク4</div></label><br>
-<label for="R5"><input type="checkbox"checked="checked"value="S5" id="R5"><div id="L5"style="display: inline-block; _display: inline;">ランク5</div> </label>
-<label for="R6"><input type="checkbox" checked="checked" value="S6" id="R6"><div id="L6"style="display: inline-block; _display: inline;">ランク6</div></label>
-<label for="R7"><input type="checkbox" checked="checked" value="S7" id="R7"><div id="L7"style="display: inline-block; _display: inline;">ランク7</div></label>
-<label for="R8"><input type="checkbox" checked="checked" value="S8" id="R8"><div id="L8"style="display: inline-block; _display: inline;">ランク8</div></label><br>
-<label for="R9"><input type="checkbox" checked="checked" value="S9" id="R9"><div id="L9"style="display: inline-block; _display: inline;">ランク9</div></label>
-<label for="R10"><input type="checkbox"  checked="checked" value="S10" id="R10"><div id="L10" style="display: inline-block; _display: inline;">ランク10</div></label>
-<label for="R11"><input type="checkbox"  checked="checked" value="S11" id="R11"><div id="L11" style="display: inline-block; _display: inline;">ランク11</div></label>
-<label for="R12"><input type="checkbox" checked="checked" value="S12" id="R12"><div id="L12" style="display: inline-block; _display: inline;">ランク12</div></label><br>
-<label for="R13"><input type="checkbox" checked="checked" value="S13" id="R13"><div id="L13" style="display: inline-block; _display: inline;">ランク13</div></label>
-<label for="R14"><input type="checkbox" checked="checked" value="S14" id="R14"><div id="L14"style="display: inline-block; _display: inline;">ランク14</div></label>
-<label for="R15"><input type="checkbox"checked="checked"value="S15" id="R15"><div id="L15"style="display: inline-block; _display: inline;">ランク15</div> </label>
-<label for="R16"><input type="checkbox" checked="checked" value="S16" id="R16"><div id="L16"style="display: inline-block; _display: inline;">ランク16</div></label>
+<label for="R1"><input type="checkbox" checked="checked" value="S1" id="R1"><div id="L1" style="display: inline-block; _display: inline;">1位</div></label>
+<label for="R2"><input type="checkbox" checked="checked" value="S2" id="R2"><div id="L2" style="display: inline-block; _display: inline;">501位</div></label>
+<label for="R3"><input type="checkbox" checked="checked" value="S3" id="R3"><div id="L3" style="display: inline-block; _display: inline;">2001位</div></label>
+<label for="R4"><input type="checkbox" checked="checked" value="S4" id="R4"><div id="L4" style="display: inline-block; _display: inline;">10001位</div></label><br>
+<label for="R5"><input type="checkbox" checked="checked" value="S5" id="R5"><div id="L5" style="display: inline-block; _display: inline;">20001位</div> </label>
+<label for="R6"><input type="checkbox" checked="checked" value="S6" id="R6"><div id="L6" style="display: inline-block; _display: inline;">60001位</div></label>
+<label for="R7"><input type="checkbox" checked="checked" value="S7" id="R7"><div id="L7" style="display: inline-block; _display: inline;">120001位</div></label>
+<label for="R8"><input type="checkbox" checked="checked" value="S8" id="R8"><div id="L8" style="display: inline-block; _display: inline;">200001位</div></label><br>
+<label for="R9"><input type="checkbox" checked="checked" value="S9" id="R9"><div id="L9" style="display: inline-block; _display: inline;">300001位</div></label>
+<label for="R10"><input type="checkbox" checked="checked" value="S10" id="R10"><div id="L10" style="display: inline-block; _display: inline;">スコア1位</div></label>
+<label for="R11"><input type="checkbox" checked="checked" value="S11" id="R11"><div id="L11" style="display: inline-block; _display: inline;">スコア5001位</div></label>
+<label for="R12"><input type="checkbox" checked="checked" value="S12" id="R12"><div id="L12" style="display: inline-block; _display: inline;">スコア10001位</div></label><br>
+<label for="R13"><input type="checkbox" checked="checked" value="S13" id="R13"><div id="L13" style="display: inline-block; _display: inline;">スコア40001位</div></label>
+<!--
+<label for="R14"><input type="checkbox" checked="checked" value="S14" id="R14"><div id="L14" style="display: inline-block; _display: inline;">ランク14</div></label>
+<label for="R15"><input type="checkbox" checked="checked" value="S15" id="R15"><div id="L15" style="display: inline-block; _display: inline;">ランク15</div> </label>
+<label for="R16"><input type="checkbox" checked="checked" value="S16" id="R16"><div id="L16" style="display: inline-block; _display: inline;">ランク16</div></label>
+-->
 </form>
-<input type="Submit" value="501位"   Generate" onclick="CHitimai(1,['501位']);return false">
-<input type="Submit" value="2001位"   Generate" onclick="CHitimai(1,['2001位']);return false">
-<input type="Submit" value="10001位"   Generate" onclick="CHitimai(1,['10001位']);return false">
-<input type="Submit" value="20001位"   Generate" onclick="CHitimai(1,['20001位']);return false">
-<input type="Submit" value="60001位"   Generate" onclick="CHitimai(1,['60001位']);return false">
-<input type="Submit" value="120001位"   Generate" onclick="CHitimai(1,['120001位']);return false">
-<input type="Submit" value="300001位"   Generate" onclick="CHitimai(1,['300001位']);return false">
-<input type="Submit" value="PTぼだ"   Generate" onclick="CHitimai(1,rankmai);return false">
-<input type="Submit" value="ハイスコア"   Generate" onclick="CHitimai(1,score);return false">
-<input type="Submit" value="ALL"   Generate" onclick="CHitimai(1,null);return false">
-</body>
-</html>
+<input type="Submit" value="501位" generate"="" onclick="CHitimai(1,[&#39;501位&#39;]);return false">
+<input type="Submit" value="2001位" generate"="" onclick="CHitimai(1,[&#39;2001位&#39;]);return false">
+<input type="Submit" value="10001位" generate"="" onclick="CHitimai(1,[&#39;10001位&#39;]);return false">
+<input type="Submit" value="20001位" generate"="" onclick="CHitimai(1,[&#39;20001位&#39;]);return false">
+<input type="Submit" value="60001位" generate"="" onclick="CHitimai(1,[&#39;60001位&#39;]);return false">
+<input type="Submit" value="120001位" generate"="" onclick="CHitimai(1,[&#39;120001位&#39;]);return false">
+<input type="Submit" value="300001位" generate"="" onclick="CHitimai(1,[&#39;300001位&#39;]);return false">
+<input type="Submit" value="PTぼだ" generate"="" onclick="CHitimai(1,rankmai);return false">
+<input type="Submit" value="ハイスコア" generate"="" onclick="CHitimai(1,score);return false">
+<input type="Submit" value="ALL" generate"="" onclick="CHitimai(1,null);return false">
+<br><br>
+<form name="TZPT">
+内部時計参照パターン:
+<select name="PT" onchange="drawChart()">
+<option value="">(現地終了時間H':m')?00:00 内部参照UTC</option>
+<option value="">(現地終了時間H':m')?09:00 内部参照JST</option>
+<option selected="selected" value="">(現地終了時間H':m')?H':m' 内部参照現地時間LOCAL　標準時差</option>
+<option value="">(現地終了時間H!:m!)?H!:m! 内部参照現地時間LOCLALDST サマータイム</option>
+</select>
+<br>
+<div id="debug">確認用デバッグ時間:----</div>
+※夏時間の場合日次参照は+1hになります(),オーストラリアのロードハウ島は0.5時間
+</form>
+</body></html>
