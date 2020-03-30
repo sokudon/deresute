@@ -93,17 +93,40 @@ if(HHmm.match(t)){
 o[r]=i;
 r++;
 }}
-document.getElementById("debug").innerHTML="確認用デバッグ時間:UTC" 
+document.getElementById("debug").innerHTML="確認用デバッグ時間"
++"<table border=1><thead><tr><th></th><th>UTC</th><th>JST</th><th>LOCAL</th><th>LOCAL DST</th><th>GCHART</th></tr></thead>"
++"<tbody><tr><td>表の一番上の時刻</td><td>"
 + moment.utc(e[o[0]][0]).add("Hours",type[0]).format("H:mm")
-+",JST"
++"</td><td>"
 + moment.utc(e[o[0]][0]).add("Hours",type[1]).format("H:mm")
-+",LOCAL" 
++"</td><td>"
 + moment.utc(e[o[0]][0]).add("Hours",type[2]).format("H:mm")
-+",LOCALDST" 
++"</td><td>"
 + moment.utc(e[o[0]][0]).add("Hours",type[3]).format("H:mm")
-+",GCHART" 
-+ moment.utc(e[o[0]][0]).add("Hours",type[4]).format("H:mm");
-
++"</td><td>"
++ moment.utc(e[o[0]][0]).add("Hours",type[4]).format("H:mm")
++"</td></tr>"
++"<tr><td>UTC時差</td><td>"
++ 0
++"</td><td>"
++ 9
++"</td><td>"
++ type[2]
++"</td><td>"
++ type[3]
++"</td><td>"
++ type[4]
++"</td></tr>"+"<tr><td>JST時差</td><td>"
++ -9
++"</td><td>"
++ 0
++"</td><td>"
++ (type[2]-9)
++"</td><td>"
++ (type[3]-9)
++"</td><td>"
++ (type[4]-9)
++"</td></tr></tbody></table>";
 
 
 var u=[1];
@@ -309,8 +332,8 @@ t_offset_min=-t_offset_min;
     <div id='table_div' style='width: 1200px; height: 400px;'></div>-->
     <div id='chart_div' style='height: 400px;'></div>
     <div id='table_div'></div>
-    <input type="Submit" value="CS" generate"="" onclick="DLCSV();return false">
-<input type="Submit" value="JSO" generate"="" onclick="DLJSON();return false">
+    <input type="Submit" value="CSVDL" generate"="" onclick="DLCSV();return false">
+<input type="Submit" value="JSONDL" generate"="" onclick="DLJSON();return false">
 <form name="TZ">
 時間:
 <select name="HM" onchange="drawChart()">
@@ -348,10 +371,7 @@ t_offset_min=-t_offset_min;
 <option value="">(※日次,22時起点)?22:00</option>
 <option value="">(※日次,23時起点)?23:00</option>
 <option value="">(※日次,0時起点)?^0:00</option>
-<option value="">(※日次,15時起点)?15:00</option>
-<option value="">(※日次,17時起点)?17:00</option>
-<option value="">(※日次,21時起点)?21:00</option>
-
+<!--
 <option value="">-----------DST,夏時間用----------</option>
 <option value="">(※日次,DST夏時間0時起点)?23:00</option>
 <option value="">(※日次,DST夏時間1時起点)?^0?0:00</option>
@@ -378,7 +398,7 @@ t_offset_min=-t_offset_min;
 <option value="">(※日次,DST夏時間21時起点)?20:00</option>
 <option value="">(※日次,DST夏時間22時起点)?21:00</option>
 <option value="">(※日次,DST夏時間23時起点)?22:00</option>
-
+-->
 <option value="">------------UTC+HH:30のやつ---------------</option>
 <option value="">(※日次,0時起点)?^0?0:30</option>
 <option value="">(※日次,1時起点)?^0?1:30</option>
@@ -408,9 +428,8 @@ t_offset_min=-t_offset_min;
 <option value="">(※日次,22時起点)?22:30</option>
 <option value="">(※日次,23時起点)?23:30</option>
 <option value="">(※日次,0時起点)?^0:30</option>
-<option value="">(※日次,15時起点)?15:30</option>
-<option value="">(※日次,17時起点)?17:30</option>
-<option value="">(※日次,21時起点)?21:30</option>
+
+<!--
 <option value="">-----------UTC+HH:30のやつDST,夏時間用----------</option>
 <option value="">(※日次,DST夏時間0時起点)?23:30</option>
 <option value="">(※日次,DST夏時間1時起点)?^0?0:30</option>
@@ -437,7 +456,7 @@ t_offset_min=-t_offset_min;
 <option value="">(※日次,DST夏時間21時起点)?20:30</option>
 <option value="">(※日次,DST夏時間22時起点)?21:30</option>
 <option value="">(※日次,DST夏時間23時起点)?22:30</option>
-
+-->
 <option value="">------------UTC+HH:45のやつ（カトマンズ、ユークラ、チャタム諸島)---------------</option>
 <option value="">(※日次,0時起点)?^0?0:45</option>
 <option value="">(※日次,1時起点)?^0?1:45</option>
@@ -467,9 +486,8 @@ t_offset_min=-t_offset_min;
 <option value="">(※日次,22時起点)?22:45</option>
 <option value="">(※日次,23時起点)?23:45</option>
 <option value="">(※日次,0時起点)?^0:45</option>
-<option value="">(※日次,15時起点)?15:45</option>
-<option value="">(※日次,17時起点)?17:45</option>
-<option value="">(※日次,21時起点)?21:45</option>
+
+<!--
 <option value="">-----------UTC+HH:45のやつDST,夏時間用----------</option>
 <option value="">(※日次,DST夏時間0時起点)?23:45</option>
 <option value="">(※日次,DST夏時間1時起点)?^0?0:45</option>
@@ -496,6 +514,7 @@ t_offset_min=-t_offset_min;
 <option value="">(※日次,DST夏時間21時起点)?20:45</option>
 <option value="">(※日次,DST夏時間22時起点)?21:45</option>
 <option value="">(※日次,DST夏時間23時起点)?22:45</option>
+-->
 </select>
 </form>
 
@@ -533,23 +552,11 @@ t_offset_min=-t_offset_min;
 <input type="Submit" value="ハイスコア" generate"="" onclick="CHitimai(1,score);return false">
 <input type="Submit" value="ALL" generate"="" onclick="CHitimai(1,null);return false">
 <br><br>
-<form name="TZPT">
-<b>内部時計参照パターン</b>
-<select name="PT" onchange="drawChart()">
-<option value="">(現地終了時間H':m')?00:00 内部参照UTC</option>
-<option value="">(現地終了時間H':m')?09:00 内部参照JST</option>
-<option selected="selected" value="">(現地終了時間H':m')?H':m' 内部参照現地時間LOCAL　標準時差</option>
-<option value="">(現地終了時間H!:m!)?H!:m! 内部参照現地時間LOCLALDST サマータイム</option>
-<option value="">(ぐぐる終了時間Hg:mg)?Hg:mg 内部参照ぐぐるチャートのじかん</option>
-</select>
-<br>
-<div id="debug">確認用デバッグ時間:----</div>
-※夏時間の場合日次参照は+1hになります(),オーストラリアのロードハウ島は0.5時間
-</form>
-
+-----------わかる人向け時間操作向け設定ファイル（現地時間以外使う場合必要）<a href="https://photos.google.com/share/AF1QipNKXhMSq8_qJWW5phkH8Qit5yyCMOrm0RPG2F8G69g-d7L7Z5BQMjKYkmJwH_TAIQ?key=Tkp5Z0pVd2pBOGI0bHRFclZuOHJtVHY2d0ZMN1NB">がぞうせつめい</a>-----------
 <form name="tzone">
 <b>ググるチャートのタイムゾーン</b><br>
-<label for="OF"><input type="checkbox" checked="checked" value="NEW" id="OF" onchange="drawChart()">OSのタイムゾーンを優先する<br></label><br>
+<label for="OF"><input type="checkbox" checked="checked" value="NEW" id="OF" onchange="drawChart()">OSのタイムゾーンを優先する(DST修正あり)<br></label><br>
+※OSのチェックを外し↓のりすとを使用した場合,任意の固定時間でのぐぐるちゃーとの時間になります,DST修正はなくなります
 <select name="owata" onchange="drawChart()">
 <option value="">UTC -12:00　国際日付変更線西側</option>
 <option value="">UTC -11:00　ミッドウェー島</option>
@@ -576,7 +583,7 @@ t_offset_min=-t_offset_min;
 <option value="">UTC -02:00　中央大西洋</option>
 <option value="">UTC -01:00　アゾレス諸島</option>
 <option value="">UTC -01:00　カーボベルデ諸島</option>
-<option value="">UTC +00:00　 ダブリン、エジンバラ、リスボン、ロンドン、グリニッジ標準時、世界協定時刻</option>
+<option value="">UTC +00:00　ダブリン、エジンバラ、リスボン、ロンドン、グリニッジ標準時、世界協定時刻</option>
 <option value="">UTC +00:00　モンロビア、レイキャビク</option>
 <option value="">UTC +01:00　サニーベイル, カリフォルニア州、ブラチスラバ、ブダペスト、Ljubljana、プラハ</option>
 <option value="">UTC +01:00　サラエボ、Skopje、ワルシャワ、Zagreb</option>
@@ -629,5 +636,20 @@ t_offset_min=-t_offset_min;
 <option value="">UTC +13:00　キリバス、サモア、トケラウ、トンガ、ニュージーランド夏、フィジー夏</option>
 <option value="">UTC +14:00　サモア夏</option>
 </select>
+</form>
+
+<form name="TZPT">
+<b>日次計算用 内部時計参照パターン</b><br>
+<select name="PT" onchange="drawChart()">
+<option value="">UTC協定時間で検索(UTC+00:00)</option>
+<option value="">JST日本時間で検索(UTC+09:00)</option>
+<option selected="selected" value="">OSの現地時間標準時差,LOCALで検索(UTC+??:??)</option>
+<option value="">OSの現地時間DSTサマータイム,LOCALDSTで検索(UTC+??:??)</option>
+<option value="">ぐぐるチャートのじかんで検索(UTC+??:??)</option>
+</select>
+<br>
+<div id="debug">確認用デバッグ時間:----</div>
+※GCHARTにnullがある場合、OS設定の現地時間(DST修正あり)になります(表の一番上とJST時差はmomentのadd('hour',({null-時差}なのでUTC検索モードに)<br>
+※夏時間の場合日次参照は+1hになります(),オーストラリアのロードハウ島は0.5時間<br>
 </form>
 </body></html>
