@@ -8,6 +8,7 @@ last_text     = ""
 format_string = ""
 activated     = false
 utc           = 0
+ima           = 0
 debugtxt1	  = ""
 debugtxt2	  = ""
 debugtxt3	  = ""
@@ -66,9 +67,13 @@ local dt = string.format("%04d",tonumber(y)).."-".. string.format("%02d",tonumbe
 	  
 	  --debugtxt1 =dt
 	  --debugtxt2 =parse_json_date_utc(dt)
-	  --debugtxt3 =os.date("!%x %x %a ",parse_json_date_utc(dt))
+	  --debugtxt3 =os.date("!%x %X %a ",parse_json_date_utc(dt))
 	  
 	return parse_json_date_utc(dt)
+end
+
+function JST(dt)
+return os.date('!%Y/%m/%dT%X(JST)%a',parse_json_date_utc(dt)+3600*9)
 end
 
 function parse_json_date_utc(json_date) --ISO8601datetimeparse パーサー完成版？
@@ -105,6 +110,10 @@ function isDST(J)
 		end
 	end
 	return st
+end
+
+function isempty(s)
+  return s == nil or s == ''
 end
 
 function JPday(date,t)
@@ -148,12 +157,13 @@ function parse_jp_era(date)
   
   if (string.find(date,"%%i")) then
   
-   local inum = 1     --imas[1] AC
+   local inum = (ima)%27    --imas[1] AC,dre 18 ,miri 22
+   if(inum==0)then
+   inum =1
+   end
    local tu = elaspted(imas[inum][2])
    local gm = imas[inum][1] .."("..imas[inum][3]..")%%n開始から" 
-   
-   --local tu = elaspted(imas[inum][4])
-   --local gm = imas[inum][1] .."("..imas[inum][3]..")%%nサ終から" --サ終わりの時刻情報があるときのみ
+  
    
    --inum の番号
 --1={{"THE IDOLM@STER","2005-07-25T15:00:00.000Z","アーケード",""
@@ -207,7 +217,32 @@ function parse_jp_era(date)
 	end
    
    local ep = years.."年"..days.."日".. hours.."時".. minutes.."分"
-  	date =string.gsub(date, "%%i",gm..ep ..nenme)
+  	date =string.gsub(date, "%%is",gm..ep ..nenme)
+  	
+  	local imm=imas[inum][4]
+  	debugtxt2=JST(imas[inum][2])
+  	debugtxt1=""
+  	
+  	if(isempty(imm)==false) then
+  	debugtxt1= JST(imm)
+  	
+  	
+    tu= elaspted(imas[inum][4])
+    gm= imas[inum][1] .."("..imas[inum][3]..")%%nサ終から" --サ終わりの時刻情報があるときのみ
+  	
+    total = tu*10
+
+	local minutes  = math.floor((total / 600) % 60)
+	local hours    = math.floor((total / 36000) % 24)
+	local idays     = math.floor(total / 864000)
+	local days     = math.floor(idays%365)
+	local years    = math.floor(total/(864000*365))
+   
+    ep = years.."年"..days.."日".. hours.."時".. minutes.."分"
+  	date =string.gsub(date, "%%i","サ終から"..ep )
+  	end
+  	
+  	date =string.gsub(date, "%%i","" )
   end
   if (string.find(date,"%%UTC")) then
   local jp_day={"日","月","火","水","木","金","土"}
@@ -444,6 +479,8 @@ function script_properties()
 	obs.obs_properties_add_text(props, "format_string", "Format String", obs.OBS_TEXT_DEFAULT)
 	--obs.obs_properties_add_text(props, "UTC", "UTC", obs.OBS_TEXT_DEFAULT)
 	obs.obs_properties_add_float(props, "UTC", "WorldTime UTC-14～+14(%UTC)", -14, 14, 1)
+	obs.obs_properties_add_int(props, "IMAS", "IMAS", 1, 27, 1)
+	obs.obs_properties_add_text(props, "im", "IM@S開始日", obs.OBS_TEXT_DEFAULT)
 
 	return props
 end
@@ -461,6 +498,8 @@ function script_update(settings)
 	source_name = obs.obs_data_get_string(settings, "source")
 	format_string = obs.obs_data_get_string(settings, "format_string")
 	utc           = obs.obs_data_get_double(settings, "UTC")
+	ima           = obs.obs_data_get_int(settings, "IMAS")
+	obs.obs_data_set_string(settings, "im",imas[ima][1]..imas[ima][3])
 	
 	reset(true)
 end
@@ -469,6 +508,8 @@ end
 function script_defaults(settings)
 	obs.obs_data_set_default_string(settings, "format_string", "%Y/%m/%d(%Jw)%X(UTC%z)") --"%Y-%m-%d %X")
 	obs.obs_data_set_default_double(settings, "UTC", 9)
+	obs.obs_data_set_default_int(settings, "IMAS", 18)
+	obs.obs_data_set_default_string(settings, "im",imas[1][1]..imas[1][3])
 end
 
 -- a function named script_load will be called on startup
