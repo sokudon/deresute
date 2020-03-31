@@ -132,7 +132,21 @@ function get_count() {
 	}
 	}
 	
-	
+	var syunen = moment.utc().add("Hours",jtc).format("YYYY-")+moment.utc(ibekaishi).add("Hours",jtc).format("MM-DDT00:00:00Z");
+	esps=(-moment.utc()+ moment.utc(syunen))/1000;
+	kaishi="周年まで:";
+	if(esps<0){	esps=-esps;	kaishi="周年から:"}
+	espst= Math.floor(esps/(3600*24)) +"日"+Math.floor( (esps%(3600*24))/3600)  +"時間"+ Math.floor((esps%3600)/60) +"分" + Math.floor(esps%60) +"秒";
+
+	timest +=kaishi +espst+"<br>";
+	if(ibeowari!=""){
+	var syunen = moment.utc().add("Hours",jtc).format("YYYY-")+moment.utc(ibeowari).add("Hours",jtc).format("MM-DDT00:00:00Z");
+	esps=(-moment.utc()+ moment.utc(syunen))/1000;
+	kaishi="命日まで:";
+	if(esps<0){	esps=-esps;	kaishi="命日から:"}
+	espst= Math.floor(esps/(3600*24)) +"日"+ Math.floor( (esps%(3600*24))/3600)  +"時間"+ Math.floor((esps%3600)/60) +"分" + Math.floor(esps%60) +"秒";
+	timest +=kaishi +espst+"<br>";
+	}
 	
 	document.getElementById("cdt_now").innerHTML=timest+"</font><br>";
 	document.getElementById("ibe").innerHTML ="<font size=\"20\">"+ ibemie +kinen+"</font>";

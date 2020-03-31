@@ -8,6 +8,9 @@ last_text     = ""
 format_string = ""
 activated     = false
 utc           = 0
+debugtxt1	  = ""
+debugtxt2	  = ""
+debugtxt3	  = ""
 
 --あいますようそがないので無理やり追加（）
 --https://script.googleusercontent.com/macros/echo?user_content_key=ETKjv48buN5rK2r4wpjCSZET2OQiIV-y3T_Yo1sO9RWDb2j2bNXU4Zw-vXPSLkT2PAEmtVq1qbpiIQBE2mWH2GtjwIj1WZRCm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnImdhCglA_bw00zKJV-3uMxFhM94xSIKcykYkHTwB1nSW4GadiCkn1G8mzDTCqnGIg&lib=Mp89x2A3ZSHn80Z0KafsZgXndBJ9ix56c
@@ -40,6 +43,12 @@ function get_timezone_offset(ts)  --サマー有りタイムゾーン時差情�
 	return os.difftime(os.time(localdate), os.time(utcdate))
 end
 
+function get_timezone_the_day()
+  local hh = tonumber(string.format("%d",(tonumber(os.date("%z"))/100)))
+  local mm= ((tonumber(os.date("%z"))-100*hh)/60)*3600
+  local hhmm = hh*3600 +mm
+  return hhmm  --サマー有りタイムゾーン時差情報 現在時間
+end
 
 function lefttime(dt) 
 	local t=parse_json_date_utc(dt) -os.time() 
@@ -47,11 +56,22 @@ function lefttime(dt)
 end
 
 function elaspted(dt) 
-	local t=-parse_json_date_utc(dt) +os.time() 
-	return  t
+	return  -(lefttime(dt))
 end
 
-function parse_json_date_utc(json_date)
+function DateUTC(y,M,D,h,m,s,ms)  --DATEUTCもどきMM月だけjsとおなじ-1月なので（）
+local dt = string.format("%04d",tonumber(y)).."-".. string.format("%02d",tonumber(M)+1).."-".. string.format("%02d",tonumber(D))
+	  dt = dt.."T".. string.format("%02d",tonumber(h))..":".. string.format("%02d",tonumber(m))
+	  dt=  dt..":".. string.format("%02d",tonumber(s))..".".. string.format("%03d",tonumber(ms)).."Z"
+	  
+	  --debugtxt1 =dt
+	  --debugtxt2 =parse_json_date_utc(dt)
+	  --debugtxt3 =os.date("!%x %x %a ",parse_json_date_utc(dt))
+	  
+	return parse_json_date_utc(dt)
+end
+
+function parse_json_date_utc(json_date) --ISO8601datetimeparse パーサー完成版？
     local pattern = "(%d+)%-(%d+)%-(%d+)%a(%d+)%:(%d+)%:([%d%.]+)([Z%+%-])(%d?%d?)%:?(%d?%d?)"
     local year, month, day, hour, minute, 
         seconds, offsetsign, offsethour, offsetmin = json_date:match(pattern)
@@ -74,12 +94,6 @@ function parse_json_date_utc(json_date)
     return timestamp + get_timezone_offset(timestamp) -offset
 end
 
-function get_timezone_the_day()
-  local hh = tonumber(string.format("%d",(tonumber(os.date("%z"))/100)))
-  local mm= ((tonumber(os.date("%z"))-100*hh)/60)*3600
-  local hhmm = hh*3600 +mm
-  return hhmm  --サマー有りタイムゾーン時差情報
-end
 
 function isDST(J)
 	local localdate = os.date("*t")
@@ -108,6 +122,10 @@ function JPday(date,t)
   	date= string.gsub(date, "%%Vt","T"..(dt.year-1911))
   end
   
+  --DateUTC(2020,2,31,20,48,0,0)
+  date= string.gsub(date, "%%E",debugtxt1)  ----フリーズ文字代替
+  date= string.gsub(date, "%%J",debugtxt2)  ----フリーズ文字代替
+  date= string.gsub(date, "%%K",debugtxt3)  ----フリーズ文字代替
   date= string.gsub(date, "%%s",os.time())  ----フリーズ文字代替
   date= string.gsub(date, "%%DST",isDST("J"))
   date= string.gsub(date, "%%Vw",jp_day[dt.wday])
@@ -124,7 +142,7 @@ end
 function parse_jp_era(date)
   local datestring=""
   
-  date= string.gsub(date, "%%[EJKLNOPQfkloqv]","")	--フリーズ文字 %%[EJKLNOPQfikloqsv]
+  date= string.gsub(date, "%%[LNOPQfkloqv]","")	--フリーズ文字 %%[EJKLNOPQfikloqsv]
   
   local t = os.time()
   
@@ -194,8 +212,9 @@ function parse_jp_era(date)
   if (string.find(date,"%%UTC")) then
   local jp_day={"日","月","火","水","木","金","土"}
   local tu = os.time()  + (tonumber(utc)*3600)
-  local u =string.format("%+03d",tonumber(utc))
-    local dateu='!%Y/%m/%d(%a)%X(UTC'..u..':00)' --%z系はOS依存のため使用不可
+  
+  local u= get_tzoffset_sepa(utc*3600)
+    local dateu='!%Y/%m/%d(%a)%X(UTC'..u..')' --%z系はOS依存のため使用不可
     
     --local dt = os.date("!*t",tu) --%Vwを使いたいとき utcの時間で曜日を取得する必要がある
 	--dateu= string.gsub(dateu, "%%Vw",jp_day[dt.wday])
@@ -287,17 +306,17 @@ end
 --%z timezone,osdateのサマータイム有り 
 
 --クラッシュ使用不可か別の文字処理に使う
---%E
---%J
---%K
+--%E　デバッグ文字1
+--%J　デバッグ文字2
+--%K　デバッグ文字3
 --%L
 --%N
 --%O
 --%P
 --%Q
 --%f
---%i
---%k
+--%i あいますの時間
+--%k 
 --%l
 --%o
 --%q
@@ -424,9 +443,7 @@ function script_properties()
 
 	obs.obs_properties_add_text(props, "format_string", "Format String", obs.OBS_TEXT_DEFAULT)
 	--obs.obs_properties_add_text(props, "UTC", "UTC", obs.OBS_TEXT_DEFAULT)
-
-	
-	obs.obs_properties_add_int(props, "UTC", "WorldTime UTC-14～+14(use %U)", -14, 14, 1)
+	obs.obs_properties_add_float(props, "UTC", "WorldTime UTC-14～+14(%UTC)", -14, 14, 1)
 
 	return props
 end
@@ -443,7 +460,7 @@ function script_update(settings)
 
 	source_name = obs.obs_data_get_string(settings, "source")
 	format_string = obs.obs_data_get_string(settings, "format_string")
-	utc           = obs.obs_data_get_int(settings, "UTC")
+	utc           = obs.obs_data_get_double(settings, "UTC")
 	
 	reset(true)
 end
@@ -451,7 +468,7 @@ end
 -- A function named script_defaults will be called to set the default settings
 function script_defaults(settings)
 	obs.obs_data_set_default_string(settings, "format_string", "%Y/%m/%d(%Jw)%X(UTC%z)") --"%Y-%m-%d %X")
-	obs.obs_data_set_default_int(settings, "UTC", 9)
+	obs.obs_data_set_default_double(settings, "UTC", 9)
 end
 
 -- a function named script_load will be called on startup
