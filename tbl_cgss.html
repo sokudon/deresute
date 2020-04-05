@@ -221,23 +221,37 @@ o++)t[o]&&(e.push(column_data[o][1]),e.push("速度"))}else for(o=0;
 o<column_data.length;
 o++)t[o]&&e.push(column_data[o][1]);
 return e}
-function DLCSV(){for(var e="",n=getHEAD(),t=0;
+function DLCSV(){
+var TZ=document.getElementById("TZ").checked;
+var dtf="YYYY/MM/DD HH:mm";
+if(TZ){
+dtf="YYYY/MM/DD HH:mmZ";
+}
+for(var e="",n=getHEAD(),t=0;
 t<n.length;
 t++)e+=n[t]+",";
 e=e.slice(0,-1),e+="\r\n";
 for(var o=0;
 o<jisoku.length;
-o++){e+=moment(jisoku[o][0]).format("YYYY/MM/DD HH:mm")+",";
+o++){e+=moment(jisoku[o][0]).format(dtf)+",";
 for(t=1;t<jisoku[o].length;t++)e+=jisoku[o][t]+",";
 e=e.slice(0,-1),e+="\r\n"}TextDL(e,"border.csv")}function DLJSON(){var e=[];
 e[0]=[],e[0]=getHEAD(),TextDL(JSON.stringify(e.concat(jisoku)),"cgssbd.txt")}function TextDL(n,t){b=new Blob([n],{type:"text/plain"}),a=document.createElement("a"),a.download=t,a.href=window.URL.createObjectURL(b),e=document.createEvent("MouseEvent"),e.initEvent("click",!0,!0),a.dispatchEvent(e)}
 
 setInterval("get_count()",1000);
 function get_count() {
-var t=moment(ibeend);var now=moment();var left_time=t-now;t= moment(left_time).valueOf()/1000;
+
+var TZ=document.getElementById("TZ").checked;
+var dtf="YYYY/MM/DD HH:mm";
+if(TZ){
+dtf="YYYY/MM/DD HH:mmZ";
+}
+var t=moment(ibeend);
+var now=moment();
+var left_time=t-now;t= moment(left_time).valueOf()/1000;
 var timetxt= Math.floor(t/(3600*24)) +"日" +Math.floor( (t%(3600*24))/3600) + "時間"+Math.floor((t%3600)/60)+ "分" +Math.floor(t%60)+ "秒";
-var datend=moment(ibeend).format();
-var datest=moment(ibestart).format();
+var datend=moment(ibeend).format(dtf);
+var datest=moment(ibestart).format(dtf);
 
 
 var prog=(moment.utc()-moment.utc(ibestart))/(moment.utc(ibeend)-moment.utc(ibestart))*100;
@@ -252,8 +266,8 @@ if(moment(ibeend).isDST()){dsten="(DST,夏時間)";}
 else{
 var tz=document.tzone.owata.options[document.tzone.owata.selectedIndex].text;
 var tzm =tz.match(/\+?-?\d+:\d+/g);
-datend=moment.utc(ibeend).add("Hours",gcharttz).format().replace("+00:00",tzm[0]);
-datest=moment.utc(ibestart).add("Hours",gcharttz).format().replace("+00:00",tzm[0]);
+datend=moment.utc(ibeend).add("Hours",gcharttz).format(dtf).replace("+00:00",tzm[0]);
+datest=moment.utc(ibestart).add("Hours",gcharttz).format(dtf).replace("+00:00",tzm[0]);
 
 }
 
