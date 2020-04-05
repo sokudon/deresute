@@ -19,46 +19,38 @@ function get_count() {
    var jtc_sm=11;
    
    var tz=document.tzone.owata.options[document.tzone.owata.selectedIndex].text;
-var tzm =tz.match(/-?\d+/g);
-var t_offset=0;
-var t_offset_min=0;
-var ostime = document.getElementById("OS").checked;
-if(ostime){
-t_offset=-Math.floor(new Date().getTimezoneOffset()/60);
-t_offset_min=-(new Date().getTimezoneOffset()%60);
-date_fm="YYYY/MM/DD(ddd) HH:mm:ss (UTC+"+ t_offset +":"+ ("0"+t_offset_min).slice(-2) +")";
-date_fm=date_fm.replace("+-","-");
-}
-else if(tzm!=null){
-t_offset=parseInt(tzm[0]);
-if(tzm[1]!=null){
-t_offset_min=(parseInt(tzm[1]));
-if(t_offset<0){
-t_offset_min=-t_offset_min;
-}}
-
-  if(tz!="(GMT +09:00)大阪、札幌、東京 東京 (標準時),M$EB"){
-   date_fm="YYYY/MM/DD(ddd) HH:mm:ss ([" + tz.match(/G.T.\d\d:\d\d/) +"])";
-   }
+	var tzm =tz.match(/-?\d+/g);
+	var t_offset=0;
+	var t_offset_min=0;
+   var ostime = document.getElementById("OS").checked;
+	if(ostime){
+		t_offset=-Math.floor(new Date().getTimezoneOffset()/60);
+		t_offset_min=-(new Date().getTimezoneOffset()%60);
+		date_fm="YYYY/MM/DD(ddd) HH:mm:ss (UTC+"+ t_offset +":"+ ("0"+t_offset_min).slice(-2) +")";
+		date_fm=date_fm.replace("+-","-");
+	}
+	else if(tzm!=null){
+	t_offset=parseInt(tzm[0]);
+		if(tzm[1]!=null){
+		t_offset_min=(parseInt(tzm[1]));
+	if(t_offset<0){
+	t_offset_min=-t_offset_min;
+	}}
+   date_fm="YYYY/MM/DD(ddd) HH:mm:ssZ";
+   date_fm=date_fm.replace("Z","([" + tz.match(/G.T.\d\d:\d\d/) +"])");
 } 
    
-   jtc=t_offset + t_offset_min/60;
-   
-   if(jtc==9){
-   date_fm="YYYY/MM/DD(ddd) HH:mm:ss ([JST,UTC+9:00])";//現在時刻フォーマット
-   }
-   
-   
+      
+    jtc=t_offset + t_offset_min/60;
 	var now=moment.utc().add("Hours",jtc);	
 	if(ostime){
 	now=moment();
-	date_fm="YYYY/MM/DD(ddd) HH:mm:ss (UTCZ";
+    date_fm="YYYY/MM/DD(ddd) HH:mm:ss (UTCZ%DST)";
 	}
 	else if(document.getElementById("usemoment").checked){
 	now=moment();
-	date_fm="YYYY/MM/DD(ddd) HH:mm:ss (UTCZ";
-	}
-	
+    date_fm="YYYY/MM/DD(ddd) HH:mm:ss (UTCZ%DST)";
+    }
 	
 	var left_time=moment.utc(ibeowari)-moment.utc();
 	
@@ -67,8 +59,6 @@ t_offset_min=-t_offset_min;
 	left_time=-left_time;
 	zan="超過時間:"
 	}
-	
-	
 	
 	var t= moment(left_time).valueOf()/1000;
 	
@@ -103,18 +93,26 @@ t_offset_min=-t_offset_min;
  });
 
 if(getDevice()){
-
 date_fm=date_fm.replace(/\(J.+/,"");
 }
 
    var prog=(moment.utc()-moment.utc(ibekaishi))/(moment.utc(ibeowari)-moment.utc(ibekaishi))*100
    prog=prog.toFixed(2);
    if(prog=="NaN"){
-   prog=0;
+   prog="";
    }
-   if(prog>100){
-   prog=100;
+   else if(prog>100){
+   prog="(100%)";
    }
+   else{
+   prog="("+prog +"%)";
+   }
+   
+	var user=document.getElementById("userdt").value;
+	if(user!=""){
+	date_fm=user;
+	}
+	
 
 	//文字色
 	var text_color = "black";
@@ -122,33 +120,35 @@ date_fm=date_fm.replace(/\(J.+/,"");
 	var timest = "<font size=\"20\">"
 	+"現在時刻:"
 	if(ostime){
-	timest += now.format(date_fm+addDST(now)+")")+"<br>";
+	timest += now.format(date_fm.replace("%DST",addDST(now)))+"<br>";
 	+"<br>";
 	}	
 	else if(document.getElementById("usemoment").checked){
 	var tzst=tzJAP[document.gm.gm.selectedIndex][0];
-	timest +=  now.tz(tzst).format(date_fm+addDSTtz(now,tzst)+")")+"<br>";
+	timest +=  now.tz(tzst).format(date_fm.replace("%DST",addDSTtz(now,tzst)))+"<br>";
 	}
 	else{
+	date_fm=date_fm.replace("Z","([" + tz.match(/G.T.\d\d:\d\d/) +"])");
+	date_fm=date_fm.replace("z","");
 	timest += now.format(date_fm)+"<br>";
 	}
-	timest += kaishi +esps+"("+prog +"%)<br>"
+	
+	timest += kaishi +esps+ prog +"<br>"
 	+zan +timetxt+"<br><br>";
 	if(ostime){
-	timest +="開始時間:" +moment(ibekaishi).format(date_fm+addDST(ibekaishi)+")").replace(/UTC(.\d\d)(\d\d)/,"UTC$1:$2")+"<br>"
-	+"終了時間:" +moment(ibeowari).format(date_fm+addDST(ibeowari)+")").replace(/UTC(.\d\d)(\d\d)/,"UTC$1:$2")+"<br>"
+	timest +="開始時間:" +moment(ibekaishi).format(date_fm.replace("%DST",addDST(ibekaishi))).replace(/UTC(.\d\d)(\d\d)/,"UTC$1:$2")+"<br>";
+	timest +="終了時間:" +moment(ibeowari).format(date_fm.replace("%DST",addDST(ibeowari))).replace(/UTC(.\d\d)(\d\d)/,"UTC$1:$2")+"<br>";
 	}
 	else if(document.getElementById("usemoment").checked){
 	var tzst=tzJAP[document.gm.gm.selectedIndex][0];
-	timest +="開始時間:" +moment(ibekaishi).tz(tzst).format(date_fm+addDSTtz(ibekaishi,tzst)+")")+"<br>"
-	+"終了時間:" +moment(ibeowari).tz(tzst).format(date_fm+addDSTtz(ibeowari,tzst)+")")+"<br>"
+	timest +="開始時間:" +moment(ibekaishi).tz(tzst).format(date_fm.replace("%DST",addDSTtz(ibekaishi,tzst)))+"<br>";
+	timest +="終了時間:" +moment(ibeowari).tz(tzst).format(date_fm.replace("%DST",addDSTtz(ibeowari,tzst)))+"<br>";
 	}
 	else{
-	timest +="開始時間:" +moment.utc(ibekaishi).add("Hours",jtc).format(date_fm)+"<br>"
-	+"終了時間:" +moment.utc(ibeowari).add("Hours",jtc).format(date_fm)+"<br></font><br>";
+	timest +="開始時間:" +moment.utc(ibekaishi).add("Hours",jtc).format(date_fm)+"<br>";
+	timest +="終了時間:" +moment.utc(ibeowari).add("Hours",jtc).format(date_fm)+"<br></font><br>";
 	}
-	//+"イベ進捗率:"+ prog +"%;"
-	//;
+	
 	document.getElementById("cdt_now").innerHTML=timest;
 	document.getElementById("ibe").innerHTML ="<font size=\"20\">"+ ibemie +"</font>";
 
@@ -216,10 +216,14 @@ function escapeHTML(html) {
   return jQuery('<div>').text(html).html();
 }
 function parsedate(dt){
+var mm=moment(dt);
+if(moment.isMoment(mm)){
+return mm;
+}
 if(dt.match(/^\d+$/)){
 return moment.unix(dt);
 }
-return moment(dt);
+return "null";
 }
 
 
@@ -283,8 +287,8 @@ function createSelectBox(){
 
 function setting(){
 ibemie=escapeHTML(document.getElementById("title").value);
-ibekaishi= parsedate(document.getElementById("start").value);
-ibeowari= parsedate(document.getElementById("end").value);
+ibekaishi= parsedate(document.getElementById("start").value).format();
+ibeowari= parsedate(document.getElementById("end").value).format();
 }
 
 function setting1st(){
@@ -301,8 +305,8 @@ url= url.substring(0,n);
 }
 var s="#";
 s += ibemie +",";
-s += ibekaishi +",";
-s += ibeowari  +",";
+s += moment(ibekaishi).format() +",";
+s += moment(ibeowari).format()  +",";
 var mode="";
 if(mode.indexOf("OS")>=0){
 	s+="OS";
@@ -475,6 +479,7 @@ return;
 タイトル<input type="text" name="" value="" id="title" maxlength="30"width:200px;><br>
 開始時間(エポック秒かISO8601 ぐぐる入力で"日時,ないときは null)<input type="text" name="" value="" id="start"maxlength="30"width:200px;><br>
 終了時間(エポック秒かISO8601 ぐぐる入力で"日時,ないときは null)<input type="text" name="" value="" id="end"maxlength="30"width:200px;><br>
+表示形式(YYYY/MM-DD HH:mm:ssZz)<input type="text" name="" value="" id="userdt" maxlength="30"width:200px;>%DSTで夏時間かどうか Z時差　zタイム損名前<br>
 ※ぐぐる入力で"日時"変換ででてくる　2020/04/05 15:00　とかはOSの現地時間になります（）<br>
 <input type="Submit" value="HTMLに反映" Generate" onclick="setting();return false"> <input type="Submit" value="URLにしてブックマーク（）" Generate" onclick="url();return false"><br>
 </p>
