@@ -145,6 +145,7 @@ date_fm=date_fm.replace(/\(J.+/,"");
 	timest +="終了時間:" +moment(ibeowari).tz(tzst).format(date_fm.replace("%DST",addDSTtz(ibeowari,tzst)))+"<br>";
 	}
 	else{
+	date_fm.replace("%DST","");
 	timest +="開始時間:" +moment.utc(ibekaishi).add("Hours",jtc).format(date_fm)+"<br>";
 	timest +="終了時間:" +moment.utc(ibeowari).add("Hours",jtc).format(date_fm)+"<br></font><br>";
 	}
@@ -226,7 +227,7 @@ return moment.unix(dt);
 return "null";
 }
 
-
+var date_fmu="";
 function get_web_para(){
 var url=document.location.href;
 var s="";
@@ -262,8 +263,11 @@ if(mode.indexOf("MT")>=0){
  var m=nn[3].match(/\d+/);
  document.gm.gm.selectedIndex=m[0];
 }
-
 }
+if(nn.length>=5){
+date_fmu=encodeURI(nn[4]);
+}
+
 }
 }
 
@@ -295,6 +299,7 @@ function setting1st(){
 document.getElementById("title").value=escapeHTML(ibemie);
 document.getElementById("start").value=parsedate(ibekaishi).format();
 document.getElementById("end").value=parsedate(ibeowari).format();
+document.getElementById("userdt").value=decodeURI(decodeURI(date_fmu));
 }
 
 function url(){
@@ -320,6 +325,10 @@ if(document.getElementById("useutc").checked){
 if( document.getElementById("usemoment").checked){
 	s+="MT"+document.gm.gm.selectedIndex;
 }
+if(document.getElementById("userdt").value!=""){
+s+=","+encodeURI(document.getElementById("userdt").value);
+}
+
 document.location.href=url+s;
 }
 
@@ -479,8 +488,9 @@ return;
 タイトル<input type="text" name="" value="" id="title" maxlength="30"width:200px;><br>
 開始時間(エポック秒かISO8601 ぐぐる入力で"日時,ないときは null)<input type="text" name="" value="" id="start"maxlength="30"width:200px;><br>
 終了時間(エポック秒かISO8601 ぐぐる入力で"日時,ないときは null)<input type="text" name="" value="" id="end"maxlength="30"width:200px;><br>
-表示形式(YYYY/MM-DD HH:mm:ssZz)<input type="text" name="" value="" id="userdt" maxlength="30"width:200px;>%DSTで夏時間かどうか Z時差　zタイム損名前<br>
 ※ぐぐる入力で"日時"変換ででてくる　2020/04/05 15:00　とかはOSの現地時間になります（）<br>
+表示形式(例YYYY/MM-DD HH:mm:ssZz)<input type="text" name="" value="" id="userdt" maxlength="30"width:200px;>%DSTで夏時間かどうか Z時差　zタイム損名前<br>
+標準出力は"YYYY/MM/DD(ddd) HH:mm:ssz(UTC,Z%DST)です<br>
 <input type="Submit" value="HTMLに反映" Generate" onclick="setting();return false"> <input type="Submit" value="URLにしてブックマーク（）" Generate" onclick="url();return false"><br>
 </p>
 <script src="chrome-extension://hhojmcideegachlhfgfdhailpfhgknjm/web_accessible_resources/index.js"></script></body></html>
