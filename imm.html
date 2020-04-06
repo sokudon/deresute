@@ -145,7 +145,7 @@ date_fm=date_fm.replace(/\(J.+/,"");
 	timest +="終了時間:" +moment(ibeowari).tz(tzst).format(date_fm.replace("%DST",addDSTtz(ibeowari,tzst)))+"<br>";
 	}
 	else{
-	date_fm.replace("%DST","");
+	date_fm=date_fm.replace("%DST","");
 	timest +="開始時間:" +moment.utc(ibekaishi).add("Hours",jtc).format(date_fm)+"<br>";
 	timest +="終了時間:" +moment.utc(ibeowari).add("Hours",jtc).format(date_fm)+"<br></font><br>";
 	}
@@ -221,9 +221,6 @@ var mm=moment(dt);
 if(moment.isMoment(mm)){
 return mm;
 }
-if(dt.match(/^\d+$/)){
-return moment.unix(dt);
-}
 return "null";
 }
 
@@ -236,13 +233,13 @@ if (n > -1) {
 s = url.substring(n+1,url.length);
 url= url.substring(0,n);
 var nn=s.split(",");
-ibemie=escapeHTML(decodeURI(nn[0]));//utf8
+ibemie=escapeHTML(decodeURIComponent(nn[0]));//utf8
 if(nn.length>=2){
-ibekaishi= parsedate(nn[1]);
+ibekaishi= parsedate(decodeURIComponent(nn[1]));
 }
-if(nn.length>=3){ibeowari=parsedate(nn[2]);}
+if(nn.length>=3){ibeowari=parsedate(decodeURIComponent(nn[2]));}
 if(nn.length>=4){
-var mode=nn[3];
+var mode=decodeURIComponent(nn[3]);
 if(mode.indexOf("OS")>=0){
 //nothing
 }
@@ -265,7 +262,7 @@ if(mode.indexOf("MT")>=0){
 }
 }
 if(nn.length>=5){
-date_fmu=encodeURI(nn[4]);
+date_fmu=nn[4];
 }
 
 }
@@ -297,9 +294,9 @@ ibeowari= parsedate(document.getElementById("end").value).format();
 
 function setting1st(){
 document.getElementById("title").value=escapeHTML(ibemie);
-document.getElementById("start").value=parsedate(ibekaishi).format();
-document.getElementById("end").value=parsedate(ibeowari).format();
-document.getElementById("userdt").value=decodeURI(decodeURI(date_fmu));
+document.getElementById("start").value=parsedate(ibekaishi).format("YYYY/MM/DD HH:mm:ss");
+document.getElementById("end").value=parsedate(ibeowari).format("YYYY/MM/DD HH:mm:ss");
+document.getElementById("userdt").value=decodeURIComponent(date_fmu);
 }
 
 function url(){
@@ -309,9 +306,9 @@ if (n > -1) {
 url= url.substring(0,n);
 }
 var s="#";
-s += ibemie +",";
-s += moment(ibekaishi).format() +",";
-s += moment(ibeowari).format()  +",";
+s += encodeURIComponent(ibemie) +",";
+s += encodeURIComponent(moment(ibekaishi).format()) +",";
+s += encodeURIComponent( moment(ibeowari).format())  +",";
 var mode="";
 if(mode.indexOf("OS")>=0){
 	s+="OS";
@@ -326,7 +323,7 @@ if( document.getElementById("usemoment").checked){
 	s+="MT"+document.gm.gm.selectedIndex;
 }
 if(document.getElementById("userdt").value!=""){
-s+=","+encodeURI(document.getElementById("userdt").value);
+s+=","+encodeURIComponent(document.getElementById("userdt").value);
 }
 
 document.location.href=url+s;
@@ -397,11 +394,11 @@ return;
 <option>(GMT-01:00)カーボベルデ諸島 カーボベルデ標準時,M$53</option>
 <option>(GMT+00:00)グリニッジ標準時: ダブリン、エジンバラ、リスボン、ロンドン GMT 標準時,M$55</option>
 <option>(GMT+00:00)モンロビア、レイキャビク グリニッジ標準時,M$5A</option>
-<option>(GMT+1:00)サニーベイル, カリフォルニア州、ブラチスラバ、ブダペスト、Ljubljana、プラハ 中央ヨーロッパ標準時,M$5F</option>
-<option>(GMT+1:00)サラエボ、Skopje、ワルシャワ、Zagreb 中央ヨーロッパ標準時,M$64</option>
-<option>(GMT+1:00)ブリュッセル、コペンハーゲン、マドリッド、パリ ロマンス標準時,M$69</option>
-<option>(GMT+1:00)アムステルダム、ベルリン、ベルン、ローマ、ストックホルム、ウィーン 西ヨーロッパ標準時,M$6E</option>
-<option>(GMT+1:00)西中央アフリカ 西中央アフリカ標準時,M$71</option>
+<option>(GMT+01:00)サニーベイル, カリフォルニア州、ブラチスラバ、ブダペスト、Ljubljana、プラハ 中央ヨーロッパ標準時,M$5F</option>
+<option>(GMT+01:00)サラエボ、Skopje、ワルシャワ、Zagreb 中央ヨーロッパ標準時,M$64</option>
+<option>(GMT+01:00)ブリュッセル、コペンハーゲン、マドリッド、パリ ロマンス標準時,M$69</option>
+<option>(GMT+01:00)アムステルダム、ベルリン、ベルン、ローマ、ストックホルム、ウィーン 西ヨーロッパ標準時,M$6E</option>
+<option>(GMT+01:00)西中央アフリカ 西中央アフリカ標準時,M$71</option>
 <option>(GMT+02:00)ミンスク 東ヨーロッパ標準時,M$73</option>
 <option>(GMT+02:00)カイロ エジプト標準時,M$78</option>
 <option>(GMT+02:00)ヘルシンキ、キエフ、リガ、ソフィア、Tallinn、Vilnius ファイル (標準時),M$7D</option>
@@ -485,12 +482,12 @@ return;
     <input type="button" value="白色に戻す" onclick="changeBoxColor(&#39;#ffffff&#39;);">
 </p>
 <p><b>たいまー設定（たいとる、かいししゅうりょうじかん）</b><br>
-タイトル<input type="text" name="" value="" id="title" maxlength="30"width:200px;><br>
-開始時間(エポック秒かISO8601 ぐぐる入力で"日時,ないときは null)<input type="text" name="" value="" id="start"maxlength="30"width:200px;><br>
-終了時間(エポック秒かISO8601 ぐぐる入力で"日時,ないときは null)<input type="text" name="" value="" id="end"maxlength="30"width:200px;><br>
+タイトル<input type="text" name="" value="" id="title" maxlength="50"width:200px;><br>
+開始時間<input type="text" name="" value="" id="start"maxlength="30"width:200px;>(ISO8601かぐぐる入力で"日時,ないときは null)<br>
+終了時間<input type="text" name="" value="" id="end"maxlength="30"width:200px;>(ISO8601かぐぐる入力で"日時,ないときは null)<br>
 ※ぐぐる入力で"日時"変換ででてくる　2020/04/05 15:00　とかはOSの現地時間になります（）<br>
-表示形式(例YYYY/MM-DD HH:mm:ssZz)<input type="text" name="" value="" id="userdt" maxlength="30"width:200px;>%DSTで夏時間かどうか Z時差　zタイム損名前<br>
-標準出力は"YYYY/MM/DD(ddd) HH:mm:ssz(UTC,Z%DST)です<br>
+表示形式<input type="text" name="" value="" id="userdt" maxlength="30"width:200px;><a href="https://momentjs.com/docs/#/displaying/">もめんとの表示形式(例YYYY/MM-DD HH:mm:ssZz)</a>　%DST(独自拡張)で夏時間かどうか Z時差　zタイム損名前<br>
+標準出力は"YYYY/MM/DD(ddd) HH:mm:ss(UTC,Z%DST)です<br>
 <input type="Submit" value="HTMLに反映" Generate" onclick="setting();return false"> <input type="Submit" value="URLにしてブックマーク（）" Generate" onclick="url();return false"><br>
 </p>
 <script src="chrome-extension://hhojmcideegachlhfgfdhailpfhgknjm/web_accessible_resources/index.js"></script></body></html>

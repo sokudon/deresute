@@ -186,11 +186,11 @@ America/Porto_Acre	アメリカ/ポルトエーカー
 America/Porto_Velho	アメリカ/ポルトヴェーリョ
 America/Puerto_Rico	アメリカ/プエルトリコ
 America/Punta_Arenas	アメリカ/プンタアリーナ
-America/Rainy_River	America	/	Rainy_River
+America/Rainy_River	アメリカ/レイニーリバー
 America/Rankin_Inlet	アメリカ/ランキンインレット
 America/Recife	アメリカ/レシフェ
 America/Regina	アメリカ/レジーナ
-America/Resolute	アメリカ/毅然とした
+America/Resolute	アメリカ/レゾリュート
 America/Rio_Branco	アメリカ/リオブランコ
 America/Rosario	アメリカ/ロザリオ
 America/Santa_Isabel	アメリカ/サンタイザベル
@@ -207,7 +207,7 @@ America/St_Kitts	アメリカ/セントキッツ
 America/St_Lucia	アメリカ/セントルシア
 America/St_Thomas	アメリカ/セントトーマス
 America/St_Vincent	アメリカ/セントビンセント
-America/Swift_Current	America	/	Swift_Current
+America/Swift_Current	アメリカ/スイフトカレント
 America/Tegucigalpa	アメリカ/テグシガルパ
 America/Thule	アメリカ/チューレ
 America/Thunder_Bay	アメリカ/サンダーベイ
@@ -239,7 +239,7 @@ Asia/Amman	アジア/アンマン
 Asia/Anadyr	アジア/アナディリ
 Asia/Aqtau	アジア/アクタウ
 Asia/Aqtobe	アジア/アクトベ
-Asia/Ashgabat	Asia	/	Ashgabat
+Asia/Ashgabat	アジア/アシガバート
 Asia/Ashkhabad	アジア/アシュハバード
 Asia/Atyrau	アジア/アティラウ
 Asia/Baghdad	アジア/バグダッド
@@ -266,7 +266,7 @@ Asia/Famagusta	アジア/ファマグスタ
 Asia/Gaza	アジア/ガザ
 Asia/Harbin	アジア/ハルビン
 Asia/Hebron	アジア/ヘブロン
-Asia/Ho_Chi_Minh	Asia	/	Ho_Chi_Minh
+Asia/Ho_Chi_Minh	アジア/ホーチミン
 Asia/Hong_Kong	アジア/香港
 Asia/Hovd	アジア/ホブド
 Asia/Irkutsk	アジア/イルクーツク
@@ -297,7 +297,7 @@ Asia/Novokuznetsk	アジア/ノボクズネツク
 Asia/Novosibirsk	アジア/ノボシビルスク
 Asia/Omsk	アジア/オムスク
 Asia/Oral	アジア/オーラル
-Asia/Phnom_Penh	Asia	/	Phnom_Penh
+Asia/Phnom_Penh	アジア/プノンペン
 Asia/Pontianak	アジア/ポンティアナック
 Asia/Pyongyang	アジア/平壌
 Asia/Qatar	アジア/カタール
@@ -311,21 +311,21 @@ Asia/Samarkand	アジア/サマルカンド
 Asia/Seoul	アジア/ソウル
 Asia/Shanghai	アジア/上海
 Asia/Singapore	アジア/シンガポール
-Asia/Srednekolymsk	Asia	/	Srednekolymsk
+Asia/Srednekolymsk	アジア/スレドネコリムスク
 Asia/Taipei	アジア/台北
 Asia/Tashkent	アジア/タシケント
 Asia/Tbilisi	アジア/トビリシ
 Asia/Tehran	アジア/テヘラン
-Asia/Tel_Aviv	Asia	/	Tel_Aviv
+Asia/Tel_Aviv	アジア/テルアビブ
 Asia/Thimbu	アジア/ティンブ
 Asia/Thimphu	アジア/ティンプー
 Asia/Tokyo	アジア/東京
 Asia/Tomsk	アジア/トムスク
 Asia/Ujung_Pandang	アジア/ウジュン_パンダン
 Asia/Ulaanbaatar	アジア/ウランバートル
-Asia/Ulan_Bator	Asia	/	Ulan_Bator
+Asia/Ulan_Bator	アジア/ウランバートル
 Asia/Urumqi	アジア/ウルムチ
-Asia/Ust-Nera	アジア/	Ust-Nera
+Asia/Ust-Nera	アジア/ウスチ＝ネラ
 Asia/Vientiane	アジア/ビエンチャン
 Asia/Vladivostok	アジア/ウラジオストク
 Asia/Yakutsk	アジア/ヤクーツク
@@ -344,7 +344,7 @@ Atlantic/Reykjavik	大西洋/レイキャビク
 Atlantic/South_Georgia	大西洋/サウスジョージア
 Atlantic/St_Helena	大西洋/セントヘレナ
 Atlantic/Stanley	大西洋/スタンレー
-Australia/ACT	オーストラリア/	ACT
+Australia/ACT	オーストラリア/オーストラリア首都特別地域
 Australia/Adelaide	オーストラリア/アデレード
 Australia/Brisbane	オーストラリア/ブリスベン
 Australia/Broken_Hill	オーストラリア/ブロークンヒル
@@ -353,11 +353,11 @@ Australia/Currie	オーストラリア/カリー
 Australia/Darwin	オーストラリア/ダーウィン
 Australia/Eucla	オーストラリア/ユークラ
 Australia/Hobart	オーストラリア/ホバート
-Australia/LHI	オーストラリア/	LHI
+Australia/LHI	オーストラリア/ロードハウ島
 Australia/Lindeman	オーストラリア/リンデマン
 Australia/Lord_Howe	オーストラリア/ロードハウ
 Australia/Melbourne	オーストラリア/メルボルン
-Australia/NSW	オーストラリア/	NSW
+Australia/NSW	オーストラリア/ニューサウスウェールズ
 Australia/North	オーストラリア/北
 Australia/Perth	オーストラリア/パース
 Australia/Queensland	オーストラリア/クイーンズランド
@@ -371,7 +371,7 @@ Brazil/Acre	ブラジル/エーカー
 Brazil/DeNoronha	ブラジル/デノローニャ
 Brazil/East	ブラジル/東
 Brazil/West	ブラジル/西
-CET	CET
+CET	CET 中央ヨーロッパ時間
 CST6CDT	CST6CDT
 Canada/Atlantic	カナダ/大西洋
 Canada/Central	カナダ/中央
@@ -384,46 +384,46 @@ Canada/Yukon	カナダ/ユーコン
 Chile/Continental	チリ/コンチネンタル
 Chile/EasterIsland	チリ/イースター島
 Cuba	キューバ
-EET	EET
-EST	EST（東部基準時
+EET	EET東ヨーロッパ時間
+EST	EST東部基準時
 EST5EDT	EST5EDT
 Egypt	エジプト
 Eire	エール
-Etc/GMT	その他/	GMT
-Etc/GMT+0	その他/	GMT	+	0
-Etc/GMT+1	その他/	GMT	+	1
-Etc/GMT+10	その他/	GMT	+	10
-Etc/GMT+11	その他/	GMT	+	11
-Etc/GMT+12	その他/	GMT	+	12
-Etc/GMT+2	その他/	GMT	+	2
-Etc/GMT+3	その他/	GMT	+	3
-Etc/GMT+4	その他/	GMT	+	4
-Etc/GMT+5	その他/	GMT	+	5
-Etc/GMT+6	その他/	GMT	+	6
-Etc/GMT+7	その他/	GMT	+	7
-Etc/GMT+8	その他/	GMT	+	8
-Etc/GMT+9	その他/	GMT	+	9
-Etc/GMT-0	その他/	GMT-0
-Etc/GMT-1	その他/	GMT-1
-Etc/GMT-10	その他/	GMT-10
-Etc/GMT-11	その他/	GMT-11
-Etc/GMT-12	その他/	GMT-12
-Etc/GMT-13	その他/	GMT-13
-Etc/GMT-14	その他/	GMT-14
-Etc/GMT-2	その他/	GMT-2
-Etc/GMT-3	その他/	GMT-3
-Etc/GMT-4	その他/	GMT-4
-Etc/GMT-5	その他/	GMT-5
-Etc/GMT-6	その他/	GMT-6
-Etc/GMT-7	その他/	GMT-7
-Etc/GMT-8	その他/	GMT-8
-Etc/GMT-9	その他/	GMT-9
-Etc/GMT0	その他/	GMT0
+Etc/GMT+12	その他/GMT-12/UTC-12:00
+Etc/GMT+11	その他/GMT-11/UTC-11:00
+Etc/GMT+10	その他/GMT-10/UTC-10:00
+Etc/GMT+9	その他/GMT-9/UTC-9:00
+Etc/GMT+8	その他/GMT-8/UTC-8:00
+Etc/GMT+7	その他/GMT-7/UTC-7:00
+Etc/GMT+6	その他/GMT-6/UTC-6:00
+Etc/GMT+5	その他/GMT-5/UTC-5:00
+Etc/GMT+4	その他/GMT-4/UTC-4:00
+Etc/GMT+3	その他/GMT-3/UTC-3:00
+Etc/GMT+2	その他/GMT-2/UTC-2:00
+Etc/GMT+1	その他/GMT-1/UTC-1:00
+Etc/GMT	その他/GMT
+Etc/GMT0	その他/GMT0
+Etc/GMT+0	その他/GMT-0/UTC-0:00
+Etc/GMT-0	その他/GMT+0/UTC+0:00
+Etc/GMT-1	その他/GMT+1/UTC+1:00
+Etc/GMT-2	その他/GMT+2/UTC+2:00
+Etc/GMT-3	その他/GMT+3/UTC+3:00
+Etc/GMT-4	その他/GMT+4/UTC+4:00
+Etc/GMT-5	その他/GMT+5/UTC+5:00
+Etc/GMT-6	その他/GMT+6/UTC+6:00
+Etc/GMT-7	その他/GMT+7/UTC+7:00
+Etc/GMT-8	その他/GMT+8/UTC+8:00
+Etc/GMT-9	その他/GMT+9/UTC+9:00
+Etc/GMT-10	その他/GMT+10/UTC+10:00
+Etc/GMT-11	その他/GMT+11/UTC+11:00
+Etc/GMT-12	その他/GMT+12/UTC+12:00
+Etc/GMT-13	その他/GMT+13/UTC+13:00
+Etc/GMT-14	その他/GMT+14/UTC+14:00
 Etc/Greenwich	その他/グリニッジ
-Etc/UCT	その他/	UCT
-Etc/UTC	その他/	UTC
+Etc/UCT	その他/UCT
+Etc/UTC	その他/UTC
 Etc/Universal	その他/ユニバーサル
-Etc/Zulu	その他/ズールー語
+Etc/Zulu	その他/ズル
 Europe/Amsterdam	ヨーロッパ/アムステルダム
 Europe/Andorra	ヨーロッパ/アンドラ
 Europe/Astrakhan	ヨーロッパ/アストラハン
@@ -442,7 +442,7 @@ Europe/Dublin	ヨーロッパ/ダブリン
 Europe/Gibraltar	ヨーロッパ/ジブラルタル
 Europe/Guernsey	ヨーロッパ/ガーンジー
 Europe/Helsinki	ヨーロッパ/ヘルシンキ
-Europe/Isle_of_Man	Europe	/	Isle_of_Man
+Europe/Isle_of_Man	ヨーロッパ/マン島
 Europe/Istanbul	ヨーロッパ/イスタンブール
 Europe/Jersey	ヨーロッパ/ジャージー
 Europe/Kaliningrad	ヨーロッパ/カリーニングラード
@@ -485,12 +485,12 @@ Europe/Vilnius	ヨーロッパ/ビリニュス
 Europe/Volgograd	ヨーロッパ/ボルゴグラード
 Europe/Warsaw	ヨーロッパ/ワルシャワ
 Europe/Zagreb	ヨーロッパ/ザグレブ
-Europe/Zaporozhye	Europe	/	Zaporozhye
+Europe/Zaporozhye	ヨーロッパ/ザポリージャ
 Europe/Zurich	ヨーロッパ/チューリッヒ
 GB	GB
 GB-Eire	GB-Eire
 GMT	GMT
-GMT+0	GMT	+	0
+GMT+0	GMT+0
 GMT-0	GMT-0
 GMT0	GMT0
 Greenwich	グリニッジ
@@ -507,7 +507,7 @@ Indian/Mahe	インド/マヘ
 Indian/Maldives	インド/モルディブ
 Indian/Mauritius	インド/モーリシャス
 Indian/Mayotte	インド/マヨット
-Indian/Reunion	インド/同窓会
+Indian/Reunion	インド/レユニオン
 Iran	イラン
 Israel	イスラエル
 Jamaica	ジャマイカ
@@ -533,7 +533,7 @@ Pacific/Chuuk	太平洋/チューク
 Pacific/Easter	太平洋/イースター
 Pacific/Efate	太平洋/エファテ
 Pacific/Enderbury	太平洋/エンダーベリー
-Pacific/Fakaofo	Pacific	/	Fakaofo
+Pacific/Fakaofo	太平洋/ファカオフォ島
 Pacific/Fiji	太平洋/フィジー
 Pacific/Funafuti	太平洋/フナフティ
 Pacific/Galapagos	太平洋/ガラパゴス
@@ -557,7 +557,7 @@ Pacific/Palau	太平洋/パラオ
 Pacific/Pitcairn	太平洋/ピトケアン
 Pacific/Pohnpei	太平洋/ポンペイ
 Pacific/Ponape	太平洋/ポナペ
-Pacific/Port_Moresby	Pacific	/	Port_Moresby
+Pacific/Port_Moresby	太平洋/ポート・モレスビー
 Pacific/Rarotonga	太平洋/ラロトンガ
 Pacific/Saipan	太平洋/サイパン
 Pacific/Samoa	太平洋/サモア
@@ -573,7 +573,7 @@ Portugal	ポルトガル
 ROC	ROC
 ROK	韓国
 Singapore	シンガポール
-Turkey	七面鳥
+Turkey	トルコ
 UCT	UCT
 US/Alaska	米国/アラスカ
 US/Aleutian	米国/アリューシャン
@@ -586,10 +586,10 @@ US/Indiana-Starke	米国/インディアナスターク
 US/Michigan	米国/ミシガン
 US/Mountain	米国/山
 US/Pacific	米国/太平洋
-US/Pacific-New	US	/	Pacific-New
+US/Pacific-New	US/パシフィックニュー
 US/Samoa	米国/サモア
 UTC	UTC
 Universal	ユニバーサル
 W-SU	W-SU
 WET	WET西ヨーロッパ時間
-Zulu	ズールー語
+Zulu	ズル
