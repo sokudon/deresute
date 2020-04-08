@@ -268,7 +268,7 @@ function parse_json_date_utc(json_date)
     local year, month, day, hour, minute, 
         seconds, offsetsign, offsethour, offsetmin = json_date:match(pattern)
     local timestamp = os.time{year = year, month = month, 
-        day = day, hour = hour, min = minute, sec = seconds}
+        day = day, hour = 4, min = minute, sec = seconds}
     local offset = 0
     if offsetsign ~= 'Z' then
       offset = tonumber(offsethour) * 3600 + tonumber(offsetmin)*60
@@ -283,7 +283,9 @@ function parse_json_date_utc(json_date)
     
     --return timestamp + get_timezone_the_day() -offset
     
-    return timestamp + get_timezone_offset(timestamp) -offset
+    return timestamp + get_timezone_offset(timestamp) -offset  + (hour-4)*3600
+    --hourは越境時タイムマシンが発生するので最後に足す、幻の2時(2020-03-08T02:00:00) -05:00
+    --https://ja.wikipedia.org/wiki/%E5%A4%8F%E6%99%82%E9%96%93　ブラジルが0時なので4時までずらす
 end
 
 function get_timezone_the_day()

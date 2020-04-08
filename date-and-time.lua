@@ -76,12 +76,12 @@ function JST(dt)
 return os.date('!%Y/%m/%dT%X(JST)%a',parse_json_date_utc(dt)+3600*9)
 end
 
-function parse_json_date_utc(json_date) --ISO8601datetimeparse パーサー完成版？
+function parse_json_date_utc(json_date)
     local pattern = "(%d+)%-(%d+)%-(%d+)%a(%d+)%:(%d+)%:([%d%.]+)([Z%+%-])(%d?%d?)%:?(%d?%d?)"
     local year, month, day, hour, minute, 
         seconds, offsetsign, offsethour, offsetmin = json_date:match(pattern)
     local timestamp = os.time{year = year, month = month, 
-        day = day, hour = hour, min = minute, sec = seconds}
+        day = day, hour = 4, min = minute, sec = seconds}
     local offset = 0
     if offsetsign ~= 'Z' then
       offset = tonumber(offsethour) * 3600 + tonumber(offsetmin)*60
@@ -90,13 +90,15 @@ function parse_json_date_utc(json_date) --ISO8601datetimeparse パーサー完�
     
     --local temp = os.date("*t",timestamp)
     --if(temp.isdst) then  --パースした時刻がサマーがしらべる
-    --offset = offset -3600  --0.5サマータイムもあるので（）、オーストラリアだと使えないかも
+    --offset = offset -3600
     --end
     --return timestamp + get_timezone() -offset
     
     --return timestamp + get_timezone_the_day() -offset
     
-    return timestamp + get_timezone_offset(timestamp) -offset
+    return timestamp + get_timezone_offset(timestamp) -offset  + (hour-4)*3600
+    --hourは越境時タイムマシンが発生するので最後に足す、幻の2時(2020-03-08T02:00:00) -05:00
+    --https://ja.wikipedia.org/wiki/%E5%A4%8F%E6%99%82%E9%96%93　ブラジルが0時豪州3時なので4時までずらす
 end
 
 
