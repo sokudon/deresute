@@ -76,7 +76,7 @@ function JST(dt)
 return os.date('!%Y/%m/%dT%X(JST)%a',parse_json_date_utc(dt)+3600*9)
 end
 
-function parse_json_date_utc(json_date)
+function parse_json_date_utc(json_date) --ISO8601datetimeparse パーサー完成版？
     local pattern = "(%d+)%-(%d+)%-(%d+)%a(%d+)%:(%d+)%:([%d%.]+)([Z%+%-])(%d?%d?)%:?(%d?%d?)"
     local year, month, day, hour, minute, 
         seconds, offsetsign, offsethour, offsetmin = json_date:match(pattern)
@@ -88,9 +88,10 @@ function parse_json_date_utc(json_date)
       if offsetsign == "-" then offset = offset * -1 end
     end
     
+    
     --local temp = os.date("*t",timestamp)
     --if(temp.isdst) then  --パースした時刻がサマーがしらべる
-    --offset = offset -3600
+    --offset = offset -3600  --0.5サマータイムもあるので（）、オーストラリアだと使えないかも
     --end
     --return timestamp + get_timezone() -offset
     
@@ -150,6 +151,26 @@ function JPday(date,t)
  return date
 end
 
+function get_ep(tu)
+
+   local total = tu*10
+
+	--local tenths   = math.floor(total % 10)
+	local seconds  = math.floor((total / 10) % 60)
+	local minutes  = math.floor((total / 600) % 60)
+	local hours    = math.floor((total / 36000) % 24)
+	local idays     = math.floor(total / 864000)
+	local days     = math.floor(idays%365)
+	local years    = math.floor(total/(864000*365))
+
+	--local hours_infinite  = math.floor(total / 36000)
+	--local seconds_infinite  = math.floor(total / 10)
+	--local minutes_infinite  = math.floor(total / 600)
+   local ep = years.."年"..days.."日".. hours.."時".. minutes.."分"..seconds .."秒"
+   
+   return ep
+end
+
 function parse_jp_era(date)
   local datestring=""
   
@@ -164,7 +185,8 @@ function parse_jp_era(date)
    inum =1
    end
    local tu = elaspted(imas[inum][2])
-   local gm = imas[inum][1] .."("..imas[inum][3]..")%%n開始から" 
+   local imasname =imas[inum][1] .."("..imas[inum][3]..")"
+   local gm = "開始から" 
   
    
    --inum の番号
@@ -194,22 +216,8 @@ function parse_jp_era(date)
 --,{"アイドルマスター ステラステージ","2017-12-20T15:00:00.000Z","PS4",""
 --25,{"アイドルマスター シャイニーカラーズ","2018-04-23T15:00:00.000Z","enza",""
 --,{"ミリシタ海外版","2019-08-29T15:00:00.000Z","iOS、Android",""
-
    
-   local total = tu*10
-
-	--local tenths   = math.floor(total % 10)
-	--local seconds  = math.floor((total / 10) % 60)
-	local minutes  = math.floor((total / 600) % 60)
-	local hours    = math.floor((total / 36000) % 24)
-	local idays     = math.floor(total / 864000)
-	local days     = math.floor(idays%365)
-	local years    = math.floor(total/(864000*365))
-
-	--local hours_infinite  = math.floor(total / 36000)
-	--local seconds_infinite  = math.floor(total / 10)
-	--local minutes_infinite  = math.floor(total / 600)
-	 local dateu='!%m%d'       --(%a)%X(UTC+09:00)'
+	local dateu='!%m%d'       --(%a)%X(UTC+09:00)'
 	local nst =os.date(dateu,os.time()+9*3600)
 	local tt = parse_json_date_utc(imas[inum][2])+9*3600
 	local ist =os.date(dateu,tt)
@@ -217,34 +225,38 @@ function parse_jp_era(date)
 	if(nst==ist)then
 	nenme = ","..years.."周年"
 	end
-   
-   local ep = years.."年"..days.."日".. hours.."時".. minutes.."分"
+   local ep=get_ep(tu)
   	date =string.gsub(date, "%%is",gm..ep ..nenme)
+  
+  local dt = string.format("%04d",tonumber(os.date("!%Y",os.time()+9*3600))) .. "-".. string.format("%02d",tonumber(os.date('!%m',tt))).."-".. string.format("%02d",tonumber(os.date('!%d',tt))).."T00:00:00+09:00"
+  
+  
+  local gm = "周年" 
+  local aniv=lefttime(dt)
+  if(aniv<0) then
+  aniv =-aniv
+  gm = gm.."から"
+  else
+  gm = gm.."まで"
+  end
+  local ep= string.gsub(get_ep(aniv),"0年","")
+  	date =string.gsub(date, "%%it",gm..ep)
   	
   	local imm=imas[inum][4]
-  	debugtxt2=JST(imas[inum][2])
+    debugtxt3=dt
+  	debugtxt2=JST(imas[inum][2])  --開始日
   	debugtxt1=""
   	
   	if(isempty(imm)==false) then
-  	debugtxt1= JST(imm)
-  	
-  	
+  	debugtxt1= JST(imm) --差終わり日
     tu= elaspted(imas[inum][4])
-    gm= imas[inum][1] .."("..imas[inum][3]..")%%nサ終から" --サ終わりの時刻情報があるときのみ
   	
-    total = tu*10
-
-	local minutes  = math.floor((total / 600) % 60)
-	local hours    = math.floor((total / 36000) % 24)
-	local idays     = math.floor(total / 864000)
-	local days     = math.floor(idays%365)
-	local years    = math.floor(total/(864000*365))
-   
-    ep = years.."年"..days.."日".. hours.."時".. minutes.."分"
-  	date =string.gsub(date, "%%i","サ終から"..ep )
+   local ep=get_ep(tu)
+  	date =string.gsub(date, "%%ie","サ終から"..ep )
   	end
   	
-  	date =string.gsub(date, "%%i","" )
+  	date =string.gsub(date, "%%ie","")
+  	date =string.gsub(date, "%%i",imasname)
   end
   if (string.find(date,"%%UTC")) then
   local jp_day={"日","月","火","水","木","金","土"}
@@ -286,14 +298,20 @@ end
 --全部出し
 --%UTC%n%c%DST%n%x%X%z%n%s%n%ISO%n%ISOZ%n%VR%m月%d日(%Vw)%H時%M分%S秒
 
---独自拡張
---%i	  あいますの記念日の時間からの経過時間,フリーズ防止
---%UTC    worldtime set UTCsetting,	UTC標準時からUI設定の時間を表示,サマータイムは非対応
---%ISO    ISO8601表示ローカル時間
---%ISOZ   ISO8601表示UTC時間
+--独自拡張2020/04/09現在 
+--%E	デバッグ文字1 サービス終了日
+--%J	デバッグ文字2 サービス開始日
+--%K	デバッグ文字3 今年の周年日
+--$i	あいますゲームの名前,フリーズ防止
+--%is	あいますの記念日の時間からの経過時間
+--%it	あいますの記念日までの時間
+--%ie	あいますのサービス終了した時間からの経過時間(データがないものは表示なし)
+--%UTC  worldtime set UTCsetting,	UTC標準時からUI設定の時間を表示,サマータイムは非対応
+--%ISO  ISO8601表示ローカル時間
+--%ISOZ ISO8601表示UTC時間
 --%Z	サマーなしタイムゾーン時差情報,元はタイムゾーンストリングだが文字化けで使えないので（）
---%ZZ    timezone,HH:mm  timezoneサマーなしタイムゾーン時差情報  
---%zz    サマータイム有り＋時差情報 HH:mm
+--%ZZ   timezone,HH:mm  timezoneサマーなしタイムゾーン時差情報  
+--%zz   サマータイム有り＋時差情報 HH:mm
 --%DST  夏時間かどうか出力する 引数"J"で夏時間
 --%s    unixtime,フリーズ防止
 --%VR--%Vr--%VH--%Vh--%VS--%Vs--%VT--%Vt 日本の和暦、開始年しかちぇくしてないのでてきとー
