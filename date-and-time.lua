@@ -120,9 +120,8 @@ function isempty(s)
 end
 
 function JPday(date,t)
-  local jp_day={"日","月","火","水","木","金","土"}
-  local dt = os.date("*t",t)
   
+  local dt = os.date("*t",t)
   if (get_timezone_the_day() == 9*3600) then --動作は日本時間のときだけ
   	date= string.gsub(date, "%%VR","令和"..(dt.year-2018).."年")
   	date= string.gsub(date, "%%Vr","R"..(dt.year-2018))  --%Vr/%Y/%m/%d(%Vw)%X
@@ -135,13 +134,14 @@ function JPday(date,t)
   end
   
   --DateUTC(2020,2,31,20,48,0,0)
+  local jp_day={"月","火","水","木","金","土","日"} --%w用
   date= string.gsub(date, "%%E",debugtxt1)  ----フリーズ文字代替
   date= string.gsub(date, "%%J",debugtxt2)  ----フリーズ文字代替
   date= string.gsub(date, "%%K",debugtxt3)  ----フリーズ文字代替
   date= string.gsub(date, "%%s",os.time())  ----フリーズ文字代替
   date= string.gsub(date, "%%DST",isDST("J"))
-  date= string.gsub(date, "%%Vw",jp_day[dt.wday])
-  date= string.gsub(date, "%%VW",jp_day[dt.wday].."曜日") 
+  date= string.gsub(date, "%%Vw",jp_day[tonumber(os.date("%w",t))])
+  date= string.gsub(date, "%%VW",jp_day[tonumber(os.date("%w",t))].."曜日") 
   date= string.gsub(date, "%%ZZ", get_tzoffset_sepa(get_timezone())) --timezone タイムゾーン時差情報標準時、サマータイムなし 
   date= string.gsub(date, "%%Z",  get_tzoffset(get_timezone())) --timezone タイムゾーン時差情報標準時、サマータイムなし 
   date= string.gsub(date, "%%zz", get_tzoffset_sepa(get_timezone_the_day())) --timezone タイムゾーン時差情報夏時間こみ
@@ -258,28 +258,41 @@ function parse_jp_era(date)
   	date =string.gsub(date, "%%ie","")
   	date =string.gsub(date, "%%i",imasname)
   end
+  
+  
   if (string.find(date,"%%UTC")) then
-  local jp_day={"日","月","火","水","木","金","土"}
   local tu = os.time()  + (tonumber(utc)*3600)
   
   local u= get_tzoffset_sepa(utc*3600)
     local dateu='!%Y/%m/%d(%a)%X(UTC'..u..')' --%z系はOS依存のため使用不可
-    
+   
+    --local jp_day={"日","月","火","水","木","金","土",} --dt.wday用
     --local dt = os.date("!*t",tu) --%Vwを使いたいとき utcの時間で曜日を取得する必要がある
 	--dateu= string.gsub(dateu, "%%Vw",jp_day[dt.wday])
 	
+    --local jp_day={"月","火","水","木","金","土","日"} --%w用
+    --local getd = os.date("!%w",tu) --%Vwを使いたいとき utcの時間で曜日を取得する必要がある
+	--dateu= string.gsub(dateu, "%%Vw",jp_day[tonumber(getd)])
+	
+  	dateu=JPday(dateu,tu)
   	datestring = os.date(dateu,tu)
   	date =string.gsub(date, "%%UTC",datestring)
   end
   if (string.find(date,"%%ISOZ")) then
   local dateu='!%Y/%m/%dT%XZ %a'    --%z系はOS依存のため使用不可
   
+    --local jp_day={"月","火","水","木","金","土","日"} --%w用
+    --local getd = os.date("!%w",t) 
+	--dateu= string.gsub(dateu, "%%Vw",jp_day[tonumber(getd)])
+
   	datestring = os.date(dateu, t)
   	date =string.gsub(date, "%%ISO%w",datestring)
   end
   if (string.find(date,"%%ISO")) then
-    local dateu='%Y/%m/%dT%X%zz %a'
-  	dateu=JPday(dateu,t)
+    local dateu='%Y/%m/%dT%X%zz %a' 
+    
+  	--dateu=JPday(dateu,t)
+  	
   	datestring = os.date(dateu, t)
   	date =string.gsub(date, "%%ISO",datestring)
   end
@@ -297,6 +310,9 @@ end
 
 --全部出し
 --%UTC%n%c%DST%n%x%X%z%n%s%n%ISO%n%ISOZ%n%VR%m月%d日(%Vw)%H時%M分%S秒
+
+--あいますの情報を出す
+--日本時間%UTC%nUTC協定時間%ISOZ%n8601 %ISO%n%i%n%J%is%n%K%it%n%E%ie%n
 
 --独自拡張2020/04/09現在 
 --%E	デバッグ文字1 サービス終了日
