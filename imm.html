@@ -79,7 +79,7 @@ function get_count() {
 	esps=-esps;
 	kaishi="開始まで:"
 	}
-    if(esps>ibetime){
+    else if(esps>ibetime){
 	esps=ibetime;
 	}
 	esps= Math.floor(esps/3600) +"時間"+ Math.floor((esps%3600)/60) +"分" + Math.floor(esps%60) +"秒";
@@ -87,10 +87,7 @@ function get_count() {
 	esps="----";
 	}
 	
-	moment.locale("ja", {
- weekdays: ["日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"],
- weekdaysShort: ["日", "月", "火", "水", "木", "金", "土"]
- });
+	
 
 if(getDevice()){
 date_fm=date_fm.replace(/\(J.+/,"");
@@ -100,6 +97,9 @@ date_fm=date_fm.replace(/\(J.+/,"");
    prog=prog.toFixed(2);
    if(prog=="NaN"){
    prog="";
+   }
+   else if(prog<0){
+   prog="(0%)";
    }
    else if(prog>100){
    prog="(100%)";
@@ -135,6 +135,7 @@ date_fm=date_fm.replace(/\(J.+/,"");
 	
 	timest += kaishi +esps+ prog +"<br>"
 	+zan +timetxt+"<br><br>";
+	
 	if(ostime){
 	timest +="開始時間:" +moment(ibekaishi).format(date_fm.replace("%DST",addDST(ibekaishi))).replace(/UTC(.\d\d)(\d\d)/,"UTC$1:$2")+"<br>";
 	timest +="終了時間:" +moment(ibeowari).format(date_fm.replace("%DST",addDST(ibeowari))).replace(/UTC(.\d\d)(\d\d)/,"UTC$1:$2")+"<br>";
@@ -210,7 +211,13 @@ function toTwitter() {
 window.onload = function() {
 createSelectBox();
 document.gm.gm.selectedIndex=511;//JAP
-get_web_para();setting1st();
+get_web_para();
+setting1st();
+setting();
+moment.locale("ja", {
+ weekdays: ["日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"],
+ weekdaysShort: ["日", "月", "火", "水", "木", "金", "土"]
+ });
 };
 
 function escapeHTML(html) {
@@ -294,8 +301,8 @@ ibeowari= parsedate(document.getElementById("end").value).format();
 
 function setting1st(){
 document.getElementById("title").value=escapeHTML(ibemie);
-document.getElementById("start").value=parsedate(ibekaishi).format("YYYY/MM/DD HH:mm:ss");
-document.getElementById("end").value=parsedate(ibeowari).format("YYYY/MM/DD HH:mm:ss");
+document.getElementById("start").value=parsedate(ibekaishi).format();
+document.getElementById("end").value=parsedate(ibeowari).format();//"YYYY/MM/DD HH:mm:ss"
 document.getElementById("userdt").value=decodeURIComponent(date_fmu);
 }
 
@@ -310,7 +317,7 @@ s += encodeURIComponent(ibemie) +",";
 s += encodeURIComponent(moment(ibekaishi).format()) +",";
 s += encodeURIComponent( moment(ibeowari).format())  +",";
 var mode="";
-if(mode.indexOf("OS")>=0){
+if(document.getElementById("OS").checked){
 	s+="OS";
 }
 if(document.getElementById("useutc").checked){
