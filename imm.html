@@ -192,20 +192,21 @@ function changeBoxColor( newColor ) {
 
 //Twitterボタン
 function toTwitter() {
-	var url = "";
+	var urls = "";
+	var urlmaster=url();
     
     s=document.getElementById("ibe").innerHTML+"<br>"+document.getElementById("cdt_now").innerHTML;
 	s=s.replace(/<br>/gm,"\r\n");
 	s=s.replace(/<.*?>/gm,"");
 	s=s.replace(/\r\n\r\n/gm,"\r\n");
-	s=s+"\r\nhttp://sokudon.s17.xrea.com/neta/imm.html\r\n#はんようタイマー";
+	s=s+"\r\n"+ urlmaster +"\r\n#はんようタイマー";
 	
-	if (url == "") {
-		url = "http://twitter.com/share?text=" + encodeURIComponent(s);
+	if (urls == "") {
+		urls = "http://twitter.com/share?text=" + encodeURIComponent(s);
 	} else {
-		url = "http://twitter.com/share?url=" + url + "&text=" + encodeURIComponent(s);
+		urls = "http://twitter.com/share?url=" + urls + "&text=" + encodeURIComponent(s);
 	}
-	window.open(url,"_blank","width=600,height=300");
+	window.open(urls,"_blank","width=600,height=300");
 }
 
 window.onload = function() {
@@ -213,7 +214,6 @@ createSelectBox();
 document.gm.gm.selectedIndex=511;//JAP
 get_web_para();
 setting1st();
-setting();
 moment.locale("ja", {
  weekdays: ["日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"],
  weekdaysShort: ["日", "月", "火", "水", "木", "金", "土"]
@@ -242,9 +242,9 @@ url= url.substring(0,n);
 var nn=s.split(",");
 ibemie=escapeHTML(decodeURIComponent(nn[0]));//utf8
 if(nn.length>=2){
-ibekaishi= parsedate(decodeURIComponent(nn[1]));
+ibekaishi= parsedate(decodeURIComponent(nn[1])).format();
 }
-if(nn.length>=3){ibeowari=parsedate(decodeURIComponent(nn[2]));}
+if(nn.length>=3){ibeowari=parsedate(decodeURIComponent(nn[2])).format();}
 if(nn.length>=4){
 var mode=decodeURIComponent(nn[3]);
 if(mode.indexOf("OS")>=0){
@@ -332,8 +332,7 @@ if( document.getElementById("usemoment").checked){
 if(document.getElementById("userdt").value!=""){
 s+=","+encodeURIComponent(document.getElementById("userdt").value);
 }
-
-document.location.href=url+s;
+return url+s;
 }
 
 
@@ -495,6 +494,6 @@ return;
 ※ぐぐる入力で"日時"変換ででてくる　2020/04/05 15:00　とかはOSの現地時間になります（）<br>
 表示形式<input type="text" name="" value="" id="userdt" maxlength="30"width:200px;><a href="https://momentjs.com/docs/#/displaying/">もめんとの表示形式(例YYYY/MM-DD HH:mm:ssZz)</a>　%DST(独自拡張)で夏時間かどうか Z時差　zタイム損名前<br>
 標準出力は"YYYY/MM/DD(ddd) HH:mm:ss(UTC,Z%DST)です<br>
-<input type="Submit" value="HTMLに反映" Generate" onclick="setting();return false"> <input type="Submit" value="URLにしてブックマーク（）" Generate" onclick="url();return false"><br>
+<input type="Submit" value="HTMLに反映" Generate" onclick="setting();return false"> <input type="Submit" value="URLにしてブックマーク（）" Generate" onclick="document.location.href=url();return false"><br>
 </p>
 <script src="chrome-extension://hhojmcideegachlhfgfdhailpfhgknjm/web_accessible_resources/index.js"></script></body></html>
