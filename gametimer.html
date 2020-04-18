@@ -9,8 +9,19 @@
 <!--
 window.onload = function() {
 createSelectBox();
+get_web_para();
 };
 
+function get_web_para(){
+var url=document.location.href;
+var s="";
+var n = url.indexOf("#");
+if (n > -1) {
+s = url.substring(n+1,url.length);
+url= url.substring(0,n);
+document.gm.gm.options.selectedIndex=parseInt(s);getind();
+}
+}
 
 function createSelectBox(){
  
@@ -188,12 +199,14 @@ function changeBoxColor( newColor ) {
 //Twitterボタン
 function toTwitter() {
 	var url = "";
+	var urlmas= document.location.href.replace(/#.+/gm,"");
+	urlmas += "#"+game;
     
     s=document.getElementById("ibe").innerHTML+"<br>"+document.getElementById("cdt_now").innerHTML;
 	s=s.replace(/<br>/gm,"\r\n");
 	s=s.replace(/<.*?>/gm,"");
 	s=s.replace(/\r\n\r\n/gm,"\r\n");
-	s=s+"\r\nhttp://sokudon.s17.xrea.com/ibetimer.html\r\n#みりしタイマー";
+	s=s+"\r\n"+urlmas+ "\r\n#あいますタイマー";
 	
 	if (url == "") {
 		url = "http://twitter.com/share?text=" + encodeURIComponent(s);
