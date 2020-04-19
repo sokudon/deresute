@@ -145,14 +145,14 @@ function JPday(date,t)
   end
   
   --DateUTC(2020,2,31,20,48,0,0)
-  local jp_day={"月","火","水","木","金","土","日"} --%w用
+  local jp_day={"日","月","火","水","木","金","土"} --%w用
   date= string.gsub(date, "%%E",debugtxt1)  ----フリーズ文字代替
   date= string.gsub(date, "%%J",debugtxt2)  ----フリーズ文字代替
   date= string.gsub(date, "%%K",debugtxt3)  ----フリーズ文字代替
   date= string.gsub(date, "%%s",os.time())  ----フリーズ文字代替
   date= string.gsub(date, "%%DST",isDST("J"))
-  date= string.gsub(date, "%%Vw",jp_day[tonumber(os.date("%w",t))])
-  date= string.gsub(date, "%%VW",jp_day[tonumber(os.date("%w",t))].."曜日") 
+  date= string.gsub(date, "%%Vw",jp_day[tonumber(os.date("%w",t))+1])
+  date= string.gsub(date, "%%VW",jp_day[tonumber(os.date("%w",t))+1].."曜日") 
   date= string.gsub(date, "%%ZZ", get_tzoffset_sepa(get_timezone())) --timezone タイムゾーン時差情報標準時、サマータイムなし 
   date= string.gsub(date, "%%Z",  get_tzoffset(get_timezone())) --timezone タイムゾーン時差情報標準時、サマータイムなし 
   date= string.gsub(date, "%%zz", get_tzoffset_sepa(get_timezone_the_day())) --timezone タイムゾーン時差情報夏時間こみ
@@ -298,9 +298,9 @@ function parse_jp_era(date)
     --local dt = os.date("!*t",tu) --%Vwを使いたいとき utcの時間で曜日を取得する必要がある
 	--dateu= string.gsub(dateu, "%%Vw",jp_day[dt.wday])
 	
-    --local jp_day={"月","火","水","木","金","土","日"} --%w用
+	--%w用
     --local getd = os.date("!%w",tu) --%Vwを使いたいとき utcの時間で曜日を取得する必要がある
-	--dateu= string.gsub(dateu, "%%Vw",jp_day[tonumber(getd)])
+	--dateu= string.gsub(dateu, "%%Vw",jp_day[tonumber(getd)+1])
 	
   	dateu=JPday(dateu,tu)
   	datestring = os.date(dateu,tu)
@@ -309,19 +309,12 @@ function parse_jp_era(date)
   if (string.find(date,"%%JST")) then
   local dateu='!%Y/%m/%dT%X(GMT+9:00,JST,日本時間) %a' --%z系はOS依存のため使用不可
   
-    --local jp_day={"月","火","水","木","金","土","日"} --%w用
-    --local getd = os.date("!%w",t) 
-	--dateu= string.gsub(dateu, "%%Vw",jp_day[tonumber(getd)])
-
   	datestring = os.date(dateu, t+9*3600)
   	date =string.gsub(date, "%%JST",datestring)
   end
   if (string.find(date,"%%ISOZ")) then
   local dateu='!%Y/%m/%dT%XZ %a'    --%z系はOS依存のため使用不可
   
-    --local jp_day={"月","火","水","木","金","土","日"} --%w用
-    --local getd = os.date("!%w",t) 
-	--dateu= string.gsub(dateu, "%%Vw",jp_day[tonumber(getd)])
 
   	datestring = os.date(dateu, t)
   	date =string.gsub(date, "%%ISO%w",datestring)
