@@ -229,6 +229,7 @@ function parse_jp_era(date)
 	local ist =os.date(dateu,tt)
 	local nenme =""
 	if(nst==ist)then
+	local years    = math.floor(tu*10/(864000*365))
 	nenme = ","..years.."周年"
 	end
    local ep=get_ep(tu)
