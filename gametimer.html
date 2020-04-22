@@ -66,9 +66,7 @@ function get_count() {
    if(jtc==9){
    date_fm="YYYY/MM/DD(ddd) HH:mm:ss ([UTC+9:00])";//現在時刻フォーマット
    }
-   var diff=(moment()-moment.utc())/1000/3600;
    
-	var t=moment(ibeowari).add("Hours",diff-jtc);//現地時間
 	var now=moment.utc().add("Hours",jtc);	
 
 	
@@ -143,8 +141,8 @@ function get_count() {
 	}
 	}
 	
-	var syunen = moment.utc().add("Hours",jtc).format("YYYY-")+moment.utc(ibekaishi).add("Hours",jtc).format("MM-DDT00:00:00Z");
-	esps=(-moment.utc()+ moment.utc(syunen))/1000;
+	var syunen = moment.utc().add("Hours",jtc).format("YYYY-")+moment.utc(ibekaishi).add("Hours",jtc).format("MM-DDT00:00:00+09:00");
+	esps=(moment.utc(syunen)-moment.utc())/1000;
 	kaishi="周年まで:";
 	if(esps<0){	esps=-esps;	kaishi="周年から:"}
 	espst= Math.floor(esps/(3600*24)) +"日"+Math.floor( (esps%(3600*24))/3600)  +"時間"+ Math.floor((esps%3600)/60) +"分" + Math.floor(esps%60) +"秒";
