@@ -12,10 +12,12 @@ ima           = 0
 imass         = 0
 useidol		  = 1
 mln        	  = 1
-cgn            = 1
+cgn           = 1
 smn        	  = 1
-scn            = 1
-dsn            = 1
+scn           = 1
+dsn           = 1
+daylim 		  =7
+daystring     =""
 debugtxt1	  = ""
 debugtxt2	  = ""
 debugtxt3	  = ""
@@ -146,6 +148,7 @@ function JPday(date,t)
   
   --DateUTC(2020,2,31,20,48,0,0)
   local jp_day={"日","月","火","水","木","金","土"} --%w用
+  date= string.gsub(date, "%%EM",daystring)  ----フリーズ文字代替
   date= string.gsub(date, "%%E",debugtxt1)  ----フリーズ文字代替
   date= string.gsub(date, "%%J",debugtxt2)  ----フリーズ文字代替
   date= string.gsub(date, "%%K",debugtxt3)  ----フリーズ文字代替
@@ -261,7 +264,7 @@ function parse_jp_era(date)
   	date =string.gsub(date, "%%ib","誕生日は不明です")
   	date =string.gsub(date, "%%ic","")
   else
-  dt=string.gsub(dt,"2020",theyear)  
+  dt=string.gsub(dt,"2020",theyear)
   local aniv=lefttime(dt)
   local gm = "誕生日" 
   if(aniv<0) then
@@ -573,7 +576,7 @@ function script_properties()
 	obs.obs_properties_add_text(props, "sm", "3.サイドＭ", obs.OBS_TEXT_DEFAULT)
 	obs.obs_properties_add_text(props, "sc", "4.シャニマス", obs.OBS_TEXT_DEFAULT)
 	obs.obs_properties_add_text(props, "ds", "5.ディアリースターズ", obs.OBS_TEXT_DEFAULT)
-
+	obs.obs_properties_add_int(props, "DAYLIM", "誕生日何日以内全部", 0, 30, 1)
 	return props
 end
 
@@ -631,6 +634,142 @@ end
 end
 
 
+function findday()
+daystring =""
+local daycalc=tonumber(daylim)
+local stlen=tonumber(#imas)
+--1={{"THE IDOLM@STER","2005-07-25T15:00:00.000Z","アーケード",""
+local theyear=os.date("!%Y",os.time()+9*3600)
+local theyearn=theyear*1+1
+
+for i=1,stlen do
+local tmp=string.gsub(imas[i][2], "^(%d+)",theyear)
+local tmp2=string.gsub(imas[i][2], "^(%d+)",theyearn)
+local t=lefttime(tmp)
+local tt=lefttime(tmp2)
+t=math.ceil(t/3600/24);
+tt=math.ceil(tt/3600/24);
+if((t>=0 and t<=daycalc) or (tt>=0 and tt<=daycalc))then
+daystring =daystring .. t.."日 "
+if(t<0)then
+daystring=daystring .. tt.."日 "
+end
+daystring =daystring .. imas[i][1] .."("..imas[i][3]..")\r\n"
+end
+end
+
+--ml":[["2020-01-07T15:00:00.000Z","エミリー・スチュアート","えみりーすちゅわーと"
+stlen=tonumber(#imasb["ml"])
+for i=1,stlen do
+local birth=imasb["ml"][i][1]
+local idol=imasb["ml"][i][2]
+if(birth:match("Z")) then
+local tmp=string.gsub(birth, "^(%d+)",theyear)
+local tmp2=string.gsub(birth, "^(%d+)",theyearn)
+local t=lefttime(tmp)
+local tt=lefttime(tmp2)
+t=math.ceil(t/3600/24);
+tt=math.ceil(tt/3600/24);
+if((t>=0 and t<=daycalc) or (tt>=0 and tt<=daycalc))then
+daystring =daystring .. t.."日 "
+if(t<0)then
+daystring=daystring .. tt.."日 "
+end
+daystring =daystring ..idol .."\r\n"
+end
+end
+end
+
+
+stlen=tonumber(#imasb["cg"])
+for i=1,stlen do
+local birth=imasb["cg"][i][1]
+local idol=imasb["cg"][i][2]
+if(birth:match("Z")) then
+local tmp=string.gsub(birth, "^(%d+)",theyear)
+local tmp2=string.gsub(birth, "^(%d+)",theyearn)
+local t=lefttime(tmp)
+local tt=lefttime(tmp2)
+t=math.ceil(t/3600/24);
+tt=math.ceil(tt/3600/24);
+if((t>=0 and t<=daycalc) or (tt>=0 and tt<=daycalc))then
+daystring =daystring .. t.."日 "
+if(t<0)then
+daystring=daystring .. tt.."日 "
+end
+daystring =daystring ..idol .."\r\n"
+end
+end
+end
+
+stlen=tonumber(#imasb["sm"])
+for i=1,stlen do
+local birth=imasb["sm"][i][1]
+local idol=imasb["sm"][i][2]
+if(birth:match("Z")) then
+local tmp=string.gsub(birth, "^(%d+)",theyear)
+local tmp2=string.gsub(birth, "^(%d+)",theyearn)
+local t=lefttime(tmp)
+local tt=lefttime(tmp2)
+t=math.ceil(t/3600/24);
+tt=math.ceil(tt/3600/24);
+if((t>=0 and t<=daycalc) or (tt>=0 and tt<=daycalc))then
+daystring =daystring .. t.."日 "
+if(t<0)then
+daystring=daystring .. tt.."日 "
+end
+daystring =daystring ..idol .."\r\n"
+end
+end
+end
+
+stlen=tonumber(#imasb["sc"])
+for i=1,stlen do
+local birth=imasb["sc"][i][1]
+local idol=imasb["sc"][i][2]
+if(birth:match("Z")) then
+local tmp=string.gsub(birth, "^(%d+)",theyear)
+local tmp2=string.gsub(birth, "^(%d+)",theyearn)
+local t=lefttime(tmp)
+local tt=lefttime(tmp2)
+t=math.ceil(t/3600/24);
+tt=math.ceil(tt/3600/24);
+if((t>=0 and t<=daycalc) or (tt>=0 and tt<=daycalc))then
+daystring =daystring .. t.."日 "
+if(t<0)then
+daystring=daystring .. tt.."日 "
+end
+daystring =daystring ..idol .."\r\n"
+end
+end
+end
+
+stlen=tonumber(#imasb["ds"])
+for i=1,stlen do
+local birth=imasb["ds"][i][1]
+local idol=imasb["ds"][i][2]
+if(birth:match("Z")) then
+local tmp=string.gsub(birth, "^(%d+)",theyear)
+local tmp2=string.gsub(birth, "^(%d+)",theyearn)
+local t=lefttime(tmp)
+local tt=lefttime(tmp2)
+t=math.ceil(t/3600/24);
+tt=math.ceil(tt/3600/24);
+if((t>=0 and t<=daycalc) or (tt>=0 and tt<=daycalc))then
+daystring =daystring .. t.."日 "
+if(t<0)then
+daystring=daystring .. tt.."日 "
+end
+daystring =daystring ..idol .."\r\n"
+end
+end
+end
+
+
+	return 1
+end
+
+
 -- A function named script_update will be called when settings are changed
 function script_update(settings)
 	activate(false)
@@ -641,6 +780,7 @@ function script_update(settings)
 	ima           = obs.obs_data_get_int(settings, "IMAS")
 	obs.obs_data_set_string(settings, "im",imas[ima][1]..imas[ima][3])
 	imass           = obs.obs_data_get_int(settings, "IMSERIES")
+	daylim           = obs.obs_data_get_int(settings, "DAYLIM")
 	cgn =findidol("cg",obs.obs_data_get_string(settings, "cg"))
 	mln =findidol("ml",obs.obs_data_get_string(settings, "ml"))
 	smn =findidol("sm",obs.obs_data_get_string(settings, "sm"))
@@ -648,7 +788,7 @@ function script_update(settings)
 	dsn =findidol("ds",obs.obs_data_get_string(settings, "ds"))
 	local inum={cgn,mln,smn,scn,dsn}
 	useidol=inum[imass]
-	
+	findday()
 	
 	reset(true)
 end
@@ -665,6 +805,8 @@ function script_defaults(settings)
 	obs.obs_data_set_default_string(settings, "sm","冬美旬")
 	obs.obs_data_set_default_string(settings, "sc","芹沢あさひ")
 	obs.obs_data_set_default_string(settings, "ds","水谷絵理")
+	obs.obs_data_set_default_string(settings, "ds","水谷絵理")
+	obs.obs_data_set_default_int(settings, "DAYLIM", 7)
 end
 
 -- a function named script_load will be called on startup
