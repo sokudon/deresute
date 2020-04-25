@@ -3,13 +3,33 @@
 <head>
 </head>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
-<script src="./moment-with-locales.js"></script>
+<script src="./LIB/moment-with-locales.js"></script>
 <script  type="text/javascript" src="https://script.googleusercontent.com/macros/echo?user_content_key=yKlNtB0m82El8ySZ1t46GKNi2YI2JtH6_Ba8Bj3CYA_tq7weSpuYxFibPYVf0-h3jzkXaKbaeLHra79trL501FNd7_VJh7UNm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnPrjrzOqG57A42W18Wxz1WDP-eBihPx5SsKk9bfVywybSSQhmxvfOQqhL5HLwlai3E9OlGKLMLnt&lib=MvrSijJWbMSM_kaRZox9WvnndBJ9ix56c"></script>
 <script  type="text/javascript" src="https://script.googleusercontent.com/macros/echo?user_content_key=y26MKGO6KrGvdbHl13r9fBslGLG7tCPiA6FJnZh4Jsyk2lBN_XG4jI_Wyv2NVQGFzWV2wrx89p3TYooV2Yx8nXCb8HvrtA1wm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnPuihn6KSAqYQajIiGBerRjxT7-n1zx1nVP2RTPbsLWMYTqYZhIACZwYZpTak_o22Q&lib=MmHolKhlrk4LP8GJAw1lMwYFpGDg2vV9V"></script>
 <script>
 <!--
+
+var datastring="%M/%Dまであと%L日 %G:%I";
+var dsn=["ML","CG","SIDEM","SHINY","DS","GAME"];
+
 window.onload = function() {
+get_web_para();
 nearaniv();
+}
+
+function url(){
+var url=document.location.href;
+var n = url.indexOf("#");
+if (n > -1) {
+url= url.substring(0,n);
+}
+var s="#";
+s += document.gm.gm.options.selectedIndex;
+s += ","+document.gg.nn.options.selectedIndex;
+if(document.getElementById("title").value!=""){
+s += "," +encodeURIComponent(datastring);
+}
+return url+s;
 }
 
 function get_web_para(){
@@ -19,7 +39,10 @@ var n = url.indexOf("#");
 if (n > -1) {
 s = url.substring(n+1,url.length);
 url= url.substring(0,n);
-document.gm.gm.options.selectedIndex=parseInt(s);
+var n=s.split(",")
+if(n.length>=1){document.gm.gm.options.selectedIndex=parseInt(n[0]);}
+if(n.length>=2){document.gg.nn.options.selectedIndex=parseInt(n[1]);}
+if(n.length>=3){document.getElementById("title").value=decodeURIComponent(n[2]);setting();}
 }}
 timer_update = 500;
 
@@ -33,17 +56,27 @@ function get_count() {
 	document.getElementById("now").innerHTML= timelc +"<br>"+ timest+"<br>"; 
 	nearaniv();
 }
+function kanaToHira(str) {
+    return str.replace(/[\u30a1-\u30f6]/g, function(match) {
+        var chr = match.charCodeAt(0) - 0x60;
+        return String.fromCharCode(chr);
+    });
+}
 
+var game=2;
 function nearaniv(){
 var beforday=[0,1,7,30];
 var daycalc =beforday[document.gm.gm.options.selectedIndex];
+game=document.gm.gm.options.selectedIndex;
 var year=moment.utc().add("Hours",9).format("YYYY");
 var yearn=(year)*1+1;
 var datas=[];
 var st="";
 var dtab=[];
 var j=0;
-
+var g=  $('#selectgg option:selected').text();
+dsn = g.split(",");
+var games=dsn[5];
 for(var i=1;i<gamedata.length;i++){
 var tmp=gamedata[i][1].replace(/^\d\d\d\d/gm,year);
 var tmp2=gamedata[i][1].replace(/^\d\d\d\d/gm,yearn);
@@ -56,12 +89,14 @@ dtab[j]=[];
 dtab[j][0]=t;
 if(t<0){dtab[j][0]=tt;}
 dtab[j][1]= gamedata[i][0]+"("+gamedata[i][2]+")";
-dtab[j][2]=  "GAME";
+dtab[j][2]=  games;
+dtab[j][3]=moment.utc(tmp).add("Hours",9).format("M");
+dtab[j][4]=moment.utc(tmp).add("Hours",9).format("D");
+dtab[j][5]= kanaToHira(dtab[j][1]);
 j++;
 //st +=t+"日前"+ gamedata[i][0]+"("+gamedata[i][2]+")<br>"
 }}
 var ds=["ml","cg","sm","sc","ds"];
-var dsn=["  ML","  CG","SIDEM","SHINY","  DS"];
 for(var k=0;k<5;k++){
 var data=birthday[ds[k]];
 for(var i=0;i<data.length;i++){
@@ -77,6 +112,9 @@ dtab[j][0]=t;
 if(t<0){dtab[j][0]=tt;}
 dtab[j][1]=  data[i][1];
 dtab[j][2]=  dsn[k];
+dtab[j][3]=moment.utc(tmp).add("Hours",9).format("M");
+dtab[j][4]=moment.utc(tmp).add("Hours",9).format("D");
+dtab[j][5]=  data[i][2];
 j++;
 //st += data[i][1]+t+"日前<br>"
 }}}
@@ -85,8 +123,10 @@ dtab.sort(function(a, b) {
 });
 
 
+
 for(var i=0;i<dtab.length;i++){
-st += dtab[i][0]+"日前　"+dtab[i][2]+":"+dtab[i][1]+"<br>";
+var tmp=datastring.replace("%M",dtab[i][3]).replace("%D",dtab[i][4]).replace("%L",dtab[i][0]).replace("%G",dtab[i][2]).replace("%I",dtab[i][1]).replace("%i",dtab[i][5]);
+st += tmp+"<br>";
 }
 
 document.getElementById("cdt_now").innerHTML=st;
@@ -97,15 +137,17 @@ function changeBoxColor( newColor ) {
     document.getElementById('bg').style.backgroundColor = newColor;
 }
 
-
+function setting(){
+datastring=document.getElementById("title").value;
+}
 
 //Twitterボタン
 function toTwitter() {
 	var url = "";
 	var urlmas= document.location.href.replace(/#.+/gm,"");
 	urlmas += "#"+game;
-    
-    s=document.getElementById("ibe").innerHTML+"<br>"+document.getElementById("cdt_now").innerHTML;
+   var s =document.getElementById("now").innerHTML+"<br>";
+    s+=document.getElementById("cdt_now").innerHTML;
 	s=s.replace(/<br>/gm,"\r\n");
 	s=s.replace(/<.*?>/gm,"");
 	s=s.replace(/\r\n\r\n/gm,"\r\n");
@@ -128,15 +170,30 @@ function toTwitter() {
 <p align="center"><a href="javascript:toTwitter()"><img src="./" alt="Send to Twitter" width="61" height="23" border="0"></a></p>
 
 <form name="gm">
-<select name="gm" id="sel1" onChange="nearaniv();">
 周年の何日前まで表示:
+<select name="gm" id="sel1" onChange="nearaniv();">
 <option>当日のみ</option>
 <option>1日</option>
 <option selected="selected">7日</option>
 <option>30日</option>
 </select>
 </form>
+<form name="gg">
+%Gの表記:
+<select name="nn" id="selectgg" onChange="nearaniv();">
+<option selected="selected">ML,CG,SIDEM,SHINY,DS,GAME</option>
+<option>ミリオン,デレマス,サイドM,シャニマス,ディアリー,ゲーム</option>
+<option>ミリオンライブ,シンデレラガールズ,サイドM,シャイニーカラーズ,ディアリースターズ,ゲーム</option>
+<option>ﾐﾘｵﾝ,ﾃﾞﾚﾏｽ,ｻｲﾄﾞM,ｼｬﾆﾏｽ,ﾃﾞｨｱﾘｰ,ｹﾞｰﾑ</option>
+<option>ﾐﾘｵﾝﾗｲﾌﾞ,ｼﾝﾃﾞﾚﾗｶﾞｰﾙｽﾞ,ｻｲﾄﾞM,ｼｬｲﾆｰｶﾗｰｽﾞ,ﾃﾞｨｱﾘｰｽﾀｰｽﾞ,ｹﾞｰﾑ</option>
+<option>みりおん,でれます,さいどえむ,しゃにます,でぃありー,げーむ</option>
+<option>みりおんらいぶ,しんでれらがーるず,さいどえむ,しゃいにーからーず,でぃありーすたーず,げーむ</option>
+</select>
+</form>
 
+表示形式(でふぉると "%M/%Dまであと%L日 %G:%I" %iはひらがな名)<input type="text" name="" value="" id="title" maxlength="50"　width:300px;><br>
+<input type="Submit" value="反映" Generate" onclick="setting();return false">
+<input type="Submit" value="URLにしてブックマーク（）" Generate" onclick="document.location.href=url();return false"><br>
 
 <p>クロマキー合成、背景色
     <input type="button" value="緑色に変更する" onclick="changeBoxColor('#008000');">

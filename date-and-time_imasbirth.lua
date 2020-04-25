@@ -365,6 +365,7 @@ end
 --%JST%n%in%n%ib%n%ic
 
 --独自拡張2020/04/17現在 
+--%EM	あいますお誕生日何日以内のやつ
 --%E	デバッグ文字1 サービス終了日
 --%J	デバッグ文字2 サービス開始日
 --%K	デバッグ文字3 今年の周年日
@@ -576,7 +577,7 @@ function script_properties()
 	obs.obs_properties_add_text(props, "sm", "3.サイドＭ", obs.OBS_TEXT_DEFAULT)
 	obs.obs_properties_add_text(props, "sc", "4.シャニマス", obs.OBS_TEXT_DEFAULT)
 	obs.obs_properties_add_text(props, "ds", "5.ディアリースターズ", obs.OBS_TEXT_DEFAULT)
-	obs.obs_properties_add_int(props, "DAYLIM", "誕生日何日以内全部", 0, 30, 1)
+	obs.obs_properties_add_int(props, "DAYLIM", "誕生日何日以内全部", 0, 7, 1)
 	return props
 end
 
@@ -633,6 +634,9 @@ end
 	return 1
 end
 
+function MMDD(dt)
+return os.date("!%m/%d",parse_json_date_utc(dt)+9*3600)
+end
 
 function findday()
 daystring =""
@@ -650,9 +654,9 @@ local tt=lefttime(tmp2)
 t=math.ceil(t/3600/24);
 tt=math.ceil(tt/3600/24);
 if((t>=0 and t<=daycalc) or (tt>=0 and tt<=daycalc))then
-daystring =daystring .. t.."日 "
+daystring =daystring ..MMDD(birth).." あと".. t.."日 "
 if(t<0)then
-daystring=daystring .. tt.."日 "
+daystring=daystring ..MMDD(birth).." あと".. tt.."日 "
 end
 daystring =daystring .. imas[i][1] .."("..imas[i][3]..")\r\n"
 end
@@ -671,9 +675,9 @@ local tt=lefttime(tmp2)
 t=math.ceil(t/3600/24);
 tt=math.ceil(tt/3600/24);
 if((t>=0 and t<=daycalc) or (tt>=0 and tt<=daycalc))then
-daystring =daystring .. t.."日 "
+daystring =daystring ..MMDD(birth).." あと".. t.."日 "
 if(t<0)then
-daystring=daystring .. tt.."日 "
+daystring=daystring ..MMDD(birth).." あと".. tt.."日 "
 end
 daystring =daystring ..idol .."\r\n"
 end
@@ -693,9 +697,9 @@ local tt=lefttime(tmp2)
 t=math.ceil(t/3600/24);
 tt=math.ceil(tt/3600/24);
 if((t>=0 and t<=daycalc) or (tt>=0 and tt<=daycalc))then
-daystring =daystring .. t.."日 "
+daystring =daystring ..MMDD(birth).." あと".. t.."日 "
 if(t<0)then
-daystring=daystring .. tt.."日 "
+daystring=daystring ..MMDD(birth).." あと".. tt.."日 "
 end
 daystring =daystring ..idol .."\r\n"
 end
@@ -714,9 +718,9 @@ local tt=lefttime(tmp2)
 t=math.ceil(t/3600/24);
 tt=math.ceil(tt/3600/24);
 if((t>=0 and t<=daycalc) or (tt>=0 and tt<=daycalc))then
-daystring =daystring .. t.."日 "
+daystring =daystring ..MMDD(birth).." あと".. t.."日 "
 if(t<0)then
-daystring=daystring .. tt.."日 "
+daystring=daystring ..MMDD(birth).." あと".. tt.."日 "
 end
 daystring =daystring ..idol .."\r\n"
 end
@@ -735,9 +739,9 @@ local tt=lefttime(tmp2)
 t=math.ceil(t/3600/24);
 tt=math.ceil(tt/3600/24);
 if((t>=0 and t<=daycalc) or (tt>=0 and tt<=daycalc))then
-daystring =daystring .. t.."日 "
+daystring =daystring ..MMDD(birth).." あと".. t.."日 "
 if(t<0)then
-daystring=daystring .. tt.."日 "
+daystring=daystring ..MMDD(birth).." あと".. tt.."日 "
 end
 daystring =daystring ..idol .."\r\n"
 end
@@ -756,9 +760,9 @@ local tt=lefttime(tmp2)
 t=math.ceil(t/3600/24);
 tt=math.ceil(tt/3600/24);
 if((t>=0 and t<=daycalc) or (tt>=0 and tt<=daycalc))then
-daystring =daystring .. t.."日 "
+daystring =daystring ..MMDD(birth).." あと"..t.."日 "
 if(t<0)then
-daystring=daystring .. tt.."日 "
+daystring=daystring ..MMDD(birth).." あと".. tt.."日 "
 end
 daystring =daystring ..idol .."\r\n"
 end
@@ -806,7 +810,7 @@ function script_defaults(settings)
 	obs.obs_data_set_default_string(settings, "sc","芹沢あさひ")
 	obs.obs_data_set_default_string(settings, "ds","水谷絵理")
 	obs.obs_data_set_default_string(settings, "ds","水谷絵理")
-	obs.obs_data_set_default_int(settings, "DAYLIM", 7)
+	obs.obs_data_set_default_int(settings, "DAYLIM", 2)
 end
 
 -- a function named script_load will be called on startup
