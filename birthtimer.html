@@ -126,11 +126,15 @@ dtab.sort(function(a, b) {
 
 for(var i=0;i<dtab.length;i++){
 var tmp=datastring.replace("%M",dtab[i][3]).replace("%D",dtab[i][4]).replace("%L",dtab[i][0]).replace("%G",dtab[i][2]).replace("%I",dtab[i][1]).replace("%i",dtab[i][5]);
-st += tmp+"<br>";
+st += escapeHTML(tmp)+"<br>";
 }
 
 document.getElementById("cdt_now").innerHTML=st;
 
+}
+
+function escapeHTML(html) {
+  return jQuery('<div>').text(html).html();
 }
 
 function changeBoxColor( newColor ) {
