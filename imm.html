@@ -338,7 +338,14 @@ return url+s;
 function makeical(){
 
 var tmp="BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//はんようたいまー//NONSGML v1.0//EN\r\nBEGIN:VEVENT\r\nDTSTART:20200423T150000Z\r\nDTEND:20200424T150000Z\r\nSUMMARY:うづき\r\nEND:VEVENT\r\nEND:VCALENDAR";
-if(ibekaishi!="" || ibekaishi!="--"){
+
+if(ibekaishi=="" || ibekaishi=="--" || ibemie ==""){
+alert("タイトル名/イベント開始時期は必須なので出力できませんでした（）")
+}
+else if(moment(ibekaishi).format()==moment(ibeowari).format()){
+alert("イベント開始終了が同じものはごっごるカレンダーでは使えません()")
+}
+else{
 tmp=tmp.replace(/DTSTART:\d+T\d+Z/,"DTSTART:"+moment.utc(ibekaishi).format("YYYYMMDDTHHmmss[Z]"));
 if(ibeowari!="" || ibeowari!="--"){
 tmp=tmp.replace(/DTEND:\d+T\d+Z/,"DTEND:"+moment.utc(ibeowari).format("YYYYMMDDTHHmmss[Z]"));
@@ -347,12 +354,37 @@ else{
 tmp=tmp.replace(/DTEND:\d+T\d+Z/,"DTEND:");
 }
 tmp=tmp.replace(/SUMMARY:うづき/,"SUMMARY:"+ibemie);
-TextDL(tmp,"deresute_event.ics")
+TextDL(tmp,"hannyou_event.ics")
+}
+}
+
+function makeicsv(){
+var CSVHEAD=[
+"Subject",
+"Start Date",
+"Start Time",
+"End Date",
+"End Time"
+];
+var tmp="";
+if(ibekaishi=="" || ibekaishi=="--" || ibemie ==""){
+alert("タイトル名/イベント開始時期は必須なので出力できませんでした（）")
+}
+else if(moment(ibekaishi).format()==moment(ibeowari).format()){
+alert("イベント開始終了が同じものはごっごるカレンダーでは使えません()")
 }
 else{
-alert("イベント開始時期が未定なので出力できませんでした（）")
+tmp = CSVHEAD[0]+","+CSVHEAD[1]+","+CSVHEAD[2]+","+CSVHEAD[3]+","+CSVHEAD[4]+"\r\n";
+tmp += ibemie +","  +moment(ibekaishi).format("MM-DD-YYYY") +","+moment(ibekaishi).format("HH:mm") +",";
+if(ibeowari!="" || ibeowari!="--"){
+tmp+= moment(ibeowari).format("MM-DD-YYYY")+","+moment(ibeowari).format("HH:mm");
 }
+else{
+tmp+=",";
 }
+TextDL(tmp,"hannyou_event.csv")
+}}
+
 function TextDL(n,t){b=new Blob([n],{type:"text/plain"}),a=document.createElement("a"),a.download=t,a.href=window.URL.createObjectURL(b),e=document.createEvent("MouseEvent"),e.initEvent("click",!0,!0),a.dispatchEvent(e)}
 
 
@@ -499,8 +531,9 @@ return;
 <span id="RC">-----</span><br>
 </form>
 
-カレンダーアプリに登録する(iClander作成):
-<input type="Submit" value="iCalDL" generate"="" onclick="makeical();return false"><br>
+<b>カレンダーアプリに登録する(iClander/CSV作成):</b>
+<input type="Submit" value="iCalender(推奨)" generate"="" onclick="makeical();return false">
+<input type="Submit" value="OutlookCSV(※OS現地時間になります)" generate"="" onclick="makeicsv();return false"><br>
 
 <p><b>クロマキー合成、背景色</b>
     <input type="button" value="緑色に変更する" onclick="changeBoxColor(&#39;#008000&#39;);">
