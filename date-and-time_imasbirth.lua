@@ -192,6 +192,10 @@ function parse_jp_era(date)
   
   local t = os.time()
   
+  if(os.date("!%H%M",t)=="1500")then --0時のとき切り替え
+  findday()
+  end
+  
   if (string.find(date,"%%i")) then
   
    local inum = (ima)%27    --imas[1] AC,dre 18 ,miri 22
