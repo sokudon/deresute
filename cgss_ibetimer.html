@@ -173,20 +173,32 @@ var ibeowari=ibeend;
 var ibekaishi=ibestart;
 var ibemie=ibe;
 
-var tmp="BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//あいますげーむいべんと//NONSGML v1.0//EN\r\nBEGIN:VEVENT\r\nDTSTART:20200423T150000Z\r\nDTEND:20200424T150000Z\r\nSUMMARY:うづき\r\nEND:VEVENT\r\nEND:VCALENDAR";
-if(ibekaishi!="" || ibekaishi!="--"){
+var tmp="BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//はんようたいまー//NONSGML v1.0//EN\r\nBEGIN:VEVENT\r\nDTSTART:20200423T150000Z\r\nDTEND:20200424T150000Z\r\nSUMMARY:うづき\r\nEND:VEVENT\r\nEND:VCALENDAR";
+
+if(ibekaishi=="" || ibekaishi=="--" || ibemie =="" || moment(ibekaishi).format()=="Invalid date"){
+alert("タイトル名/イベント開始時期は必須なので出力できませんでした（）");
+ return;
+}
+else if(moment(ibekaishi).format()==moment(ibeowari).format()){
+alert("イベント開始終了が同じものはごっごるカレンダーでは使えません()");
+ return;
+}
+else{
 tmp=tmp.replace(/DTSTART:\d+T\d+Z/,"DTSTART:"+moment.utc(ibekaishi).format("YYYYMMDDTHHmmss[Z]"));
-if(ibeowari!="" || ibeowari!="--"){
+if(ibeowari=="" || ibeowari=="--" || moment(ibeowari).format()=="Invalid date"){
+var result = confirm('終了日時が未確定です、仮登録ようにイベント開始日+1時間に設定しますか？');
+if(result) {
+tmp=tmp.replace(/DTEND:\d+T\d+Z/,"DTEND:"+moment.utc(ibekaishi).add(1,"h").format("YYYYMMDDTHHmmss[Z]"));
+tmp=tmp.replace(/SUMMARY:/,"STATUS:TENTATIVE\r\nSUMMARY:");
+
+}
+else {alert("作成を中止ました（）"); return;}
+}
+else{
 tmp=tmp.replace(/DTEND:\d+T\d+Z/,"DTEND:"+moment.utc(ibeowari).format("YYYYMMDDTHHmmss[Z]"));
 }
-else{
-tmp=tmp.replace(/DTEND:\d+T\d+Z/,"DTEND:");
-}
 tmp=tmp.replace(/SUMMARY:うづき/,"SUMMARY:"+ibemie);
-TextDL(tmp,"deresute_event.ics")
-}
-else{
-alert("イベント開始時期が未定なので出力できませんでした（）")
+TextDL(tmp,"hannyou_event.ics")
 }
 }
 function TextDL(n,t){b=new Blob([n],{type:"text/plain"}),a=document.createElement("a"),a.download=t,a.href=window.URL.createObjectURL(b),e=document.createEvent("MouseEvent"),e.initEvent("click",!0,!0),a.dispatchEvent(e)}
@@ -201,7 +213,7 @@ function toTwitter() {
 	s=s.replace(/<br>/gm,"\r\n");
 	s=s.replace(/<.*?>/gm,"");
 	s=s.replace(/\r\n\r\n/gm,"\r\n");
-	s=s+"\r\nhttp://sokudon.s17.xrea.com/cgss_ibetimer.html\r\n#でれすてタイマー";
+	s=s+"\r\nhttp://sokudon.s17.xrea.com/cgss_ibetimer.html\r\n#でれすてタイマー\r\n#でれすてicalender";
 	
 	if (url == "") {
 		url = "http://twitter.com/share?text=" + encodeURIComponent(s);
@@ -310,8 +322,8 @@ M$より機械翻訳とはいえ
 </select>
 </form>
 
-カレンダーアプリに登録する(iClander作成):
-<input type="Submit" value="iCalenr" generate"="" onclick="makeical();return false"><br>
+カレンダーアプリに登録する(iCalender作成):
+<input type="Submit" value="iCalender"" generate"="" onclick="makeical();return false"><br>
 
 <p>クロマキー合成、背景色
     <input type="button" value="緑色に変更する" onclick="changeBoxColor('#008000');">
