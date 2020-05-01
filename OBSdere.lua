@@ -1,10 +1,17 @@
 -- parse json https://gist.github.com/zwh8800/9b0442efadc97408ffff248bc8573064
 --original timer https://obsproject.com/forum/resources/advanced-timer.637/
+--タイトル%T%n経過時間%K%n残り時間%L%nイベント時間%I%n
+--現地時間%N%n日本時間%JST%n達成率%P%nS %S%nE %E%nSJ %SJ%nEJ %EJ"
+--拡張前　旧版残り時間だけのやつ　https://raw.githubusercontent.com/sokudon/deresute/2c8516d114a6500b0ad4e91d31a776f5b5d48891/OBSdere.lua
+
 
 obs           = obslua
 source_name   = ""
 finaltime =""
-
+starttime =""
+title =""
+para_text=""
+time_text=""
 
 total_seconds = 0
 total         = 0
@@ -38,11 +45,15 @@ function delta_time()
 	return total_time
 end
 
-function set_time_text()
-	local text = format
+function get_timestring(t,text)
+	if(t=="Invalid date")then
+	return "Invalid date"
+	end
 
-	local t= lefttime(finaltime)
-		total = t*10
+	total = t*10
+	if(total<0)then
+	total=-total
+	end
 
 	local tenths   = math.floor(total % 10)
 	local seconds  = math.floor((total / 10) % 60)
@@ -93,6 +104,53 @@ function set_time_text()
 	text = string.gsub(text, "%%S", tostring(seconds_infinite))
 	text = string.gsub(text, "%%s", tostring(seconds))
 	text = string.gsub(text, "%%t", tostring(tenths))
+
+	return text
+end
+
+function checkdate(a,b)
+if(a=="Invalid date" or b=="Invalid date")then
+return "Either date is Invalid date"
+end
+return true
+end
+
+function set_time_text()
+	local text = para_text	
+	local elaspted=get_timestring(lefttime(starttime),format)
+	local left=get_timestring(lefttime(finaltime),format)
+	local ibetime=checkdate(lefttime(starttime),lefttime(finaltime))
+	local prog=""
+	if(ibetime==true)then
+	ibetime=get_timestring(parse_json_date_utc(finaltime)-parse_json_date_utc(starttime),format)
+	prog=string.format("%2.2f",math.abs(lefttime(starttime)/(parse_json_date_utc(finaltime)-parse_json_date_utc(starttime))*100))
+	end
+	
+	local time_textq=string.gsub(time_text, "%%[EJKLNOPQfikloqsv]","")	 --フリーズ文字 %%[EJKLNOPQfikloqsv]
+	text = string.gsub(text, "%%N", os.date(time_textq,os.time() ))
+	local time_textj="!".. string.gsub(time_textq, "%%z", "+0900")
+	text = string.gsub(text, "%%JST",os.date(time_textj,os.time()+9*3600 ))
+	text = string.gsub(text, "%%I", ibetime)
+	text = string.gsub(text, "%%T", title)
+	text = string.gsub(text, "%%K", elaspted)
+	text = string.gsub(text, "%%L", left)
+	text = string.gsub(text, "%%P", prog)
+	if(parse_json_date_utc(starttime)=="Invalid date")then
+	text=  string.gsub(text, "%%SJ?","Invalid date")
+	else
+	text = string.gsub(text, "%%SJ",os.date(time_textj,parse_json_date_utc(starttime)+9*3600 ))
+	text = string.gsub(text, "%%S",os.date(time_textq,parse_json_date_utc(starttime)))
+	end
+	if(parse_json_date_utc(finaltime)=="Invalid date")then
+	text=  string.gsub(text, "%%EJ?","Invalid date")
+	else
+	text = string.gsub(text, "%%EJ",os.date(time_textj,parse_json_date_utc(finaltime)+9*3600 ))
+	text = string.gsub(text, "%%E",os.date(time_textq,parse_json_date_utc(finaltime)))
+	end
+	text=  string.gsub(text, "%%[EJKLNOPQfikloqsv]","")	 --フリーズ文字 %%[EJKLNOPQfikloqsv]
+	
+	text =os.date(text)
+	
 
 	if total < 1 and (mode == "Countdown" or mode == "Specific time") then
 		text = "終了しました"   --stop_text
@@ -217,8 +275,8 @@ function reset(pressed)
 	end
 	
 	if mode == "Countdown" then
-	local t= lefttime(finaltime)
-		total_seconds = t*10
+	--local t= lefttime(finaltime)
+	total_seconds = total_seconds+1
 	end
 
 	total = total_seconds
@@ -259,12 +317,21 @@ end
 
 
 function lefttime(dt)  
-	local t=parse_json_date_utc(dt) -os.time() 
+	local t=parse_json_date_utc(dt)
+	if(t=="Invalid date")then
+	return t
+	end
+	t=t-os.time()
 	return  t
 end
 
 function parse_json_date_utc(json_date)
     local pattern = "(%d+)%-(%d+)%-(%d+)%a(%d+)%:(%d+)%:([%d%.]+)([Z%+%-])(%d?%d?)%:?(%d?%d?)"
+    
+    if(json_date:match(pattern)==nil)then
+     return "Invalid date"
+    end
+    
     local year, month, day, hour, minute, 
         seconds, offsetsign, offsethour, offsetmin = json_date:match(pattern)
     local timestamp = os.time{year = year, month = month, 
@@ -274,6 +341,8 @@ function parse_json_date_utc(json_date)
       offset = tonumber(offsethour) * 3600 + tonumber(offsetmin)*60
       if offsetsign == "-" then offset = offset * -1 end
     end
+    
+   
     
     --local temp = os.date("*t",timestamp)
     --if(temp.isdst) then  --パースした時刻がサマーがしらべる
@@ -374,16 +443,8 @@ function script_properties()
 
 	local p_mode = obs.obs_properties_add_list(props, "mode", "Mode", obs.OBS_COMBO_TYPE_EDITABLE, obs.OBS_COMBO_FORMAT_STRING)
 	obs.obs_property_list_add_string(p_mode, "Countdown", "カウントダウン")  --右だけ日本語化
-	--obs.obs_property_list_add_string(p_mode, "Countup", "カウントアップ")
-	--obs.obs_property_list_add_string(p_mode, "Specific time", "デルタタイム")
-	--obs.obs_property_list_add_string(p_mode, "Streaming timer", "配信")
-	--obs.obs_property_list_add_string(p_mode, "Recording timer", "録画時間")
 	obs.obs_property_set_modified_callback(p_mode, settings_modified)
 
-	--local p_duration = obs.obs_properties_add_int(props, "duration", "Countdown duration (seconds)", 1, 100000000, 1)
-	--local p_hour = obs.obs_properties_add_int(props, "hour", "Hour (0-24)", 0, 24, 1)
-	--local p_minutes = obs.obs_properties_add_int(props, "minutes", "Minutes (0-59)", 0, 59, 1)
-	local f_prop = obs.obs_properties_add_text(props, "format", "表示形式", obs.OBS_TEXT_DEFAULT)
 	obs.obs_property_set_long_description(f_prop, "%d - days\n%hh - hours with leading zero (00..23)\n%h - hours (0..23)\n%HH - hours with leading zero (00..infinity)\n%H - hours (0..infinity)\n%mm - minutes with leading zero (00..59)\n%m - minutes (0..59)\n%MM - minutes with leading zero (00..infinity)\n%M - minutes (0..infinity)\n%ss - seconds with leading zero (00..59)\n%s - seconds (0..59)\n%SS - seconds with leading zero (00..infinity)\n%S - seconds (0..infinity)\n%t - tenths")
 
 	local p = obs.obs_properties_add_list(props, "source", "テキストソース(GDI+)の名前", obs.OBS_COMBO_TYPE_EDITABLE, obs.OBS_COMBO_FORMAT_STRING)
@@ -399,8 +460,14 @@ function script_properties()
 	end
 	obs.source_list_release(sources)
 
-	local p_stop_text = obs.obs_properties_add_text(props, "stop_text", "終了時間:例　2020-02-26T21:00:00+09:00", obs.OBS_TEXT_DEFAULT)
 
+	local p_title_text = obs.obs_properties_add_text(props, "title_text", "イベント名:", obs.OBS_TEXT_DEFAULT)
+	local p_start_text = obs.obs_properties_add_text(props, "start_text", "開始時間:例　2020-02-26T15:00:00+09:00", obs.OBS_TEXT_DEFAULT)
+	local p_stop_text = obs.obs_properties_add_text(props, "stop_text", "終了時間:例　2020-02-26T21:00:00+09:00", obs.OBS_TEXT_DEFAULT)
+	local f_prop = obs.obs_properties_add_text(props, "format", "経過/残表示形式", obs.OBS_TEXT_DEFAULT)
+	local p_para_text = obs.obs_properties_add_text(props, "para_text", "表示する時間:", obs.OBS_TEXT_DEFAULT)
+	local p_time_text = obs.obs_properties_add_text(props, "time_text", "時刻表記:", obs.OBS_TEXT_DEFAULT)
+	
 	local p_a_mode = obs.obs_properties_add_list(props, "a_mode", "Activation mode", obs.OBS_COMBO_TYPE_EDITABLE, obs.OBS_COMBO_FORMAT_STRING)
 	obs.obs_property_list_add_string(p_a_mode, "Global (timer always active)", "global")
 	obs.obs_property_list_add_string(p_a_mode, "Start timer on activation", "start_reset")
@@ -408,10 +475,11 @@ function script_properties()
 	local button_pause = obs.obs_properties_add_button(props, "pause_button", "Start/Stop", pause_button_clicked)
 	local reset_button = obs.obs_properties_add_button(props, "reset_button", "Reset", reset_button_clicked)
 
-	--obs.obs_property_set_visible(p_duration, true)
-	--obs.obs_property_set_visible(p_hour, false)
-	--obs.obs_property_set_visible(p_minutes, false)
+	obs.obs_property_set_visible(p_time_text, true)
 	obs.obs_property_set_visible(p_stop_text, true)
+	obs.obs_property_set_visible(p_start_text, true)
+	obs.obs_property_set_visible(p_para_text, true)
+	obs.obs_property_set_visible(p_title_text, true)
 	obs.obs_property_set_visible(button_pause, true)
 	obs.obs_property_set_visible(button_reset, true)
 	obs.obs_property_set_visible(p_a_mode, true)
@@ -433,13 +501,23 @@ function script_update(settings)
 	local dt = obs.obs_data_get_string(settings, "stop_text")    --"2020-02-26T21:00:00+09:00"	
 	finaltime =dt
 	local t= lefttime(dt)
+	if(t=="Invalid date")then
+	else
 	if t<0 then
 	 t=0
 	end
-		total_seconds = t*10     --obs.obs_data_get_int(settings, "duration") * 10
+	end
+		
+	total_seconds = total_seconds+1
+	local dt = obs.obs_data_get_string(settings, "start_text")    --"2020-02-26T21:00:00+09:00"	
+	starttime =dt
+
+
 	else
 		total_seconds = 0
 	end
+	
+	
 
 	if a_mode == "Global (timer always active)" then
 		global = true
@@ -452,6 +530,9 @@ function script_update(settings)
 	hour = obs.obs_data_get_int(settings, "hour")
 	minute = obs.obs_data_get_int(settings, "minutes")
 	format = obs.obs_data_get_string(settings, "format")
+	title=obs.obs_data_get_string(settings, "title_text")
+	para_text=obs.obs_data_get_string(settings, "para_text")
+	time_text=obs.obs_data_get_string(settings, "time_text")
 
 	set_time_text()
 
@@ -459,11 +540,15 @@ function script_update(settings)
 end
 
 function script_defaults(settings)
-	obs.obs_data_set_default_int(settings, "duration", 5)
-	obs.obs_data_set_default_string(settings, "stop_text", "2020-02-26T21:00:00+09:00")
+	obs.obs_data_set_default_string(settings, "start_text", "2020-04-30T12:00:00+09:00")
+	obs.obs_data_set_default_string(settings, "stop_text", "2020-05-07T21:00:00+09:00")
 	obs.obs_data_set_default_string(settings, "mode", "Countdown")
 	obs.obs_data_set_default_string(settings, "a_mode", "Global (timer always active)")
-	obs.obs_data_set_default_string(settings, "format", "残り時間；%HH:%mm:%ss")
+	obs.obs_data_set_default_string(settings, "format", "%H:%m:%s")
+	obs.obs_data_set_default_string(settings, "title", "でれすて")
+	obs.obs_data_set_default_string(settings, "time_text", "%Y/%m/%d %H:%M:%S")
+	obs.obs_data_set_default_string(settings, "para_text", "タイトル%T%n経過時間%K%n残り時間%L%nイベント時間%I%n現地時間%N%n日本時間%JST%n達成率%P%nS %S%nE %E%nSJ %SJ%nEJ %EJ")
+
 end
 
 function script_save(settings)
