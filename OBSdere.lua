@@ -64,12 +64,17 @@ function get_timestring(t,text)
 	local hours_infinite  = math.floor(total / 36000)
 	local seconds_infinite  = math.floor(total / 10)
 	local minutes_infinite  = math.floor(total / 600)
+	
+	
+	local days_sn     = string.format("%03.2f",(total / 864000))
+	local hours_sn  =  string.format("%03.2f", (total / 36000))
+	local minutes_sn  = string.format("%03.2f", (total / 600))
+	--local seconds_sn  = string.format("%03.2f", (total / 10))
 
 	if string.match(text, "%%HH") then
 		text = string.gsub(text, "%%HH", "%%H")
 		minutes_infinite = string.format("%02d", hours_infinite)
 	end
-
 
 	if string.match(text, "%%MM") then
 		text = string.gsub(text, "%%MM", "%%M")
@@ -96,6 +101,10 @@ function get_timestring(t,text)
 		seconds = string.format("%02d", seconds)
 	end
 
+	text = string.gsub(text, "%%ds", tostring(days_sn))
+	text = string.gsub(text, "%%hs", tostring(hours_sn))
+	text = string.gsub(text, "%%ms", tostring(minutes_sn))
+	
 	text = string.gsub(text, "%%d", tostring(days))
 	text = string.gsub(text, "%%H", tostring(hours_infinite))
 	text = string.gsub(text, "%%h", tostring(hours))

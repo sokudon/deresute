@@ -155,9 +155,6 @@ date_fm=date_fm.replace(/\(J.+/,"");
 	}
 	timest +="イベ時間:" +prog2;
 	
-	//document.getElementById("cdt_now").innerHTML=timest;
-	//document.getElementById("ibe").innerHTML ="<font size=\"20\">"+ ibemie +"</font>";
-	
 	
 
 var cs=document.getElementById("CUSTOM").checked;
@@ -227,7 +224,7 @@ function toTwitter() {
 	var urls = "";
 	var urlmaster=url();
     
-    s=document.getElementById("ibe").innerHTML+"<br>"+document.getElementById("cdt_now").innerHTML;
+    s=document.getElementById("html").innerHTML;
 	s=s.replace(/<br>/gm,"\r\n");
 	s=s.replace(/<.*?>/gm,"");
 	s=s.replace(/\r\n\r\n/gm,"\r\n");
