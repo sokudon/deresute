@@ -93,20 +93,24 @@ if(getDevice()){
 date_fm=date_fm.replace(/\(J.+/,"");
 }
 
-   var prog=(moment.utc()-moment.utc(ibekaishi))/(moment.utc(ibeowari)-moment.utc(ibekaishi))*100
+    var prog=(moment.utc()-moment.utc(ibekaishi))/(moment.utc(ibeowari)-moment.utc(ibekaishi))*100
    prog=prog.toFixed(2);
    if(prog=="NaN"){
    prog="";
    }
-   else if(prog<0){
+   else{
+   if(prog<0){
    prog="(0%)";
+   prog2="0/"+((moment.utc(ibeowari)-moment.utc(ibekaishi))/3600000).toFixed(2);
    }
    else if(prog>100){
    prog="(100%)";
+   prog2=((moment.utc(ibeowari)-moment.utc(ibekaishi))/3600000).toFixed(2)+"/"+((moment.utc(ibeowari)-moment.utc(ibekaishi))/3600000).toFixed(2);
    }
    else{
    prog="("+prog +"%)";
-   }
+   prog2=((moment.utc()-moment.utc(ibekaishi))/3600000).toFixed(2)+"/"+((moment.utc(ibeowari)-moment.utc(ibekaishi))/3600000).toFixed(2);
+   }}
    
 	var user=document.getElementById("userdt").value;
 	if(user!=""){
@@ -148,8 +152,10 @@ date_fm=date_fm.replace(/\(J.+/,"");
 	else{
 	date_fm=date_fm.replace("%DST","");
 	timest +="開始時間:" +moment.utc(ibekaishi).add("Hours",jtc).format(date_fm)+"<br>";
-	timest +="終了時間:" +moment.utc(ibeowari).add("Hours",jtc).format(date_fm)+"<br></font><br>";
+	timest +="終了時間:" +moment.utc(ibeowari).add("Hours",jtc).format(date_fm)+"<br>";
 	}
+	timest +="イベ時間:" +prog2;
+	timest +="</font>";
 	
 	document.getElementById("cdt_now").innerHTML=timest;
 	document.getElementById("ibe").innerHTML ="<font size=\"20\">"+ ibemie +"</font>";
