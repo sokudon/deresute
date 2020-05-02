@@ -100,15 +100,14 @@ date_fm=date_fm.replace(/\(J.+/,"");
    }
    else{
    if(prog<0){
-   prog="(0%)";
+   prog="0";
    prog2="0/"+((moment.utc(ibeowari)-moment.utc(ibekaishi))/3600000).toFixed(2);
    }
    else if(prog>100){
-   prog="(100%)";
+   prog="100";
    prog2=((moment.utc(ibeowari)-moment.utc(ibekaishi))/3600000).toFixed(2)+"/"+((moment.utc(ibeowari)-moment.utc(ibekaishi))/3600000).toFixed(2);
    }
    else{
-   prog="("+prog +"%)";
    prog2=((moment.utc()-moment.utc(ibekaishi))/3600000).toFixed(2)+"/"+((moment.utc(ibeowari)-moment.utc(ibekaishi))/3600000).toFixed(2);
    }}
    
@@ -126,7 +125,7 @@ date_fm=date_fm.replace(/\(J.+/,"");
 	if(ostime){
 	timest += now.format(date_fm.replace("%DST",addDST(now)))+"<br>";
 	+"<br>";
-	}	
+	}
 	else if(document.getElementById("usemoment").checked){
 	var tzst=tzJAP[document.gm.gm.selectedIndex][0];
 	timest +=  now.tz(tzst).format(date_fm.replace("%DST",addDSTtz(now,tzst)))+"<br>";
@@ -137,7 +136,7 @@ date_fm=date_fm.replace(/\(J.+/,"");
 	timest += now.format(date_fm)+"<br>";
 	}
 	
-	timest += kaishi +esps+ prog +"<br>"
+	timest += kaishi +esps+ "("+prog+"%)" +"<br>"
 	+zan +timetxt+"<br><br>";
 	
 	if(ostime){
@@ -155,10 +154,37 @@ date_fm=date_fm.replace(/\(J.+/,"");
 	timest +="終了時間:" +moment.utc(ibeowari).add("Hours",jtc).format(date_fm)+"<br>";
 	}
 	timest +="イベ時間:" +prog2;
-	timest +="</font>";
 	
-	document.getElementById("cdt_now").innerHTML=timest;
-	document.getElementById("ibe").innerHTML ="<font size=\"20\">"+ ibemie +"</font>";
+	//document.getElementById("cdt_now").innerHTML=timest;
+	//document.getElementById("ibe").innerHTML ="<font size=\"20\">"+ ibemie +"</font>";
+	
+	
+
+var cs=document.getElementById("CUSTOM").checked;
+if(cs){
+	var tstring="%T(%P%)%n現在時刻:%N%n%KS%K%n%LS%L%n開始時間:%S%n終了時間:%E%nイベ時間:%V"
+	var ts=document.getElementById("titlecs").value;
+
+if(ts!=""){tstring=ts;}
+
+	tstring=tstring.replace("%T",ibemie);
+	tstring=tstring.replace("%P",prog);
+	tstring=tstring.replace("%N",now.format(date_fm.replace("%DST",addDST(now))));
+	tstring=tstring.replace("%KS",kaishi);
+	tstring=tstring.replace("%K",esps);
+	tstring=tstring.replace("%LS",zan);
+	tstring=tstring.replace("%L",timetxt);
+	tstring=tstring.replace("%S",moment(ibekaishi).format(date_fm.replace("%DST",addDST(ibekaishi))).replace(/UTC(.\d\d)(\d\d)/,"UTC$1:$2"));
+	tstring=tstring.replace("%E",moment(ibeowari).format(date_fm.replace("%DST",addDST(ibeowari))).replace(/UTC(.\d\d)(\d\d)/,"UTC$1:$2"));
+	tstring=tstring.replace("%V",prog2);
+	
+	tstring="<font size=\"20\">"+escapeHTML(tstring) +"</font>";
+	tstring=tstring.replace(/%n/gm,"<br>");
+	document.getElementById("html").innerHTML=tstring;
+}
+else{
+	document.getElementById("html").innerHTML="<font size=\"20\">"+ ibemie +"<br>" +timest +"</font>";
+}
 
 }
 
@@ -278,6 +304,11 @@ if(nn.length>=5){
 date_fmu=nn[4];
 }
 
+if(nn.length>=6){
+document.getElementById("CUSTOM").checked=true;
+document.getElementById("titlecs").value=decodeURIComponent(nn[5]);
+
+}
 }
 }
 
@@ -337,6 +368,13 @@ if( document.getElementById("usemoment").checked){
 }
 if(document.getElementById("userdt").value!=""){
 s+=","+encodeURIComponent(document.getElementById("userdt").value);
+}
+var cs=document.getElementById("CUSTOM").checked;
+if(cs){
+var tstring="%T(%P%)%n現在時刻:%N%n%KS%K%n%LS%L%n開始時間:%S%n終了時間:%E%nイベ時間:%V"
+var ts=document.getElementById("titlecs").value;
+if(ts!=""){tstring=ts;}
+s+=","+encodeURIComponent(tstring);
 }
 return url+s;
 }
@@ -425,8 +463,7 @@ return;
 </script>
 <body id="bg" style="">
 <h1>はんよういべたいまー改</h1>
-<span id="ibe"></span><br>
-<span id="cdt_now"></span><br>
+<span id="html"></span><br>
 
 <form name="tzone">
 
@@ -555,15 +592,20 @@ return;
     <input type="button" value="黄色に変更する" onclick="changeBoxColor(&#39;#ffff00&#39;);">
     <input type="button" value="赤色に変更する" onclick="changeBoxColor(&#39;#ff0000&#39;);">
     <input type="button" value="淡い緑色に戻す" onclick="changeBoxColor(&#39;#ccffcc&#39;);">
-    <input type="button" value="白色に戻す" onclick="changeBoxColor(&#39;#ffffff&#39;);">
+    <input type="button" value="白色に戻す"     onclick="changeBoxColor(&#39;#ffffff&#39;);">
 </p>
 <p><b>たいまー設定（たいとる、かいししゅうりょうじかん）</b><br>
-タイトル<input type="text" name="" value="" id="title" maxlength="50"width:200px;><br>
-開始時間<input type="text" name="" value="" id="start"maxlength="30"width:200px;>(ISO8601かぐぐる入力で"日時,ないときは null)<br>
-終了時間<input type="text" name="" value="" id="end"maxlength="30"width:200px;>(ISO8601かぐぐる入力で"日時,ないときは null)<br>
+タイトル<input type="text" name="" value="" id="title" maxlength="50" size="100" ><br>
+開始時間<input type="text" name="" value="" id="start"maxlength="30" size="20" >(ISO8601かぐぐる入力で"日時,ないときは null か 空欄)<br>
+終了時間<input type="text" name="" value="" id="end"maxlength="30" size="20" >(ISO8601かぐぐる入力で"日時,ないときは nullか 空欄)<br>
 ※ぐぐる入力で"日時"変換ででてくる　2020/04/05 15:00　とかはOSの現地時間になります（）<br>
 表示形式<input type="text" name="" value="" id="userdt" maxlength="30"width:200px;><a href="https://momentjs.com/docs/#/displaying/">もめんとの表示形式(例YYYY/MM-DD HH:mm:ssZz)</a>　%DST(独自拡張)で夏時間かどうか Z時差　zタイム損名前<br>
 標準出力は"YYYY/MM/DD(ddd) HH:mm:ss(UTC,Z%DST)です<br>
 <input type="Submit" value="HTMLに反映" Generate" onclick="setting();return false"> <input type="Submit" value="URLにしてブックマーク（）" Generate" onclick="document.location.href=url();return false"><br>
 </p>
-<script src="chrome-extension://hhojmcideegachlhfgfdhailpfhgknjm/web_accessible_resources/index.js"></script></body></html>
+<p><b>表示おぷしょん</b><br>
+<label for="CUSTOM"><input type="checkbox" name="hyouka" id="CUSTOM">カスタム表示</label>
+<input type="text" name="" value="%T(%P%)%n現在時刻:%N%n%KS%K%n%LS%L%n開始時間:%S%n終了時間:%E%nイベ時間:%V" id="titlecs" maxlength="100"  size="100" ><br>
+</p>
+</body>
+</html>
