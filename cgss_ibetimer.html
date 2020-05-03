@@ -114,15 +114,33 @@ date_fm=date_fm.replace(/\(J.+/,"");
    else{
    if(prog<0){
    prog="0";
-   prog2="0/"+((moment.utc(ibeowari)-moment.utc(ibekaishi))/3600000).toFixed(2);
+   prog2="0/"+((moment.utc(ibeowari)-moment.utc(ibekaishi))/3600000).toFixed(3)+"時間";
+   prog2+=",0/"+((moment.utc(ibeowari)-moment.utc(ibekaishi))/3600000/24).toFixed(3)+"日";
    }
    else if(prog>100){
    prog="100";
-   prog2=((moment.utc(ibeowari)-moment.utc(ibekaishi))/3600000).toFixed(2)+"/"+((moment.utc(ibeowari)-moment.utc(ibekaishi))/3600000).toFixed(2);
+   prog2=((moment.utc(ibeowari)-moment.utc(ibekaishi))/3600000).toFixed(3)+"/"+((moment.utc(ibeowari)-moment.utc(ibekaishi))/3600000).toFixed(3)+"時間";
+   prog2+=","+((moment.utc(ibeowari)-moment.utc(ibekaishi))/3600000/24).toFixed(3)+"/" +"/"+((moment.utc(ibeowari)-moment.utc(ibekaishi))/3600000/24).toFixed(3)+"日";
    }
    else{
-   prog2=((moment.utc()-moment.utc(ibekaishi))/3600000).toFixed(2)+"/"+((moment.utc(ibeowari)-moment.utc(ibekaishi))/3600000).toFixed(2);
+   prog2=((moment.utc()-moment.utc(ibekaishi))/3600000).toFixed(3)+"/"+((moment.utc(ibeowari)-moment.utc(ibekaishi))/3600000).toFixed(3)+"時間";
+   prog2+=","+((moment.utc()-moment.utc(ibekaishi))/3600000/24).toFixed(3)+"/"+((moment.utc(ibeowari)-moment.utc(ibekaishi))/3600000/24).toFixed(3)+"日";
    }}
+   
+      var tz="";
+   if(document.getElementById("CUSTOM").checked){
+	date_fm=date_fm.replace(/YYYY\//,"");
+	date_fm=date_fm.replace(/:ss */,"");
+	date_fm=date_fm.replace(/\([U\[].+/gm,"");
+	prog2=prog2.replace(/\d+.*?時間,/,"");
+	if(ostime){
+	tz +="<br>TZ:始GMT"+ moment(ibekaishi).format("Z");
+	tz +="→終GMT"+ moment(ibeowari).format("Z");
+	}
+	else{
+	tz +="<br>TZ:始終UTC"+ t_offset +":"+ ("0"+t_offset_min).slice(-2);
+	}
+   }
    
    
 
@@ -146,13 +164,13 @@ date_fm=date_fm.replace(/\(J.+/,"");
 	}
 	else{
 	timest +="開始時間:" +moment.utc(ibekaishi).add("Hours",jtc).format(date_fm)+"<br>"
-	+"終了時間:" +moment.utc(ibeowari).add("Hours",jtc).format(date_fm)+"<br></font><br>";
+	+"終了時間:" +moment.utc(ibeowari).add("Hours",jtc).format(date_fm)+"<br>";
 	}
 	timest +="イベ時間:" +prog2;
-	timest +="</font>";
+	timest +=tz+"</font>";
 		
 	document.getElementById("cdt_now").innerHTML=timest;
-	document.getElementById("ibe").innerHTML ="<font size=\"20\">"+ ibemie +"</font>";
+	document.getElementById("ibe").innerHTML ="<font size=\"20\">"+ ibemie ;
 
 }
 
@@ -251,7 +269,7 @@ M$より機械翻訳とはいえ
 がきになる
  -->
 
-<p align="center"><a href="javascript:toTwitter()"><img src="./" alt="Send to Twitter" width="61" height="23" border="0"></a></p>
+<p align="center"><a href="javascript:toTwitter()"><img src="./neta/imm_files/saved_resource" alt="Send to Twitter" width="61" height="61" border="0"></a></p>
 <b>タイムゾーン</b><br>
 <label for="OF"><input type="checkbox" checked="checked" value="NEW" id="OF"">OSのタイムゾーンを優先する<br></label><br>
 <select name="owata">
@@ -346,6 +364,9 @@ M$より機械翻訳とはいえ
     <input type="button" value="淡い緑色に戻す" onclick="changeBoxColor('#ccffcc');">
     <input type="button" value="白色に戻す" onclick="changeBoxColor('#ffffff');">
 </p>
-
+<p><b>表示おぷしょん</b><br>
+<label for="CUSTOM"><input type="checkbox" name="hyouka" id="CUSTOM">日時短縮表示,ついっただと文字数があるので"MM/DD(ddd)HH:mm"に短縮（）</label>
+</body>
+</html>
 </body>
 </html>
