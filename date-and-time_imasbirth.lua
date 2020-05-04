@@ -644,6 +644,7 @@ end
 
 function findday()
 daystring =""
+local birthst={}
 local daycalc=tonumber(daylim)
 local stlen=tonumber(#imas)
 --1={{"THE IDOLM@STER","2005-07-25T15:00:00.000Z","アーケード",""
@@ -655,14 +656,16 @@ local tmp=string.gsub(imas[i][2], "^(%d+)",theyear)
 local tmp2=string.gsub(imas[i][2], "^(%d+)",theyearn)
 local t=lefttime(tmp)
 local tt=lefttime(tmp2)
+local name=imas[i][1] .."("..imas[i][3]..")"
 t=math.ceil(t/3600/24);
 tt=math.ceil(tt/3600/24);
 if((t>=0 and t<=daycalc) or (tt>=0 and tt<=daycalc))then
-daystring =daystring ..MMDD(birth).." あと".. t.."日 "
+tmp =MMDD(birth).." あと".. math.abs(t).."日 "
 if(t<0)then
-daystring=daystring ..MMDD(birth).." あと".. tt.."日 "
+tmp =MMDD(birth).." あと".. math.abs(tt).."日 "
 end
-daystring =daystring .. imas[i][1] .."("..imas[i][3]..")\r\n"
+tmp = tmp .. name.."\r\n"
+birthst[name]=tmp
 end
 end
 
@@ -679,15 +682,15 @@ local tt=lefttime(tmp2)
 t=math.ceil(t/3600/24);
 tt=math.ceil(tt/3600/24);
 if((t>=0 and t<=daycalc) or (tt>=0 and tt<=daycalc))then
-daystring =daystring ..MMDD(birth).." あと".. t.."日 "
+tmp =MMDD(birth).." あと".. math.abs(t).."日 "
 if(t<0)then
-daystring=daystring ..MMDD(birth).." あと".. tt.."日 "
+tmp =MMDD(birth).." あと".. math.abs(tt).."日 "
 end
-daystring =daystring ..idol .."\r\n"
+tmp = tmp .. idol.."\r\n"
+birthst[idol]=tmp
 end
 end
 end
-
 
 stlen=tonumber(#imasb["cg"])
 for i=1,stlen do
@@ -701,11 +704,12 @@ local tt=lefttime(tmp2)
 t=math.ceil(t/3600/24);
 tt=math.ceil(tt/3600/24);
 if((t>=0 and t<=daycalc) or (tt>=0 and tt<=daycalc))then
-daystring =daystring ..MMDD(birth).." あと".. t.."日 "
+tmp =MMDD(birth).." あと".. math.abs(t).."日 "
 if(t<0)then
-daystring=daystring ..MMDD(birth).." あと".. tt.."日 "
+tmp =MMDD(birth).." あと".. math.abs(tt).."日 "
 end
-daystring =daystring ..idol .."\r\n"
+tmp = tmp .. idol.."\r\n"
+birthst[idol]=tmp
 end
 end
 end
@@ -722,11 +726,12 @@ local tt=lefttime(tmp2)
 t=math.ceil(t/3600/24);
 tt=math.ceil(tt/3600/24);
 if((t>=0 and t<=daycalc) or (tt>=0 and tt<=daycalc))then
-daystring =daystring ..MMDD(birth).." あと".. t.."日 "
+tmp =MMDD(birth).." あと".. math.abs(t).."日 "
 if(t<0)then
-daystring=daystring ..MMDD(birth).." あと".. tt.."日 "
+tmp =MMDD(birth).." あと".. math.abs(tt).."日 "
 end
-daystring =daystring ..idol .."\r\n"
+tmp = tmp .. idol.."\r\n"
+birthst[idol]=tmp
 end
 end
 end
@@ -743,11 +748,12 @@ local tt=lefttime(tmp2)
 t=math.ceil(t/3600/24);
 tt=math.ceil(tt/3600/24);
 if((t>=0 and t<=daycalc) or (tt>=0 and tt<=daycalc))then
-daystring =daystring ..MMDD(birth).." あと".. t.."日 "
+tmp =MMDD(birth).." あと".. math.abs(t).."日 "
 if(t<0)then
-daystring=daystring ..MMDD(birth).." あと".. tt.."日 "
+tmp =MMDD(birth).." あと".. math.abs(tt).."日 "
 end
-daystring =daystring ..idol .."\r\n"
+tmp = tmp .. idol.."\r\n"
+birthst[idol]=tmp
 end
 end
 end
@@ -764,19 +770,39 @@ local tt=lefttime(tmp2)
 t=math.ceil(t/3600/24);
 tt=math.ceil(tt/3600/24);
 if((t>=0 and t<=daycalc) or (tt>=0 and tt<=daycalc))then
-daystring =daystring ..MMDD(birth).." あと"..t.."日 "
+tmp =MMDD(birth).." あと".. math.abs(t).."日 "
 if(t<0)then
-daystring=daystring ..MMDD(birth).." あと".. tt.."日 "
+tmp =MMDD(birth).." あと".. math.abs(tt).."日 "
 end
-daystring =daystring ..idol .."\r\n"
+tmp = tmp .. idol.."\r\n"
+birthst[idol]=tmp
 end
 end
 end
 
+
+local tkeys = {}
+-- populate the table that holds the keys
+for k in pairs(birthst) do
+table.insert(tkeys, birthst[k])
+end
+-- sort the keys
+table.sort(tkeys)
+
+for i=1,#tkeys do
+   daystring=daystring .. tkeys[i]
+end
 
 	return 1
 end
 
+function table.to_qs(arg)
+	local qs = {}
+	for key, value in pairs(arg) do
+		table.insert(qs, key .. "=" .. tostring(value):urlencode())
+	end
+	return "?" .. table.concat(qs, "&")
+end
 
 -- A function named script_update will be called when settings are changed
 function script_update(settings)
