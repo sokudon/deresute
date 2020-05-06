@@ -564,7 +564,7 @@ function script_update(settings)
 	stop_text = cut_string(obs.obs_data_get_string(settings, "stop_text"),30)
 	format = cut_string(obs.obs_data_get_string(settings, "format"),100)
 	title=cut_string(obs.obs_data_get_string(settings, "title_text"),100)
-	para_text=cut_string(obs.obs_data_get_string(settings, "para_text"),100)
+	para_text=cut_string(obs.obs_data_get_string(settings, "para_text"),255)
 	time_text=cut_string(obs.obs_data_get_string(settings, "time_text"),100)
 
 	set_time_text()
