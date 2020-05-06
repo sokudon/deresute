@@ -66,9 +66,9 @@ function get_timestring(t,text)
 	local minutes_infinite  = math.floor(total / 600)
 	
 	
-	local days_sn     = string.format("%03.2f",(total / 864000))
-	local hours_sn  =  string.format("%03.2f", (total / 36000))
-	local minutes_sn  = string.format("%03.2f", (total / 600))
+	local days_sn     = string.format("%03.3f",(total / 864000))
+	local hours_sn  =  string.format("%03.3f", (total / 36000))
+	local minutes_sn  = string.format("%03.3f", (total / 600))
 	--local seconds_sn  = string.format("%03.2f", (total / 10))
 
 	if string.match(text, "%%HH") then
@@ -336,8 +336,24 @@ end
 
 function parse_json_date_utc(json_date)
     local pattern = "(%d+)%-(%d+)%-(%d+)%a(%d+)%:(%d+)%:([%d%.]+)([Z%+%-])(%d?%d?)%:?(%d?%d?)"
+    local unix 	  = "^(%d+)$"
+    local normal  = "(%d+)[%-%/](%d+)[%-%/](%d+)%s+(%d+)%:(%d+)%:?([%d?%.]+)"
+
     
+    if(json_date:match(unix))then
+     return json_date
+    end
     if(json_date:match(pattern)==nil)then
+    
+        if(json_date:match(normal))then
+        local year, month, day, hour, minute,
+        seconds = json_date:match(normal)
+        if(seconds==nil or seconds=="")then
+        seconds=0
+        end
+    	 return  os.time{year = year, month = month, day = day, hour =  hour, min = minute, sec = seconds}
+    	end
+    
      return "Invalid date"
     end
     
@@ -500,6 +516,14 @@ function script_description()
 	return "Sets a text source to act as a timer with advanced options. Hotkeys can be set for starting/stopping and to the reset timer."
 end
 
+function cut_string(s,max)
+if(#s>=max)then
+s = s:sub(1,max)
+end
+
+return s
+end
+
 function script_update(settings)
 	stop_timer()
 
@@ -507,7 +531,7 @@ function script_update(settings)
 	a_mode = obs.obs_data_get_string(settings, "a_mode")
 
 	if mode == "Countdown" then
-	local dt = obs.obs_data_get_string(settings, "stop_text")    --"2020-02-26T21:00:00+09:00"	
+	local dt = cut_string(obs.obs_data_get_string(settings, "stop_text"),30)    --"2020-02-26T21:00:00+09:00"	
 	finaltime =dt
 	local t= lefttime(dt)
 	if(t=="Invalid date")then
@@ -518,7 +542,7 @@ function script_update(settings)
 	end
 		
 	total_seconds = total_seconds+1
-	local dt = obs.obs_data_get_string(settings, "start_text")    --"2020-02-26T21:00:00+09:00"	
+	local dt = cut_string(obs.obs_data_get_string(settings, "start_text"),30)    --"2020-02-26T21:00:00+09:00"	
 	starttime =dt
 
 
@@ -534,14 +558,14 @@ function script_update(settings)
 		global = false
 	end
 
-	source_name = obs.obs_data_get_string(settings, "source")
-	stop_text = obs.obs_data_get_string(settings, "stop_text")
 	hour = obs.obs_data_get_int(settings, "hour")
 	minute = obs.obs_data_get_int(settings, "minutes")
-	format = obs.obs_data_get_string(settings, "format")
-	title=obs.obs_data_get_string(settings, "title_text")
-	para_text=obs.obs_data_get_string(settings, "para_text")
-	time_text=obs.obs_data_get_string(settings, "time_text")
+	source_name = cut_string(obs.obs_data_get_string(settings, "source"),100)
+	stop_text = cut_string(obs.obs_data_get_string(settings, "stop_text"),30)
+	format = cut_string(obs.obs_data_get_string(settings, "format"),100)
+	title=cut_string(obs.obs_data_get_string(settings, "title_text"),100)
+	para_text=cut_string(obs.obs_data_get_string(settings, "para_text"),100)
+	time_text=cut_string(obs.obs_data_get_string(settings, "time_text"),100)
 
 	set_time_text()
 

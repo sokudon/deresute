@@ -63,6 +63,9 @@ function get_timezone_the_day()
 end
 
 function lefttime(dt) 
+	if(dt=="Invalid date")then
+	return dt
+	end
 	local t=parse_json_date_utc(dt) -os.time() 
 	return  t
 end
@@ -90,9 +93,28 @@ return os.date('!%Y/%m/%dT%X(JST)%a',parse_json_date_utc(dt)+3600*9)
 end
 
 function parse_json_date_utc(json_date) --ISO8601datetimeparse パーサー完成版？
-    local pattern = "(%d+)%-(%d+)%-(%d+)%a(%d+)%:(%d+)%:([%d%.]+)([Z%+%-])(%d?%d?)%:?(%d?%d?)"
+    local pattern = "(%d+)%-(%d+)%-(%d+)%a(%d+):(%d+):([%d+.]+)([Z%+%-])(%d?%d?):?(%d?%d?)"
+    local unix = "^(%d+)$"
+    local normal = "(%d+)[%-%/](%d+)[%-%/](%d+) +(%d+)%:(%d+)%:?([%d%.]+)"--ローカル時間 YYYY/MM/DD HH:MM:ss :ssはなくてもおｋ
+
+
+    if(json_date:match(unix))then
+     return unix
+    end
+    if(json_date:match(pattern)==nil)then
+    
+        if(json_date:match(normal))then
+        local year, month, day, hour, minute,
+        seconds = json_date:match(pattern)
+    	 return  os.time{year = year, month = month, day = day, hour =  hour, min = minute, sec = seconds}
+    	end
+    
+     return "Invalid date"
+    end
+    
     local year, month, day, hour, minute, 
-        seconds, offsetsign, offsethour, offsetmin = json_date:match(pattern)
+        seconds, offsetsign, offsethour, offsetmin =json_date:match(pattern)
+    
     local timestamp = os.time{year = year, month = month, 
         day = day, hour = 4, min = minute, sec = seconds}
     local offset = 0
@@ -804,22 +826,30 @@ function table.to_qs(arg)
 	return "?" .. table.concat(qs, "&")
 end
 
+function cut_string(s,max)
+if(#s>=max)then
+s = s:sub(1,max)
+end
+
+return s
+end
+
 -- A function named script_update will be called when settings are changed
 function script_update(settings)
 	activate(false)
 
 	source_name = obs.obs_data_get_string(settings, "source")
-	format_string = obs.obs_data_get_string(settings, "format_string")
+	format_string = cut_string(obs.obs_data_get_string(settings, "format_string"),100)
 	utc           = obs.obs_data_get_double(settings, "UTC")
 	ima           = obs.obs_data_get_int(settings, "IMAS")
 	obs.obs_data_set_string(settings, "im",imas[ima][1]..imas[ima][3])
 	imass           = obs.obs_data_get_int(settings, "IMSERIES")
 	daylim           = obs.obs_data_get_int(settings, "DAYLIM")
-	cgn =findidol("cg",obs.obs_data_get_string(settings, "cg"))
-	mln =findidol("ml",obs.obs_data_get_string(settings, "ml"))
-	smn =findidol("sm",obs.obs_data_get_string(settings, "sm"))
-	scn =findidol("sc",obs.obs_data_get_string(settings, "sc"))
-	dsn =findidol("ds",obs.obs_data_get_string(settings, "ds"))
+	cgn =findidol("cg",cut_string(obs.obs_data_get_string(settings, "cg"),20))
+	mln =findidol("ml",cut_string(obs.obs_data_get_string(settings, "ml"),20))
+	smn =findidol("sm",cut_string(obs.obs_data_get_string(settings, "sm"),20))
+	scn =findidol("sc",cut_string(obs.obs_data_get_string(settings, "sc"),20))
+	dsn =findidol("ds",cut_string(obs.obs_data_get_string(settings, "ds"),20))
 	local inum={cgn,mln,smn,scn,dsn}
 	useidol=inum[imass]
 	findday()
