@@ -1,0 +1,65 @@
+tech_borad 	テクニカルボード
+hanfuda		こいこい
+dice_de	営業
+convertGacha	ガチャドロー
+card_ 		レッスン、女子寮
+event_dream	ドリームライブ
+get_raid_boss	ドリームレイド
+dream_raid_battle ドリムレイドフラッシュ
+
+//無音
+cinderella_theater	シンデレラシアター
+drum_master_game	太鼓の達人
+s_booth%2Fdetail	サウンド視聴
+
+もばますURL蒐集
+http://sp.pf.mbga.jp/12008305/?guid=ON&amp;url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fsmart_phone_flash%2FconvertGacha%2F12000%2FgachaSsSsflashSsSs%3Fpid%3D29be9ec8bbe62f1084bd80c4d2e61ad1%26p%3D1%26l_frm%3DGacha_callback_1%26rnd%3D797269528
+http://sp.pf.mbga.jp/12008305/?guid=ON&amp;url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fsmart_phone_flash%2FconvertGacha%2F12000%2FgachaSsSsexec_flashSsSs%3Ft%3D1%26c%5B%5D%3D3002901%26f%5B%5D%3D%26e%3D%26se%3D0%26al%3D700%26effect%3D0%26gh%3DW6yV9SVTMaNdEnkceWDYpw%26l_frm%3DGacha_free_1%26rnd%3D789869202
+http://sp.pf.mbga.jp/12008305/?guid=ON&amp;url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fpetit_cg%2Ftech_board%2F1001%3Fl_frm%3DPetit_cg_index_1%26rnd%3D159939683
+http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fevent_dream%2Fget_raid_boss%2F1641704%3Fl_frm%3DEvent_dream_index_1%26rnd%3D746485412
+http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fcard_str%3Fl_frm%3DStrengthen_index_3%26rnd%3D813639240
+http://sp.pf.mbga.jp/12008305/?guid=ON&amp;url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fcard_union%2Funion_card%2F0%2F0%2F0%3Fl_frm%3DCard_union_union_card_1%26rnd%3D898284525
+http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fstrengthen%3Fl_frm%3DCard_union_union_card_1%26rnd%3D429337571
+http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fcard_str%2Findex%2F0%2F0%2F1%2F0%2F0%3Fno_cache%3D1%26lesson_type%3D2%26l_frm%3DCard_str_index_1%26rnd%3D59804799
+http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fgame_center%2Fdice_de_2%3Fl_frm%3DGame_center_index_1%26rnd%3D929275144
+http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fgame_center%2Fdice_de_survival%3Fl_frm%3DGame_center_index_1%26rnd%3D6118110
+http://sp.pf.mbga.jp/12008305/?guid=ON&amp;url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fgame_center%2Fdrum_master_game%3Fl_frm%3DGame_center_rd_play_1%26rnd%3D458692248
+http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fs_booth%3Fl_frm%3DMypage_index_1%26rnd%3D595476312
+http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fs_booth%2Fdetail%2F17288%2F0%2F0%3Fl_frm%3DS_booth_index_1%26rnd%3D556204235
+
+http://sp.pf.mbga.jp/12008305/?guid=ON
+
+
+http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fevent_jam%2Findex%3Fl_frm%3DMypage_index_1%26rnd%3D998771634
+http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fevent_ranking%2Franking_menu%3Fevent_id%3D2004%26l_frm%3DEvent_jam_index_1%26rnd%3D883677529
+http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fevent_ranking%2Franking_reward_for_user%3Fevent_id%3D2004%26l_frm%3DEvent_ranking_ranking_menu_7%26rnd%3D966112199
+http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fevent_jam%2Fstage_ranking_reward%2F1%3Fevent_id%3D2004%26l_frm%3DEvent_ranking_ranking_reward_for_user_1%26rnd%3D381739089
+http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fevent_jam%2Fstage_ranking_reward%2F1%3Fl_frm%3DEvent_jam_stage_ranking_reward_1%26rnd%3D369984151
+http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fevent_jam%2Fstage_ranking_reward%2F2%3Fl_frm%3DEvent_jam_stage_ranking_reward_1%26rnd%3D79118008
+http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fevent_jam%2Fstage_ranking_reward%2F3%3Fl_frm%3DEvent_jam_stage_ranking_reward_1%26rnd%3D74169544
+http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fevent_ranking%2Franking_reward_for_production%3Fevent_id%3D2004%26l_frm%3DEvent_jam_stage_ranking_reward_1%26rnd%3D909955369
+http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fevent_jam%2Fevent_point_rewards%3Fevent_id%3D2004%26l_frm%3DEvent_ranking_ranking_reward_for_production_1%26rnd%3D135876102
+http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fevent_jam%2Fevent_stage_point_rewards%3Fevent_id%3D2004%26l_frm%3DEvent_jam_event_point_rewards_1%26rnd%3D630977867
+http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fevent_jam%2Fevent_stage_point_rewards%3Fevent_id%3D2004%26l_frm%3DEvent_ranking_ranking_reward_for_user_1%26rnd%3D490224572
+http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fevent_jam%2Fevent_stage_point_rewards%2F2%3Fl_frm%3DEvent_jam_event_stage_point_rewards_1%26rnd%3D473541644
+http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fevent_jam%2Fevent_stage_point_rewards%2F3%3Fl_frm%3DEvent_jam_event_stage_point_rewards_1%26rnd%3D333028174
+http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fevent_jam%2Fstage_ranking%2F3%3Fevent_id%3D2004%26l_frm%3DEvent_jam_event_stage_point_rewards_1%26rnd%3D529876975
+http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fevent_jam%2Fstage_ranking%2F2%3Fl_frm%3DEvent_jam_stage_ranking_1%26rnd%3D214132924
+http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fevent_jam%2Fstage_ranking%2F1%3Fl_frm%3DEvent_jam_stage_ranking_1%26rnd%3D339444630
+http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fevent_ranking%2Franking_for_user%2F0%3Fevent_id%3D2004%26l_frm%3DEvent_jam_stage_ranking_1%26rnd%3D726367038
+http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fevent_ranking%2Franking_for_production%2F5%3Fevent_id%3D2004%26l_frm%3DEvent_ranking_ranking_for_user_1%26rnd%3D310716965
+http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fevent_jam%2Findex%3Fl_frm%3DMypage_index_1%26rnd%3D968710779
+http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fevent_jam%2Fdeck_index%3Fl_frm%3DEvent_jam_index_1%26rnd%3D481205057
+http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fknights%2Fknights_event_building%3Fl_frm%3DEvent_jam_index_1%26rnd%3D415489159
+http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fevent_jam%2Fidol_ability_list%3Fevent_id%3D2004%26l_frm%3DEvent_jam_index_1%26rnd%3D117110997
+http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fshop%2Findex%2F1%3Fl_frm%3DEvent_jam_index_1%26rnd%3D368631802
+http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fevent_jam%2Fhelp%2F1%3Fl_frm%3DEvent_jam_index_1%26rnd%3D405090894
+http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fexchange%2Fmedal_list%2F999999%2F2%3Fl_frm%3DEvent_jam_index_1%26rnd%3D439747422
+http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fevent_jam%2Fwork%2F3%3Fl_frm%3DEvent_jam_raid_win_1%26rnd%3D830058499
+http://sp.pf.mbga.jp/12008305/?guid=ON&amp;url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fevent_jam%2Fget_raid_boss%2F984561%3Fl_frm%3DEvent_jam_ajax_play_1%26rnd%3D560214966
+http://sp.pf.mbga.jp/12008305/?guid=ON&amp;url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fsmart_phone_flash%2Fconvert%2Fevent_jamSsSsraid_battle_swf%2F0%2F0%2F0%2F1%3Fall_damage%3D8390207%26after_boss_hp%3D0%26raid_id%3D984561%26vm%3D0%26ep%3D1%26l_frm%3DEvent_jam_raid_battle_1%26rnd%3D913150054
+http://sp.pf.mbga.jp/12008305/?guid=ON&amp;url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fevent_jam%2Fraid_win%3Fraid_id%3D984561%26l_frm%3DEvent_jam_raid_battle_swf_1%26rnd%3D669300124
+http://sp.pf.mbga.jp/12008305/?guid=ON&amp;url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fsmart_phone_flash%2Fconvert%2Fevent_jamSsSsappear_unit_boss_swfSsSs984679%3Fl_frm%3DEvent_jam_appear_unit_boss_1%26rnd%3D280793114
+http://sp.pf.mbga.jp/12008305/?guid=ON&amp;url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fevent_jam%2Fget_raid_boss%2F984679%3Fl_frm%3DEvent_jam_appear_unit_boss_swf_1%26rnd%3D912903110
+http://sp.pf.mbga.jp/12008305/?guid=ON&amp;url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fsmart_phone_flash%2Fconvert%2Fevent_jamSsSsraid_battle_swf%2F0%2F0%2F0%2F1%3Fall_damage%3D15575830%26after_boss_hp%3D0%26raid_id%3D984679%26vm%3D0%26ep%3D1%26l_frm%3DEvent_jam_raid_battle_1%26rnd%3D533843273
+http://sp.pf.mbga.jp/12008305/?guid=ON&amp;url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fevent_jam%2Fraid_win%3Fraid_id%3D984679%26l_frm%3DEvent_jam_raid_battle_swf_1%26rnd%3D506372244
