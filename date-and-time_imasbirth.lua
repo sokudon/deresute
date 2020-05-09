@@ -674,8 +674,8 @@ local theyear=os.date("!%Y",os.time()+9*3600)
 local theyearn=theyear*1+1
 
 for i=1,stlen do
-local tmp=string.gsub(imas[i][2], "^(%d+)",theyear)
-local tmp2=string.gsub(imas[i][2], "^(%d+)",theyearn)
+local tmp=string.gsub(imas[i][1], "^(%d+)",theyear)
+local tmp2=string.gsub(imas[i][1], "^(%d+)",theyearn)
 local t=lefttime(tmp)
 local tt=lefttime(tmp2)
 local name=imas[i][1] .."("..imas[i][3]..")"
