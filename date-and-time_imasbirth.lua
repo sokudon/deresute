@@ -93,7 +93,7 @@ return os.date('!%Y/%m/%dT%X(JST)%a',parse_json_date_utc(dt)+3600*9)
 end
 
 function parse_json_date_utc(json_date) --ISO8601datetimeparse パーサー完成版？
-    local pattern = "(%d+)%-(%d+)%-(%d+)%a(%d+):(%d+):([%d+.]+)([Z%+%-])(%d?%d?):?(%d?%d?)"
+    local pattern = "(%d+)%-(%d+)%-(%d+)%a(%d+)%:(%d+)%:([%d+.]+)([Z%+%-])(%d?%d?):?(%d?%d?)"
     local unix = "^(%d+)$"
     local normal = "(%d+)[%-%/](%d+)[%-%/](%d+) +(%d+)%:(%d+)%:?([%d%.]+)"--ローカル時間 YYYY/MM/DD HH:MM:ss :ssはなくてもおｋ
 
@@ -673,12 +673,17 @@ local stlen=tonumber(#imas)
 local theyear=os.date("!%Y",os.time()+9*3600)
 local theyearn=theyear*1+1
 
+debugtxt1=string.gsub(imas[15][2], "^(%d+)",theyear)
+
 for i=1,stlen do
-local tmp=string.gsub(imas[i][1], "^(%d+)",theyear)
-local tmp2=string.gsub(imas[i][1], "^(%d+)",theyearn)
+local birth=imas[i][2]
+if(birth:match("Z")) then
+local tmp=string.gsub(imas[i][2], "^(%d+)",theyear)
+local tmp2=string.gsub(imas[i][2], "^(%d+)",theyearn)
 local t=lefttime(tmp)
 local tt=lefttime(tmp2)
 local name=imas[i][1] .."("..imas[i][3]..")"
+local namen=imas[i][1] ..imas[i][2]
 t=math.ceil(t/3600/24);
 tt=math.ceil(tt/3600/24);
 if((t>=0 and t<=daycalc) or (tt>=0 and tt<=daycalc))then
@@ -687,7 +692,8 @@ if(t<0)then
 tmp =MMDD(birth).." あと".. math.abs(tt).."日 "
 end
 tmp = tmp .. name.."\r\n"
-birthst[name]=tmp
+birthst[namen]=tmp
+end
 end
 end
 
