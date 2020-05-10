@@ -336,14 +336,11 @@ end
 
 function parse_json_date_utc(json_date)
     local pattern = "(%d+)%-(%d+)%-(%d+)%a(%d+)%:(%d+)%:([%d%.]+)([Z%+%-])(%d?%d?)%:?(%d?%d?)"
-    local unix 	  = "^(%d+)$"
-    local normal  = "(%d+)[%-%/](%d+)[%-%/](%d+)%s+(%d+)%:(%d+)%:?([%d?%.]+)"
 
     
-    if(json_date:match(unix))then
-     return json_date
-    end
     if(json_date:match(pattern)==nil)then
+    local unix 	  = "^(%d+)$"
+    local normal  = "(%d+)[%-%/](%d+)[%-%/](%d+)%s+(%d+)%:(%d+)%:?([%d?%.]+)"
     
         if(json_date:match(normal))then
         local year, month, day, hour, minute,
@@ -353,6 +350,10 @@ function parse_json_date_utc(json_date)
         end
     	 return  os.time{year = year, month = month, day = day, hour =  hour, min = minute, sec = seconds}
     	end
+    	
+	    if(json_date:match(unix))then
+    	 return json_date
+	    end
     
      return "Invalid date"
     end
