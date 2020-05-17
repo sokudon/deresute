@@ -6,13 +6,15 @@ card_ 		レッスン、女子寮
 event_dream	ドリームライブ
 get_raid_boss	ドリームレイド
 dream_raid_battle ドリムレイドフラッシュ
+event イベント全般
 
 //無音
 cinderella_theater	シンデレラシアター
 drum_master_game	太鼓の達人
 s_booth%2Fdetail	サウンド視聴
 
-もばますURL蒐集
+
+もばますURL蒐集 モバマス　IDOLM@STERCINDERELLAGIRLS URI COLLRECTION
 http://sp.pf.mbga.jp/12008305/?guid=ON&amp;url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fsmart_phone_flash%2FconvertGacha%2F12000%2FgachaSsSsflashSsSs%3Fpid%3D29be9ec8bbe62f1084bd80c4d2e61ad1%26p%3D1%26l_frm%3DGacha_callback_1%26rnd%3D797269528
 http://sp.pf.mbga.jp/12008305/?guid=ON&amp;url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fsmart_phone_flash%2FconvertGacha%2F12000%2FgachaSsSsexec_flashSsSs%3Ft%3D1%26c%5B%5D%3D3002901%26f%5B%5D%3D%26e%3D%26se%3D0%26al%3D700%26effect%3D0%26gh%3DW6yV9SVTMaNdEnkceWDYpw%26l_frm%3DGacha_free_1%26rnd%3D789869202
 http://sp.pf.mbga.jp/12008305/?guid=ON&amp;url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fpetit_cg%2Ftech_board%2F1001%3Fl_frm%3DPetit_cg_index_1%26rnd%3D159939683
@@ -29,7 +31,7 @@ http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaste
 
 http://sp.pf.mbga.jp/12008305/?guid=ON
 
-
+//JAM
 http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fevent_jam%2Findex%3Fl_frm%3DMypage_index_1%26rnd%3D998771634
 http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fevent_ranking%2Franking_menu%3Fevent_id%3D2004%26l_frm%3DEvent_jam_index_1%26rnd%3D883677529
 http://sp.pf.mbga.jp/12008305/?guid=ON&url=http%3A%2F%2F125.6.169.35%2Fidolmaster%2Fevent_ranking%2Franking_reward_for_user%3Fevent_id%3D2004%26l_frm%3DEvent_ranking_ranking_menu_7%26rnd%3D966112199
