@@ -2,10 +2,21 @@
 <title>でれすていべたいまー改</title>
 <head>
 </head>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
+<script type="text/javascript">
+  var timezone = jstz.determine();
+  var id ="c487i65o4pt8dfv5kbavpdoosi717vvi" //カレンダーの国際化
+  var pref = '<iframe src="https://www.google.com/calendar/embed?src=' +id +'%40import.calendar.google.com&amp;ctz=';
+  var suff = '" style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe>';
+  var iframe_html = pref + timezone.name() + suff;
+ window.onload = function() {
+  document.getElementById('calendar-container').innerHTML = iframe_html;
+  }
+</script>
 <body>
 購読URI；　https://script.google.com/macros/s/AKfycbzI4Hw2vLoUmD72eUYN3kGwgkFia2qOzznPE0KFmA/exec<br>
-カレンダーID; c487i65o4pt8dfv5kbavpdoosi717vvi@import.calendar.google.com
+カレンダーID; c487i65o4pt8dfv5kbavpdoosi717vvi@import.calendar.google.com<br>
 
-<iframe src="https://calendar.google.com/calendar/embed?src=c487i65o4pt8dfv5kbavpdoosi717vvi%40import.calendar.google.com&ctz=Asia%2FTokyo" style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
+<div id="calendar-container"></div>
 </body>
 </html>
