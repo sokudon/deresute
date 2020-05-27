@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<!-- saved from url=(0064)http://sokudon.s17.xrea.com/cgss_pare_highstock_cmpz_remain.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="./Highstock compare_files/tbl.css" type="text/css" rel="stylesheet">
+<title>Highstock compare</title>
+<script type="text/javascript" src="./Highstock compare_files/moment-with-locales.js"></script>
+<script type="text/javascript" src="https://script.googleusercontent.com/macros/echo?user_content_key=U8lRRo16R7FqScu14TxrXzUk-eViX7RRTqe5BCZadgd4EWGP0CAi0B7bA9ZEO5lLN8gd1byBVFCwxPg2LwtmZf3bUN94_Qjrm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnDV26P3pfGK3Fv263HShhetWNwSpfWQzWo4ISoLEAHC4pLuv-9cdsAkYZpTak_o22Q&lib=MTXx1sJKcMB9uNa0Owd6wroFpGDg2vV9V"></script>
+<script type="text/javascript" src="./Highstock compare_files/jquery.min.js"></script>
+
+<script type="text/javascript" src="../dere_groove_cr_sc.js"></script>
+<script type="text/javascript" src="../dere_groove_sc.js"></script>
+
+<script src="./Highstock compare_files/cgss_highstock_cmp_remain2.js"></script>
+<script src="./Highstock compare_files/cgss_high_title_groove.js"></script>
+<script src="./Highstock compare_files/highstockv8.js"></script>
+<script src="./Highstock compare_files/exporting.js"></script>
+<script src="./Highstock compare_files/export-data.src.js"></script>
+<style type="text/css">
+${demo.css}
+</style>
+<script type="text/javascript">
+<!--
+var border=[];
+for(var i=0;i<base.length;i++){
+border[i]=new Array();
+border[i]['name'] = base[i]['name'];
+border[i]["data"] = base[i]['data'];
+}
+
+var border_data=datafilter(utc_adjust(border.concat(compare)),"5001位");
+convert_left_time(border_data);
+
+-->
+</script>
+</head>
+<body>
+<div data-highcharts-chart="0" id="container" style="height: 600px; min-width: 310px"></div>
+<div id="tbl"></div>
+
+<button id="5001" class="autocompare">5001のみ</button>
+<button id="10001" class="autocompare">10001のみ</button>
+<button id="50001" class="autocompare">50001のみ</button>
+
+<button id="all" class="autocompare">すべて</button>
+<form name="seek" style="display: inline">
+<input type="text" id="seek_n" value="/(^|[a-z])1位/">
+</form>
+<button id="md" class="autocompare">けんさく(/～/でせいきひょうげん)</button>
+<br><br>
+<button id="DMS">DHM(日時分)で表示</button>
+<button id="MS">HM(時分)で表示</button>
+<button id="RM">イベント時間で表示</button>
+<button id="PER">進行度（%）で表示(現イベ基準)</button>
+
+<form name="trg">
+<b>CSV時刻出力設定※イベント時間で表示時のみ、残り時間はDHMかHMでおｋ（）</b><br>
+<select name="time" onchange="csvOutputChanged();">
+<option>--経過時間で出力--</option>
+<option>0001/01/01 12:00:00 VB.NET</option>
+<option>1899/12/30 00:00:00 VB6,M$エクセル、googleスプレッドシート</option>
+<option>1970-01-01 00:00:00 JS,エポック秒</option>
+<option>2014-01-01 00:00:00 sokudon</option>
+<option>0～ シリアル値M$エクセル、googleスプレッドシート</option>
+<option>0～ utcエポック秒</option>
+<option>--イベント時間で出力(現イベ基準--</option>
+<option selected="selected">イベント開始りある時間(現地) realtime</option>
+<option>イベント開始りある時間 toString()英語表記？</option>
+<option>イベント開始りある時間 エクセルシリアル値</option>
+<option>イベント開始りある時間ISO8601 realtime</option>
+<option>イベント開始りある時間ISO8601 unixtime,utc</option>
+<option>イベント開始りある時間 utcエポック秒</option>
+</select>
+</form>
+</body>
+</html>

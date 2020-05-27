@@ -1,0 +1,516 @@
+
+<!-- saved from url=(0041)http://sokudon.s17.xrea.com/tbl_cgss.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="keywords" content="CGSS　ぼーだー　ボーダー　border">
+<title>デレステボーダー/CGSSBORDER(GOOGLECHART)</title>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async="" src="./CGSSBORDER(GOOGLECHART)_files/js"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-124912501-1');
+</script>
+    <!--"https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['annotationchart']}]}" -->
+    <script type="text/javascript" src="./CGSSBORDER(GOOGLECHART)_files/loader.js"></script>
+	<script src="./CGSSBORDER(GOOGLECHART)_files/moment-with-locales.js"></script>
+	<script type="text/javascript" src="https://script.googleusercontent.com/macros/echo?user_content_key=G6FwCFqYIgGKgxL2vVj25YX0pvEaju5iRR3f5UqiP3vG1LklKyvZCyHwBc76iKFrBpKk8F0qVoingcPNHiwa1-928MB-6u3Mm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnJKG9a6SFgmm3lARi3jlwYZjT7zDjDDYqKB7xJpDvGcxchNoDtAtluwYZpTak_o22Q&lib=MuU_Udslg5nTwBTZnd2fOw4FpGDg2vV9V"></script><style></style>
+    <script type="text/javascript">
+<!--
+//https://developers.google.com/chart/interactive/docs/reference
+//pattern [Optional] String pattern that was used by a data source to format numeric, date, or time column values. This is for reference only; you probably won't need to read the pattern, and it isn't required to exist. The Google Visualization client does not use this value (it reads the cell's formatted value). If the DataTable has come from a data source in response to a query with a format clause, the pattern you specified in that clause will probably be returned in this value. The recommended pattern standards are the ICU DecimalFormat and SimpleDateFormat .
+//https://unicode-org.github.io/icu-docs/apidoc/released/icu4j/com/ibm/icu/text/SimpleDateFormat.html
+//https://unicode-org.github.io/icu-docs/apidoc/released/icu4j/com/ibm/icu/text/DecimalFormat.html
+var dateformat="yyyy/MM/dd HH:mm";
+//dateformat="a b c d e f g h i j k l m n";
+//dateformat="o p q r s t u v w x y z ! ";
+//dateformat="A B C D E F G H I J K L M N ";
+//dateformat="O P Q R S T U V W X Y Z ! ";
+if((moment(ibestart).isDST())^(moment(ibeend).isDST())){//片方だけサマータイムのとき時差つきデフォルト
+//document.getElementById("TZ").checked=true;
+dateformat="yyyy/MM/dd HH:mm";
+}
+var gcharttz = 9;//ぐぐるチャートのタイムゾーン,nullでOS自動現地変換,0utc 9jst -4EDT -5EST
+
+
+google.charts.load("current",{packages:["annotationchart"]}),google.charts.setOnLoadCallback(drawChart);
+var column_data=[["date","日付"]],jisoku=[];
+function convert_google(e){for(var n=1;
+n<e[0].length;
+n++)column_data[n]=[],column_data[n][0]="number",column_data[n][1]=e[0][n];
+column_data.length=e[0].length;
+for(var t=[],o=0;
+o<e.length-1;
+o++){t[o]=[],t[o][0]=new Date(moment(e[o+1][0]).valueOf());
+for(n=1;
+n<e[0].length;
+n++)""==e[o+1][n]?t[o][n]=void 0:t[o][n]=e[o+1][n]}return t}function drawChart(){var l=new google.visualization.DataTable;
+
+document.getElementById("title").innerHTML="<h3>"+ibe+"ボーダー</h3>";
+var e=convert_google(BD);
+e.sort(function(e,n){return e[0]<n[0]?1:e[0]>n[0]?-1:0});
+
+var n=document.getElementById("SP").checked,t=document.TZ.HM.options[document.TZ.HM.selectedIndex].text;
+
+var TZ=document.getElementById("TZ").checked;
+if(TZ){
+dateformat="yyyy/MM/dd HH:mmZ";
+}
+else{
+dateformat="yyyy/MM/dd HH:mm";
+}
+
+t="^"+t+"$",jisoku=[];
+var time_diff=getSTD(e[0][0]);
+var type=[0,9,time_diff.std,time_diff.dst];
+standart_time_diff=type[document.TZPT.PT.selectedIndex];
+
+//(現地終了時間H':m')?00:00 内部参照UTC
+//(現地終了時間H':m')?09:00 内部参照JST
+//(現地終了時間H':m')?H':m' 内部参照現地時間　標準時差
+//(現地終了時間H!:m!)?H!:m! 内部参照現地時間DSTサマータイム
+//https://www.jtb.co.jp/kaigai_guide/report/AU/2015/10/summer-time.html
+
+for(var o=[],a="",i=0,r=0;i<e.length;i++){
+
+var dt=moment.utc(e[i][0]).add("Hours",standart_time_diff);
+var HHmm=dt.format("H:mm");
+
+/* //ro-karu時間で修正
+var dt=moment(e[i][0]);
+//dt=dt.add("Hours",-1);　/サン?マータイム/越境時注意喚起 -3600も同じ
+;//moment("2020/03/08 03:00)がmoment("2020/03/08 02:00)の幻2時でぱーすされてしまい
+;//unixタイムでは幻2時=/サン?マータイム/実施直前1時とおなじになる（）
+;//https://stackoverflow.com/questions/56263239/how-to-ignore-dst-when-parsing-string-to-time-time-parse-in-ruby
+if(dt.isDST()){
+HHmm  =parseInt(dt.format("H"))-1;
+if(HHmm<0){HHmm+=24;}
+HHmm +=dt.format(":mm");
+}
+*/
+
+if(HHmm.match(t)){
+o[r]=i;
+r++;
+}}
+document.getElementById("debug").innerHTML="確認用デバッグ時間:UTC" 
++ moment.utc(e[o[0]][0]).add("Hours",type[0]).format("H:mm")
++",JST"
++ moment.utc(e[o[0]][0]).add("Hours",type[1]).format("H:mm")
++",LOCAL" 
++ moment.utc(e[o[0]][0]).add("Hours",type[2]).format("H:mm")
++",LOCALDST" 
++ moment.utc(e[o[0]][0]).add("Hours",type[3]).format("H:mm");
+
+
+
+var u=[1];
+for(i=0;
+i<maxlen;
+i++)document.chbox.elements[i].checked?u[i+1]=1:u[i+1]=0;
+if(n){l.addColumn(column_data[0][0],column_data[0][1]);
+for(i=1;
+i<column_data.length;
+i++)u[i]&&(l.addColumn(column_data[i][0],column_data[i][1]),l.addColumn(column_data[i][0],"速度"));
+var c=0;
+if(0<o.length){for(i=0;
+i<o.length-1;
+i++){var d=1;
+jisoku[i]=[],jisoku[i][0]=e[o[i]][0];
+for(r=1;
+r<column_data.length;
+r++)u[r]&&(jisoku[i][2*d-1]=e[o[i]][r],0==(c=e[o[i]][r]-e[o[i+1]][r])&&(c=void 0),jisoku[i][2*d]=c,d++)}d=1;
+jisoku[i]=[],jisoku[i][0]=e[o[i]][0];
+for(r=1;
+r<column_data.length;
+r++)u[r]&&(jisoku[i][2*d-1]=e[o[i]][r],jisoku[i][2*d]=void 0,d++)}}else{for(i=0;
+i<column_data.length;
+i++)u[i]&&l.addColumn(column_data[i][0],column_data[i][1]);
+if(0<o.length)for(i=0;
+i<o.length;
+i++){d=1;
+jisoku[i]=[],jisoku[i][0]=e[o[i]][0];
+for(r=1;
+r<column_data.length;
+r++)u[r]&&(0<e[o[i]][r]?jisoku[i][d]=e[o[i]][r]:jisoku[i][d]=void 0,d++)}}l.addRows(jisoku),new google.visualization.DateFormat({pattern:dateformat,'timeZone':gcharttz}).format(l,0);
+var m=new google.visualization.NumberFormat({pattern:"###,###"});
+
+
+if(n)for(i=1;
+i<2*(d-1)+1;
+i++)m.format(l,i);
+else for(i=1;
+i<d;
+i++)m.format(l,i);
+var s=new google.visualization.Table(document.getElementById("table_div"));
+s.draw(l,{sort:"disable",sortColumn:0,sortAscending:!1,page:"enable",pageSize:10,pagingSymbols:{prev:"前",next:"次"}});
+var g=new google.visualization.DataView(l),f=new google.visualization.AnnotationChart(document.getElementById("chart_div")),v={displayAnnotations:!0};
+f.draw(g,v),google.visualization.events.addListener(s,"select",function(){f.setSelection(s.getSelection())}),google.visualization.events.addListener(f,"select",function(){for(var e=f.getSelection(),n=0;
+n<e.length;
+n++)e[n].column=null;
+var t=f.getSelection()[0];
+if(null!=t){var o=t.row,a={sort:"disable",sortColumn:0,page:"enable",pageSize:10,pagingSymbols:{prev:"前",next:"次"},sortAscending:!0,startPage:parseInt(o/10)};
+s.draw(l,a)}s.setSelection(e)}),google.visualization.events.addListener(s,"sort",function(e){l.sort([{column:e.column,desc:!e.ascending}]),f.draw(l,v),table_option.sortAscending=e.ascending,table_option.sortColumn=e.column,s.draw(g,t_option),s.setSelection(null)})}var rank=[],maxlen=0;
+
+function CHmai(){rank=BD[0],maxlen=BD[0].length-1;
+for(var e=0;
+e<maxlen;
+e++)document.getElementById("L"+(e+1)).innerHTML=rank[e+1];
+return!1}
+
+window.onload=function(){
+CHmai();
+moment();
+//if(title.indexOf("Parede")>0){
+CHitimai(1,score);
+//}
+//else{
+//CHitimai(1,rankmai);
+//}
+}
+
+var rankmai=["501位","2001位","10001位","20001位","60001位","120001位","300001位"],end=["1位","2位","3位","9位","10位","11位"];
+var score = ["スコア1位","スコア10位","スコア11位","スコア5001位","スコア10001位","スコア40001位","スコア50001位"]
+function CHitimai(e,n){var t=n;
+if(null!=n){for(var o=0;
+o<maxlen;
+o++)document.chbox.elements[o].checked=!1;
+for(var a=0;
+a<t.length;
+a++)for(o=0;
+o<maxlen;
+o++)if(t[a]==document.getElementById("L"+(o+1)).innerHTML){document.chbox.elements[o].checked=!0;
+break}}
+else for(o=0;
+o<maxlen;
+o++)document.chbox.elements[o].checked=!0;
+return e&&drawChart(),!1}
+
+function getHEAD(){for(var e=[],n=document.getElementById("SP").checked,t=[1],o=0;
+o<maxlen;
+o++)document.chbox.elements[o].checked?t[o+1]=1:t[o+1]=0;
+if(n){e.push(column_data[0][1]);
+for(o=1;
+o<column_data.length;
+o++)t[o]&&(e.push(column_data[o][1]),e.push("速度"))}else for(o=0;
+o<column_data.length;
+o++)t[o]&&e.push(column_data[o][1]);
+return e}
+function DLCSV(){for(var e="",n=getHEAD(),t=0;
+t<n.length;
+t++)e+=n[t]+",";
+e=e.slice(0,-1),e+="\r\n";
+for(var o=0;
+o<jisoku.length;
+o++){e+=moment(jisoku[o][0]).format("YYYY/MM/DD HH:mm")+",";
+for(t=1;t<jisoku[o].length;t++)e+=jisoku[o][t]+",";
+e=e.slice(0,-1),e+="\r\n"}TextDL(e,"border.csv")}function DLJSON(){var e=[];
+e[0]=[],e[0]=getHEAD(),TextDL(JSON.stringify(e.concat(jisoku)),"tokikdoru.txt")}function TextDL(n,t){b=new Blob([n],{type:"text/plain"}),a=document.createElement("a"),a.download=t,a.href=window.URL.createObjectURL(b),e=document.createEvent("MouseEvent"),e.initEvent("click",!0,!0),a.dispatchEvent(e)}
+
+setInterval("get_count()",1000);
+function get_count() {
+var t=moment(ibeend);var now=moment();var left_time=t-now;t= moment(left_time).valueOf()/1000;
+var timetxt= Math.floor(t/(3600*24)) +"日" +Math.floor( (t%(3600*24))/3600) + "時間"+Math.floor((t%3600)/60)+ "分" +Math.floor(t%60)+ "秒";
+var datend=moment(ibeend).format();
+var datest=moment(ibestart).format();
+
+
+var prog=(moment.utc()-moment.utc(ibestart))/(moment.utc(ibeend)-moment.utc(ibestart))*100;
+
+var dstst="";
+var dsten="";
+if(moment(ibestart).isDST()){dstst="(DST,夏時間)";}
+if(moment(ibeend).isDST()){dsten="(DST,夏時間)";}
+
+var zan="開始:"+datest +dstst +"<br>";
+//+"終了:"+datend +dsten +"まで残り"+timetxt +"("+prog.toFixed(2)+"%)";
+if(left_time<0){
+zan +="終了:"+datend +dsten + "に終了しました～";
+}
+if(ibeend==""){
+zan ="イベント終了日が未確定です"
+}
+
+document.getElementById("left").innerHTML= zan;
+}
+
+function getSTD(dt){//次年度分までのタイムゾーンQS
+var year=new Date(dt).getFullYear();
+var yearN=parseInt(year)+1;
+var yTZ=[];
+for(var i =0;i<12;i++){
+yTZ[i]=[];yTZ[i][1]=i+1;
+yTZ[i][0]= (new Date(year+"/"+ ("0"+(i+1)).slice(-2) +"/01 00:00").getTimezoneOffset())/-60;
+}
+for(var i =0;i<12;i++){
+yTZ[i+12]=[];yTZ[i+12][1]="N"+(i+1);
+yTZ[i+12][0] =(new Date(yearN+"/"+ ("0"+(i+1)).slice(-2) +"/01 00:00").getTimezoneOffset())/-60;
+}
+
+yTZ.sort(function(a, b) { return a[0] - b[0]; }); 
+
+var timezone={};
+timezone.std=yTZ[0][0];
+yTZ.sort(function(a, b) { return -a[0]+b[0]; }); 
+timezone.dst=yTZ[0][0];
+
+return timezone;
+}
+
+// Math.trunc() - JavaScript | MDN https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Math/trunc
+//Math.trunc = Math.trunc || function(x) {
+//  return x < 0 ? Math.ceil(x) : Math.floor(x);
+//}
+
+-->
+</script><script type="text/javascript" charset="UTF-8" src="./CGSSBORDER(GOOGLECHART)_files/loader.js(1)"></script>
+
+<script type="text/javascript" charset="UTF-8" src="./CGSSBORDER(GOOGLECHART)_files/xrea_header.js" async="async"></script>
+<link id="load-css-0" rel="stylesheet" type="text/css" href="./CGSSBORDER(GOOGLECHART)_files/tooltip.css"><link id="load-css-1" rel="stylesheet" type="text/css" href="./CGSSBORDER(GOOGLECHART)_files/util.css"><link id="load-css-2" rel="stylesheet" type="text/css" href="./CGSSBORDER(GOOGLECHART)_files/controls.css"><link id="load-css-3" rel="stylesheet" type="text/css" href="./CGSSBORDER(GOOGLECHART)_files/table.css"><link id="load-css-4" rel="stylesheet" type="text/css" href="./CGSSBORDER(GOOGLECHART)_files/format.css"><link id="load-css-5" rel="stylesheet" type="text/css" href="./CGSSBORDER(GOOGLECHART)_files/annotationchart.css"><script type="text/javascript" charset="UTF-8" src="./CGSSBORDER(GOOGLECHART)_files/jsapi_compiled_format_module.js"></script><script type="text/javascript" charset="UTF-8" src="./CGSSBORDER(GOOGLECHART)_files/jsapi_compiled_default_module.js"></script><script type="text/javascript" charset="UTF-8" src="./CGSSBORDER(GOOGLECHART)_files/jsapi_compiled_ui_module.js"></script><script type="text/javascript" charset="UTF-8" src="./CGSSBORDER(GOOGLECHART)_files/jsapi_compiled_controls_module.js"></script><script type="text/javascript" charset="UTF-8" src="./CGSSBORDER(GOOGLECHART)_files/jsapi_compiled_corechart_module.js"></script><script type="text/javascript" charset="UTF-8" src="./CGSSBORDER(GOOGLECHART)_files/jsapi_compiled_table_module.js"></script><script type="text/javascript" charset="UTF-8" src="./CGSSBORDER(GOOGLECHART)_files/jsapi_compiled_annotationchart_module.js"></script></head>
+<body><div id="vdbanner" style="display:block!important;position:relative!important;top:0!important;left:0!important;margin:10px 0 !important;padding:0!important;text-align:center!important;"><a href="https://www.colorfulbox.jp/?adref=xrea_ad&amp;argument=DLHtsrgz&amp;dmai=a5b5a809166ed7" target="_blank" rel="nofollow" style="display:inline-block!important;position:relative!important;top:0!important;left:0!important;margin:0!important;padding:0!important;"><img alt="カラフルボックス" src="./CGSSBORDER(GOOGLECHART)_files/colorfulbox_bnr01.png" style="display:inline-block!important;position:relative!important;top:0!important;left:0!important;margin:0!important;padding:0!important;width:100%!important;max-width:468px;max-height:60px;vertical-align:bottom;"></a></div>
+   <div id='title'></div>
+    <div id='left'></div>
+    <!--<div id='chart_div' style='width: 1200px; height: 600px;'></div>
+    <div id='table_div' style='width: 1200px; height: 400px;'></div>-->
+    <div id='chart_div' style='height: 400px;'></div>
+    <div id='table_div'></div>
+    <input type="Submit" value="CS" generate"="" onclick="DLCSV();return false">
+<input type="Submit" value="JSO" generate"="" onclick="DLJSON();return false">
+<form name="TZ">
+時間:
+<select name="HM" onchange="drawChart()">
+<option selected="selected" value="">(※制限なし)?[0-9]{1,2}:[0-9]{1,2}</option>
+<option value="">(※日次,0時起点)?^0:00</option>
+<option value="">(※日次,15時起点)?15:00</option>
+<option value="">(※日次,17時起点)?17:00</option>
+<option value="">(※日次,21時起点)?21:00</option>
+<option value="">-------------------------------</option>
+<option value="">(※日次,0時起点)?^0?0:00</option>
+<option value="">(※日次,1時起点)?^0?1:00</option>
+<option value="">(※日次,2時起点)?^0?2:00</option>
+<option value="">(※日次,3時起点)?^0?3:00</option>
+<option value="">(※日次,4時起点)?^0?4:00</option>
+<option value="">(※日次,5時起点)?^0?5:00</option>
+<option value="">(※日次,6時起点)?^0?6:00</option>
+<option value="">(※日次,7時起点)?^0?7:00</option>
+<option value="">(※日次,8時起点)?^0?8:00</option>
+<option value="">(※日次,9時起点)?^0?9:00</option>
+<option value="">(※日次,10時起点)?10:00</option>
+<option value="">(※日次,11時起点)?11:00</option>
+<option value="">(※日次,12時起点)?12:00</option>
+<option value="">-------------------------------</option>
+<option value="">(※日次,13時起点)?13:00</option>
+<option value="">(※日次,14時起点)?14:00</option>
+<option value="">(※日次,15時起点)?15:00</option>
+<option value="">(※日次,14時起点)?14:00</option>
+<option value="">(※日次,15時起点)?15:00</option>
+<option value="">(※日次,16時起点)?16:00</option>
+<option value="">(※日次,17時起点)?17:00</option>
+<option value="">(※日次,18時起点)?18:00</option>
+<option value="">(※日次,19時起点)?19:00</option>
+<option value="">(※日次,20時起点)?20:00</option>
+<option value="">(※日次,21時起点)?21:00</option>
+<option value="">(※日次,22時起点)?22:00</option>
+<option value="">(※日次,23時起点)?23:00</option>
+<option value="">(※日次,0時起点)?^0:00</option>
+<option value="">(※日次,15時起点)?15:00</option>
+<option value="">(※日次,17時起点)?17:00</option>
+<option value="">(※日次,21時起点)?21:00</option>
+
+<option value="">-----------DST,夏時間用----------</option>
+<option value="">(※日次,DST夏時間0時起点)?23:00</option>
+<option value="">(※日次,DST夏時間1時起点)?^0?0:00</option>
+<option value="">(※日次,DST夏時間2時起点)?^0?1:00</option>
+<option value="">(※日次,DST夏時間3時起点)?^0?2:00</option>
+<option value="">(※日次,DST夏時間4時起点)?^0?3:00</option>
+<option value="">(※日次,DST夏時間5時起点)?^0?4:00</option>
+<option value="">(※日次,DST夏時間6時起点)?^0?5:00</option>
+<option value="">(※日次,DST夏時間7時起点)?^0?6:00</option>
+<option value="">(※日次,DST夏時間8時起点)?^0?7:00</option>
+<option value="">(※日次,DST夏時間9時起点)?^0?8:00</option>
+<option value="">(※日次,DST夏時間10時起点)?^0?9:00</option>
+<option value="">(※日次,DST夏時間11時起点)?10:00</option>
+<option value="">(※日次,DST夏時間12時起点)?11:00</option>
+<option value="">(※日次,DST夏時間13時起点)?12:00</option>
+<option value="">--------------------------------</option>
+<option value="">(※日次,DST夏時間14時起点)?15:00</option>
+<option value="">(※日次,DST夏時間15時起点)?14:00</option>
+<option value="">(※日次,DST夏時間16時起点)?15:00</option>
+<option value="">(※日次,DST夏時間17時起点)?16:00</option>
+<option value="">(※日次,DST夏時間18時起点)?17:00</option>
+<option value="">(※日次,DST夏時間19時起点)?18:00</option>
+<option value="">(※日次,DST夏時間20時起点)?19:00</option>
+<option value="">(※日次,DST夏時間21時起点)?20:00</option>
+<option value="">(※日次,DST夏時間22時起点)?21:00</option>
+<option value="">(※日次,DST夏時間23時起点)?22:00</option>
+
+<option value="">------------UTC+HH:30のやつ---------------</option>
+<option value="">(※日次,0時起点)?^0?0:30</option>
+<option value="">(※日次,1時起点)?^0?1:30</option>
+<option value="">(※日次,2時起点)?^0?2:30</option>
+<option value="">(※日次,3時起点)?^0?3:30</option>
+<option value="">(※日次,4時起点)?^0?4:30</option>
+<option value="">(※日次,5時起点)?^0?5:30</option>
+<option value="">(※日次,6時起点)?^0?6:30</option>
+<option value="">(※日次,7時起点)?^0?7:30</option>
+<option value="">(※日次,8時起点)?^0?8:30</option>
+<option value="">(※日次,9時起点)?^0?9:30</option>
+<option value="">(※日次,10時起点)?10:30</option>
+<option value="">(※日次,11時起点)?11:30</option>
+<option value="">(※日次,12時起点)?12:30</option>
+<option value="">-------------------------------</option>
+<option value="">(※日次,13時起点)?13:30</option>
+<option value="">(※日次,14時起点)?14:30</option>
+<option value="">(※日次,15時起点)?15:30</option>
+<option value="">(※日次,14時起点)?14:30</option>
+<option value="">(※日次,15時起点)?15:30</option>
+<option value="">(※日次,16時起点)?16:30</option>
+<option value="">(※日次,17時起点)?17:30</option>
+<option value="">(※日次,18時起点)?18:30</option>
+<option value="">(※日次,19時起点)?19:30</option>
+<option value="">(※日次,20時起点)?20:30</option>
+<option value="">(※日次,21時起点)?21:30</option>
+<option value="">(※日次,22時起点)?22:30</option>
+<option value="">(※日次,23時起点)?23:30</option>
+<option value="">(※日次,0時起点)?^0:30</option>
+<option value="">(※日次,15時起点)?15:30</option>
+<option value="">(※日次,17時起点)?17:30</option>
+<option value="">(※日次,21時起点)?21:30</option>
+<option value="">-----------UTC+HH:30のやつDST,夏時間用----------</option>
+<option value="">(※日次,DST夏時間0時起点)?23:30</option>
+<option value="">(※日次,DST夏時間1時起点)?^0?0:30</option>
+<option value="">(※日次,DST夏時間2時起点)?^0?1:30</option>
+<option value="">(※日次,DST夏時間3時起点)?^0?2:30</option>
+<option value="">(※日次,DST夏時間4時起点)?^0?3:30</option>
+<option value="">(※日次,DST夏時間5時起点)?^0?4:30</option>
+<option value="">(※日次,DST夏時間6時起点)?^0?5:30</option>
+<option value="">(※日次,DST夏時間7時起点)?^0?6:30</option>
+<option value="">(※日次,DST夏時間8時起点)?^0?7:30</option>
+<option value="">(※日次,DST夏時間9時起点)?^0?8:30</option>
+<option value="">(※日次,DST夏時間10時起点)?^0?9:30</option>
+<option value="">(※日次,DST夏時間11時起点)?10:30</option>
+<option value="">(※日次,DST夏時間12時起点)?11:30</option>
+<option value="">(※日次,DST夏時間13時起点)?12:30</option>
+<option value="">--------------------------------</option>
+<option value="">(※日次,DST夏時間14時起点)?15:30</option>
+<option value="">(※日次,DST夏時間15時起点)?14:30</option>
+<option value="">(※日次,DST夏時間16時起点)?15:30</option>
+<option value="">(※日次,DST夏時間17時起点)?16:30</option>
+<option value="">(※日次,DST夏時間18時起点)?17:30</option>
+<option value="">(※日次,DST夏時間19時起点)?18:30</option>
+<option value="">(※日次,DST夏時間20時起点)?19:30</option>
+<option value="">(※日次,DST夏時間21時起点)?20:30</option>
+<option value="">(※日次,DST夏時間22時起点)?21:30</option>
+<option value="">(※日次,DST夏時間23時起点)?22:30</option>
+<option value="">------------UTC+HH:45のやつ（カトマンズ、ユークラ、チャタム諸島)---------------</option>
+<option value="">(※日次,0時起点)?^0?0:45</option>
+<option value="">(※日次,1時起点)?^0?1:45</option>
+<option value="">(※日次,2時起点)?^0?2:45</option>
+<option value="">(※日次,3時起点)?^0?3:45</option>
+<option value="">(※日次,4時起点)?^0?4:45</option>
+<option value="">(※日次,5時起点)?^0?5:45</option>
+<option value="">(※日次,6時起点)?^0?6:45</option>
+<option value="">(※日次,7時起点)?^0?7:45</option>
+<option value="">(※日次,8時起点)?^0?8:45</option>
+<option value="">(※日次,9時起点)?^0?9:45</option>
+<option value="">(※日次,10時起点)?10:45</option>
+<option value="">(※日次,11時起点)?11:45</option>
+<option value="">(※日次,12時起点)?12:45</option>
+<option value="">-------------------------------</option>
+<option value="">(※日次,13時起点)?13:45</option>
+<option value="">(※日次,14時起点)?14:45</option>
+<option value="">(※日次,15時起点)?15:45</option>
+<option value="">(※日次,14時起点)?14:45</option>
+<option value="">(※日次,15時起点)?15:45</option>
+<option value="">(※日次,16時起点)?16:45</option>
+<option value="">(※日次,17時起点)?17:45</option>
+<option value="">(※日次,18時起点)?18:45</option>
+<option value="">(※日次,19時起点)?19:45</option>
+<option value="">(※日次,20時起点)?20:45</option>
+<option value="">(※日次,21時起点)?21:45</option>
+<option value="">(※日次,22時起点)?22:45</option>
+<option value="">(※日次,23時起点)?23:45</option>
+<option value="">(※日次,0時起点)?^0:45</option>
+<option value="">(※日次,15時起点)?15:45</option>
+<option value="">(※日次,17時起点)?17:45</option>
+<option value="">(※日次,21時起点)?21:45</option>
+<option value="">-----------UTC+HH:45のやつDST,夏時間用----------</option>
+<option value="">(※日次,DST夏時間0時起点)?23:45</option>
+<option value="">(※日次,DST夏時間1時起点)?^0?0:45</option>
+<option value="">(※日次,DST夏時間2時起点)?^0?1:45</option>
+<option value="">(※日次,DST夏時間3時起点)?^0?2:45</option>
+<option value="">(※日次,DST夏時間4時起点)?^0?3:45</option>
+<option value="">(※日次,DST夏時間5時起点)?^0?4:45</option>
+<option value="">(※日次,DST夏時間6時起点)?^0?5:45</option>
+<option value="">(※日次,DST夏時間7時起点)?^0?6:45</option>
+<option value="">(※日次,DST夏時間8時起点)?^0?7:45</option>
+<option value="">(※日次,DST夏時間9時起点)?^0?8:45</option>
+<option value="">(※日次,DST夏時間10時起点)?^0?9:45</option>
+<option value="">(※日次,DST夏時間11時起点)?10:45</option>
+<option value="">(※日次,DST夏時間12時起点)?11:45</option>
+<option value="">(※日次,DST夏時間13時起点)?12:45</option>
+<option value="">--------------------------------</option>
+<option value="">(※日次,DST夏時間14時起点)?15:45</option>
+<option value="">(※日次,DST夏時間15時起点)?14:45</option>
+<option value="">(※日次,DST夏時間16時起点)?15:45</option>
+<option value="">(※日次,DST夏時間17時起点)?16:45</option>
+<option value="">(※日次,DST夏時間18時起点)?17:45</option>
+<option value="">(※日次,DST夏時間19時起点)?18:45</option>
+<option value="">(※日次,DST夏時間20時起点)?19:45</option>
+<option value="">(※日次,DST夏時間21時起点)?20:45</option>
+<option value="">(※日次,DST夏時間22時起点)?21:45</option>
+<option value="">(※日次,DST夏時間23時起点)?22:45</option>
+</select>
+</form>
+
+<label for="SP"><input type="checkbox" value="SP" id="SP" onchange="drawChart()">速度表示</label>
+<label for="TZ"><input type="checkbox" id="TZ" checked="checked" onchange="drawChart()">時差付き情報</label>
+<form name="chbox" onchange="drawChart()">
+<b>表示対象</b><br>
+<label for="R1"><input type="checkbox" checked="checked" value="S1" id="R1"><div id="L1" style="display: inline-block; _display: inline;">1位</div></label>
+<label for="R2"><input type="checkbox" checked="checked" value="S2" id="R2"><div id="L2" style="display: inline-block; _display: inline;">501位</div></label>
+<label for="R3"><input type="checkbox" checked="checked" value="S3" id="R3"><div id="L3" style="display: inline-block; _display: inline;">2001位</div></label>
+<label for="R4"><input type="checkbox" checked="checked" value="S4" id="R4"><div id="L4" style="display: inline-block; _display: inline;">10001位</div></label><br>
+<!--<label for="R5"><input type="checkbox" checked="checked" value="S5" id="R5"><div id="L5" style="display: inline-block; _display: inline;">20001位</div> </label>
+<label for="R6"><input type="checkbox" checked="checked" value="S6" id="R6"><div id="L6" style="display: inline-block; _display: inline;">60001位</div></label>
+<label for="R7"><input type="checkbox" checked="checked" value="S7" id="R7"><div id="L7" style="display: inline-block; _display: inline;">120001位</div></label>
+<label for="R8"><input type="checkbox" checked="checked" value="S8" id="R8"><div id="L8" style="display: inline-block; _display: inline;">200001位</div></label><br>
+<label for="R9"><input type="checkbox" checked="checked" value="S9" id="R9"><div id="L9" style="display: inline-block; _display: inline;">300001位</div></label>
+<label for="R10"><input type="checkbox" checked="checked" value="S10" id="R10"><div id="L10" style="display: inline-block; _display: inline;">スコア1位</div></label>
+<label for="R11"><input type="checkbox" checked="checked" value="S11" id="R11"><div id="L11" style="display: inline-block; _display: inline;">スコア5001位</div></label>
+<label for="R12"><input type="checkbox" checked="checked" value="S12" id="R12"><div id="L12" style="display: inline-block; _display: inline;">スコア10001位</div></label><br>
+<label for="R13"><input type="checkbox" checked="checked" value="S13" id="R13"><div id="L13" style="display: inline-block; _display: inline;">スコア40001位</div></label>
+<label for="R14"><input type="checkbox" checked="checked" value="S14" id="R14"><div id="L14" style="display: inline-block; _display: inline;">ランク14</div></label>
+<label for="R15"><input type="checkbox" checked="checked" value="S15" id="R15"><div id="L15" style="display: inline-block; _display: inline;">ランク15</div> </label>
+<label for="R16"><input type="checkbox" checked="checked" value="S16" id="R16"><div id="L16" style="display: inline-block; _display: inline;">ランク16</div></label>
+-->
+</form>
+<!--<input type="Submit" value="501位" generate"="" onclick="CHitimai(1,[&#39;501位&#39;]);return false">
+<input type="Submit" value="2001位" generate"="" onclick="CHitimai(1,[&#39;2001位&#39;]);return false">
+<input type="Submit" value="10001位" generate"="" onclick="CHitimai(1,[&#39;10001位&#39;]);return false">
+<input type="Submit" value="20001位" generate"="" onclick="CHitimai(1,[&#39;20001位&#39;]);return false">
+<input type="Submit" value="60001位" generate"="" onclick="CHitimai(1,[&#39;60001位&#39;]);return false">
+<input type="Submit" value="120001位" generate"="" onclick="CHitimai(1,[&#39;120001位&#39;]);return false">
+<input type="Submit" value="300001位" generate"="" onclick="CHitimai(1,[&#39;300001位&#39;]);return false">
+<input type="Submit" value="PTぼだ" generate"="" onclick="CHitimai(1,rankmai);return false">
+-->
+<input type="Submit" value="ハイスコア" generate"="" onclick="CHitimai(1,score);return false">
+<input type="Submit" value="ALL" generate"="" onclick="CHitimai(1,null);return false">
+<br><br>
+<form name="TZPT">
+内部時計参照パターン:
+<select name="PT" onchange="drawChart()">
+<option value="">(現地終了時間H':m')?00:00 内部参照UTC</option>
+<option value="">(現地終了時間H':m')?09:00 内部参照JST</option>
+<option selected="selected" value="">(現地終了時間H':m')?H':m' 内部参照現地時間LOCAL　標準時差</option>
+<option value="">(現地終了時間H!:m!)?H!:m! 内部参照現地時間LOCLALDST サマータイム</option>
+</select>
+<br>
+<div id="debug">確認用デバッグ時間:----</div>
+<br>
+※夏時間の場合日次参照は+1hになります(),オーストラリアのロードハウ島は0.5時間
+</form>
+</body></html>
