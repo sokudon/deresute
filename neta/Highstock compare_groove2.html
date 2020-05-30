@@ -29,9 +29,91 @@ border[i]['name'] = base[i]['name'];
 border[i]["data"] = base[i]['data'];
 }
 
-var border_data=datafilter(utc_adjust(border.concat(compare)),"5001位");
+
+var mode="";
+var csvindex=8;
+var events;
+var ranking=get_web_para("5001位");
+var border_data=datafilter(utc_adjust(border.concat(compare)),ranking);
+border_data=eventfilter(border_data,events)
 convert_left_time(border_data);
 
+window.onload = function() {
+document.trg.time.selectedIndex=csvindex;
+if(mode=="MS"){document.getElementById("MS").click();}
+if(mode=="RM"){document.getElementById("RM").click();}
+if(mode=="PER"){document.getElementById("PER").click();}
+}
+
+
+function escapeHTML(html) {
+  return jQuery('<div>').text(html).html();
+}
+
+function url(){
+var url=document.location.href;
+var n = url.indexOf("#");
+if (n > -1) {
+url= url.substring(0,n);
+}
+var s="";
+var reg="";
+var cc=Highcharts.charts[0];
+for(var i=0;i<cc.series.length;i++){
+if(cc.series[i].visible){
+if(cc.series[i].name.match(/\d+位/)){
+reg +="^"
+}
+reg +=cc.series[i].name +"|";
+}
+}
+s = "%28"+encodeURIComponent(reg.replace(/\|$/,""))+"%29";
+s+= ","+document.trg.time.selectedIndex;
+if(PER){s+= ",PER";}
+else if(RM){s+= ",RM";}
+else if(DMS==false){s+= ",MS";}
+document.location.href=url+"#," +s;
+
+return;
+}
+
+function get_web_para(s){
+var url=document.location.href;
+
+var n = url.indexOf("#");
+if (n > -1) {
+s = url.substring(n+1,url.length);
+url= url.substring(0,n);
+var nn=s.split(",");
+if(nn.length>=2){
+s=nn[0];
+events=decodeURIComponent(decodeURIComponent(nn[1]));
+}
+if(nn.length>=3){
+var m=nn[2].match(/\d+/);
+csvindex=m[0];
+}
+if(nn.length>=4){
+mode=nn[3];
+}
+
+}
+s=escapeHTML(decodeURIComponent(s));
+return s;
+}
+
+
+function eventfilter(bd,s){
+
+var reg = new RegExp(s);
+
+for(var i=0;i<bd.length;i++){
+if(bd[i]['name'].match(reg)==null){
+bd[i].visible =false;
+}}
+		diff=1;
+return bd
+}
 -->
 </script>
 </head>
@@ -73,5 +155,13 @@ convert_left_time(border_data);
 <option>イベント開始りある時間 utcエポック秒</option>
 </select>
 </form>
+
+<b>順位検索ブックマーク版</b><br>
+<a href="#5001"target="_blank" rel="noopener">5001位ブクマ版</a>
+<a href="#10001"target="_blank" rel="noopener">10001位ブクマ版</a>
+<a href="#50001"target="_blank" rel="noopener">50001位ブクマ版</a>
+<a href="#,^\d+位"target="_blank" rel="noopener">現行イベントのみ</a>
+<br>
+<input type="Submit" value="URLで状態をほぞん" generate"="" onclick="url();return false">
 </body>
 </html>

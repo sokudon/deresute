@@ -28,6 +28,14 @@ var tyukanend	= new Date(2019,3,25,15,0);//いべんと開始日時 月-1
 var ibe_kaishi	=moment(ibekaishi).utc();//いべんと開始日時 月-1
 var ibe_end		=moment(ibeowari).utc();//いべんと終了日時 月-1
 
+var pendend=pendendtime();
+
+function pendendtime(){
+if(ibeowari=="" || ibeowari=="--"){
+pendend="<br>※終了時未定のためイベント時間および達成率は非表示です";
+}
+return;
+}
 
 //2019/11/20 15:00	2019/11/27 21:00 mente 28
 
@@ -37,6 +45,7 @@ var dtd=1;//つーるちっぷ;０でいべんと日付のみ　こんぺあは�
 
 var DMS=true;//日時分とジフン切り替え
 var RM=false;//りある時間
+var PER=false;//PER
 
 var defaultdate="YYYY/MM/DD HH:mm";
 var timediff = moment(ibekaishi);//csv出力

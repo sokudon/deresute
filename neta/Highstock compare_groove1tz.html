@@ -23,6 +23,7 @@
 ${demo.css}
 </style>
 <script type="text/javascript">
+
 <!--
 var border=[];
 for(var i=0;i<base.length;i++){
@@ -31,13 +32,54 @@ border[i]['name'] = base[i]['name'];
 border[i]["data"] = base[i]['data'];
 }
 
+
+var mode="";
+var csvindex=8;
+var events;
 var ranking=get_web_para("501位");
 var border_data=datafilter(utc_adjust(border.concat(compare)),ranking);
+border_data=eventfilter(border_data,events)
 convert_left_time(border_data);
+
+window.onload = function() {
+createSelectBox();
+document.gm.gm.selectedIndex=511;//jp
+document.trg.time.selectedIndex=csvindex;
+if(mode=="MS"){document.getElementById("MS").click();}
+if(mode=="RM"){document.getElementById("RM").click();}
+if(mode=="PER"){document.getElementById("PER").click();}
+}
 
 
 function escapeHTML(html) {
   return jQuery('<div>').text(html).html();
+}
+
+function url(){
+var url=document.location.href;
+var n = url.indexOf("#");
+if (n > -1) {
+url= url.substring(0,n);
+}
+var s="";
+var reg="";
+var cc=Highcharts.charts[0];
+for(var i=0;i<cc.series.length;i++){
+if(cc.series[i].visible){
+if(cc.series[i].name.match(/\d+位/)){
+reg +="^"
+}
+reg +=cc.series[i].name +"|";
+}
+}
+s = "%28"+encodeURIComponent(reg.replace(/\|$/,""))+"%29";
+s+= ","+document.trg.time.selectedIndex;
+if(PER){s+= ",PER";}
+else if(RM){s+= ",RM";}
+else if(DMS==false){s+= ",MS";}
+document.location.href=url+"#," +s;
+
+return;
 }
 
 function get_web_para(s){
@@ -47,17 +89,36 @@ var n = url.indexOf("#");
 if (n > -1) {
 s = url.substring(n+1,url.length);
 url= url.substring(0,n);
+var nn=s.split(",");
+if(nn.length>=2){
+s=nn[0];
+events=decodeURIComponent(decodeURIComponent(nn[1]));
 }
-s=escapeHTML(decodeURI(s));
+if(nn.length>=3){
+var m=nn[2].match(/\d+/);
+csvindex=m[0];
+}
+if(nn.length>=4){
+mode=nn[3];
+}
+
+}
+s=escapeHTML(decodeURIComponent(s));
 return s;
 }
 
-window.onload = function() {
-createSelectBox();
-document.gm.gm.selectedIndex=511;//jp
-};
 
+function eventfilter(bd,s){
 
+var reg = new RegExp(s);
+
+for(var i=0;i<bd.length;i++){
+if(bd[i]['name'].match(reg)==null){
+bd[i].visible =false;
+}}
+		diff=1;
+return bd
+}
 
 function createSelectBox(){
 
@@ -153,6 +214,11 @@ return;
 <a href="#20001"target="_blank" rel="noopener">20001位ブクマ版</a>
 <a href="#60001"target="_blank" rel="noopener">60001位ブクマ版</a>
 <a href="#120001"target="_blank" rel="noopener">120001位ブクマ版</a>
+<a href="#,^\d+位"target="_blank" rel="noopener">現行イベントのみ</a>
+<br>
+<input type="Submit" value="URLで状態をほぞん" generate"="" onclick="url();return false">
+</body>
+</html>
 <br><br>
 <b>タイムゾーン設定追加の時計</b><br>
 <label for="useutc"><input type="checkbox" checked="checked" name="hyouka" id="useutc"><a href="https://support.microsoft.com/ja-jp/help/973627/microsoft-time-zone-index-values">M$</a>のUTC固定時差情報を使う</label>

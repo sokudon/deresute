@@ -28,7 +28,7 @@ $('#container').highcharts('StockChart', {
         	    zoomType: 'x',
 		        },
 		        title: {
-        		    text: '<b>' + ibe_type +'　のこりじかんひかく</b>'+"<br>(VS " +name+")"
+        		    text: '<b>' + ibe_type +'　けいかじかんひかく</b>'+"<br>(VS " +name+")"
 		        },
         		subtitle: {
             		text: 'グラフ内ドラックで拡大,見出しクリックで表示/非表示'
@@ -89,7 +89,7 @@ $('#container').highcharts('StockChart', {
 					//hour: '%Q時',day: '%q時',//無限時間で表示
 					},
 		            title: {
-        		        text: '残時間　日時分(day hour:minutes)'
+        		        text: '経過時間　日時分(day hour:minutes)'
         		        //text: '残時間　時分(hour:minutes)'
 		            },
 		            plotLines: [{
@@ -344,8 +344,6 @@ var dtf=[
 '%E日%H時間%M分<br>(%p)<br>' //YYYMMDDHHmm有り
 ];
 
-
-
 var youbi =['日', '月', '火', '水', '木', '金', '土'];
 
 function csvOutputChanged(){
@@ -369,20 +367,26 @@ bd[i].visible =false;
 return bd
 }
 
+function utc_adjust(bd){
+for(var i=0;i< bd.length;i++){
+for(var j=0;j< bd[i].data.length;j++){
+bd[i].data[j][0] +=jst-timezone;
+}}
+
+return bd;
+}
+
+
 function GETdiff(chart){
 var a= chart.x;
 var k= new Date(a);
-var d=(k.getDate()-1)+"日";
-var h=(k.getHours())+"時";
+var d=(k.getDate()-1)+"日目";
+var h=moment(k).format("HH時")//(k.getHours())+"時";//
 var m=k.getMinutes()+"分";
-if(DMS==false){
-d="";
-h=((k.getDate()-1)*24+(k.getHours()))+"時";
-}
 
 var s="";
 if(diff){
-s= "<b>残り"+d+h+m+"</b>(" +GETPROG(a) +")("+ GETTIMEZ(a)+")<br><table class=\"border\">";
+s= "<b>けいか"+d+h+m+"</b>("+GETPROG(a)+")<br>("+GETTIMEZ(a)+")<br><table class=\"border\">";
 if(diff){
 s+= "<thead><tr><th>比較対象らんきんぐ</th><th>ぽいんと</th><th>"+chart.points[0].series.name+"との差</th><th>〃比率</th></tr></thead>";
 }
@@ -417,13 +421,12 @@ s+="</table>";
 
 
 document.getElementById("tbl").innerHTML=s;
-}else{
+}
+else{
 document.getElementById("tbl").innerHTML="";
-
 }
 
-
-s= "<b>残り"+d+h+m+"</b>("+GETPROG(a)+")<br>("+ GETTIMEZ(a)+")<br><table>";
+s= "<b>けいか"+d+h+m+"</b>("+GETPROG(a)+")<br>("+GETTIMEZ(a)+")<br><table>";
 for(var i=0;i<chart.points.length;i++){
 s+='<tr style=\"line-height : 80%;"><td style=\"color: '
 +chart.points[i].color
@@ -442,16 +445,23 @@ s+="</table>";
 
 return s;
 
+
 }
 
-function utc_adjust(bd){
-for(var i=0;i< bd.length;i++){
-for(var j=0;j< bd[i].data.length;j++){
-bd[i].data[j][0] +=jst-timezone;
-}}
-
-return bd;
+//小数以外は正規でカンマつける
+function addc(a){
+	if(haveFraction(a)){
+	//return a.toFixed(5);
+	}
+	return String(a).replace(/(\d)(?=(\d\d\d)+(?!\d))/g,'$1,');
 }
+
+
+function haveFraction (number) {
+return (Math.ceil(number)>number);
+}
+
+
 
 
 function GETTIMEx(a){
@@ -467,16 +477,18 @@ return d+"日";
 }
 
 function GETPROG(a){
-var k= (moment(-new Date(a)+ibe_owari)/(ibe_end-ibe_kaishi)*100).toFixed(2);
-if(k=="Invalid date" || k=="NaN"){
-return "--%"
+var k= ((moment(a) -Date.UTC(2014,0,1,0,0)+timezone)/(ibe_end-ibe_kaishi)*100).toFixed(2);
+
+if(k=="NaN"){
+return "※終了時未定のため達成率非表示";
 }
 return k+"%";
 }
 
 //PM表示を改造
 function GETTIMEZ(a){
-a =ibe_kaishi+ibe_owari-a;
+a=-Date.UTC(2014,0,1,0,0)+timezone+ibe_kaishi+a;
+//a =ibe_kaishi+ibe_owari-a;
 var k= new Date(a);
 var s= moment(k).format("MM月DD日HH時mm分ZZ"); 
 //(k.getMonth()+1) +"月"+
@@ -484,10 +496,6 @@ var s= moment(k).format("MM月DD日HH時mm分ZZ");
 //youbi[k.getDay()] +" "+
 //(k.getHours()) +"時" +
 //k.getMinutes() +"分";
-
-if(s=="Invalid date" || s=="NaN"){
-return "--"
-}
 
 return s;
 }
@@ -520,9 +528,31 @@ if( a[0] < b[0] ) return -1;
 return 0;
 });
 }
-
-
-
 return bd;
 }
 
+
+function GETTIMEx(a){
+var k= new Date(a);
+var d=(k.getDate()-1);var h=k.getHours();var m=k.getMinutes();
+if(m){return m+"分";}
+if(h){return h+"時";}
+
+return d+"日";
+}
+
+
+//PM表示を改造
+function GETTIMEZ(a){
+a =a  -Date.UTC(2014,0,1,0,0)+ibe_kaishi+jst-(-timezone+jst);
+var k= moment(a);//new Date(a);
+var s= moment(k).format("MM月DD日HH時mm分ZZ");
+//var k= moment(a);//new Date(a);
+//(k.getMonth()+1) +"月"+
+//(k.getDate()) +"日 "+
+//youbi[k.getDay()] +" "+
+//(k.getHours()) +"時" +
+//k.getMinutes() +"分";
+
+return s;
+}

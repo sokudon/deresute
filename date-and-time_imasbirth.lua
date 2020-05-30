@@ -70,7 +70,7 @@ function lefttime(dt)
 	return  t
 end
 
-function elaspted(dt) 
+function elasped(dt) 
 	return  -(lefttime(dt))
 end
 
@@ -224,7 +224,7 @@ function parse_jp_era(date)
    if(inum==0)then
    inum =1
    end
-   local tu = elaspted(imas[inum][2])
+   local tu = elasped(imas[inum][2])
    local imasname =imas[inum][1] .."("..imas[inum][3]..")"
    local gm = "開始から" 
   
@@ -316,7 +316,7 @@ function parse_jp_era(date)
   	
   	if(isempty(imm)==false) then
   	debugtxt1= JST(imm) --差終わり日
-    tu= elaspted(imas[inum][4])
+    tu= elasped(imas[inum][4])
   	
    local ep=get_ep(tu)
   	date =string.gsub(date, "%%ie","サ終から"..ep )
