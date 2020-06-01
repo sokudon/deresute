@@ -124,15 +124,35 @@ end
 return true
 end
 
+function makebar(p)
+local base ="="
+p=math.floor(p)
+local s=""
+for i=0,p-1 do
+s= s .. base
+end
+s=s..">"
+for i=p+1,100 do
+s= s .."_"
+end
+local bar = "["..s.."]"
+return bar
+end
+
 function set_time_text()
 	local text = para_text	
 	local elaspted=get_timestring(lefttime(starttime),format)
 	local left=get_timestring(lefttime(finaltime),format)
 	local ibetime=checkdate(lefttime(starttime),lefttime(finaltime))
 	local prog=""
+	local bar=""
 	if(ibetime==true)then
 	ibetime=get_timestring(parse_json_date_utc(finaltime)-parse_json_date_utc(starttime),format)
 	prog=string.format("%2.2f",math.abs(lefttime(starttime)/(parse_json_date_utc(finaltime)-parse_json_date_utc(starttime))*100))
+	if(tonumber(prog)>100)then
+	prog=100
+	end
+	bar=makebar(prog)
 	end
 	
 	local time_textq=string.gsub(time_text, "%%[EJKLNOPQfikloqsv]","")	 --フリーズ文字 %%[EJKLNOPQfikloqsv]
@@ -144,6 +164,7 @@ function set_time_text()
 	text = string.gsub(text, "%%K", elaspted)
 	text = string.gsub(text, "%%L", left)
 	text = string.gsub(text, "%%P", prog)
+	text = string.gsub(text, "%%Q", bar)
 	if(parse_json_date_utc(starttime)=="Invalid date")then
 	text=  string.gsub(text, "%%SJ?","Invalid date")
 	else
@@ -335,7 +356,7 @@ function lefttime(dt)
 end
 
 function parse_json_date_utc(json_date)
-     local pattern = "(%d+)%-(%d+)%-(%d+)%a(%d+)%:(%d+)%:([%d%.]+)([Z%+%-])(%d?%d?)%:?(%d?%d?)"
+    local pattern = "(%d+)%-(%d+)%-(%d+)%a(%d+)%:(%d+)%:([%d%.]+)([Z%+%-])(%d?%d?)%:?(%d?%d?)"
     local unix 	  = "^(%d+)$"
     local normal  = "(%d+)[%-%/](%d+)[%-%/](%d+)%s+(%d+)%:(%d+)%:?([%d?%.]+)"
 
@@ -355,10 +376,6 @@ function parse_json_date_utc(json_date)
         end
     	 return  os.time{year = year, month = month, day = day, hour =  hour, min = minute, sec = seconds}
     	end
-    	
-	    if(json_date:match(unix))then
-    	 return json_date
-	    end
     
      return "Invalid date"
     end
