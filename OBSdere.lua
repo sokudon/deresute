@@ -5,6 +5,86 @@
 --拡張前　旧版残り時間だけのやつ　https://raw.githubusercontent.com/sokudon/deresute/2c8516d114a6500b0ad4e91d31a776f5b5d48891/OBSdere.lua
 
 
+--[[
+//全部出しさんぷる
+OS時間:%N%n経過時間%K           %t日本時間:%JST  %n残り時間:%L          %t%t開始時間:%SJ%nイベント時間:%I     %t%t終了時間%EJ       %T%P％%n%Q
+
+%T	イベント名・タイトル
+%N	現在の時間OS依存、時刻書式可能
+%JST	日本時間、時刻書式可能
+%I	イベント期間、経過残書式対応
+%T	タイトル名
+%K	経過時間、経過残書式対応
+%L	残り時間、経過残書式対応
+%P	進捗%
+%Q	進捗バー
+%SJ	イベント開始日本時間
+%S	　イベント開始時間
+%EJ	　イベント終了日本時間
+%E	　イベント終了時間
+
+//時刻書式一覧
+%Y-%m-%dT%H:%M:%S%z (%a)　＝＞2020-06-02T01:52:00+0900 (Tue曜日)
+--%a ロケールの省略形の曜日名 (Sun..Sat) 
+--%A ロケールの完全表記の曜日名、可変長 (Sunday..Saturday) 
+--%b ロケールの省略形の月名 (Jan..Dec) 
+--%B ロケールの完全表記の月名、可変長 (January..December) 
+--%c ロケールの日付と時刻 (Sat Nov 4 12:02:33 EST
+--%d 月内通算日数 (01..31) 
+--%D 日付 (mm/dd/yy) 
+--%H hour, using a 24-hour clock (23) [00-23] 時間 
+--%h %b と同じ 
+--%I hour, using a 12-hour clock (11) [01-12] 時間ampm %pとセット 
+--%j 年内通算日数 (001..366) 
+--%k 時 (0..23) 
+--%l 時 (1..12) 
+--%M minute (48) [00-59] 分 
+--%m month (09) [01-12] 月 
+--%n 改行 
+--%p AM あるいは PM のロケール 
+--%r 時刻、12 時間 (hh:mm:ss [AP]M) 
+--%S second (10) [00-61] 秒 
+--%s 1970-01-01 0:00:00 UTC からの秒数 (標準外の拡張) 
+--%T 時刻、24 時間 (hh:mm:ss) 
+--%t 水平タブ 
+--%U 日曜日を週の最初の日とした年内通算週 (00..53) 
+--%V 週番号 
+--%w weekday (3) [0-6 = Sunday-Saturday] 曜日の番号 
+--%w 週のうちの曜日 (0..6) (0 が日曜日) 
+--%W 月曜日を週の最初の日とした年内通算週 (00..53) 
+--%x date (e.g., 09/16/98) 年月日 
+--%X time (e.g., 23:48:10) 時分秒 
+--%X ロケールによる時刻の表現 (%H:%M:%S) 
+--%x ロケールの日付表現 (mm/dd/yy) 
+--%Y full year (1998) 年 
+--%y two-digit year (98) [00-99] ２桁の年 
+--%y 年の最後の 2 つの数字 (00..99) 
+--%Y 年 (1970...) 
+--%Z タイムゾーン (例 EDT)、あるいはタイムゾーンが決定できないならば無し 
+--%z timezone,osdateのサマータイム有り 
+
+//経過残書式一覧
+%d %hh:%mm:%ss(%hs時,%ds日)＝＞日 時:分:秒(時シリアル,日シリある)
+
+%HH	無限時間、少数切り捨て
+%MM	無限分、少数切り捨て
+%SS	無限秒、少数切り捨て
+%hh	24時間以内の時間、少数切り捨て
+%mm	60分以内の分、少数切り捨て
+%ss	60秒以内の秒、少数切り捨て
+%ds	無限時間、少数3桁
+%hs	無限分、少数3桁
+%ms	無限秒、少数3桁
+%H	tostring(hours_infinite))　無限1桁版
+%M	 tostring(minutes_infinite))
+%S	 tostring(seconds_infinite))
+%d	 tostring(days))　日数、少数切り捨て1桁版
+%h	 tostring(hours))　24時間～あとは1桁版
+%m	 tostring(minutes))
+%s	 tostring(seconds))
+%t	 tostring(tenths))　miri秒
+]]
+
 obs           = obslua
 source_name   = ""
 finaltime =""

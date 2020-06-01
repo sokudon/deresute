@@ -1,6 +1,159 @@
 --orig https://obsproject.com/forum/resources/date-and-time.644/
 -- 令和テキトー表示とUTCグローバル時間を出せるよう改造
 
+--出力例
+--サマータイム有り＋時差情報 先頭に!をつけるとUTC時間になる
+--%Y/%m/%d(%Vw)%X(UTC%z%DST)
+
+--和暦表示　令和から
+-- %VR%m月%d日(%Vw)%H時%M分%S秒
+
+--全部出し
+--%UTC%n%c%DST%n%x%X%z%n%s%n%ISO%n%ISOZ%n%VR%m月%d日(%Vw)%H時%M分%S秒
+
+--複数のタイムゾーン
+--%JST%nUTC+?? %UTC%nUTC協定時間%ISOZ%nISO8601 %ISO%n
+
+--あいますの情報を出す
+--%JST%n%i%n%J%is%n%K%it%n%E%ie%n
+
+--誕生日
+--%JST%n%in%n%ib%n%ic
+
+--独自拡張2020/04/17現在 
+--%EM	あいますお誕生日何日以内のやつ
+--%E	デバッグ文字1 サービス終了日
+--%J	デバッグ文字2 サービス開始日
+--%K	デバッグ文字3 今年の周年日
+--$i	あいますゲームの名前,フリーズ防止
+--%is	あいますの記念日の時間からの経過時間
+--%it	あいますの記念日までの時間
+--%ie	あいますのサービス終了した時間からの経過時間(データがないものは表示なし)
+--%ib	アイドル名誕生日
+--%ic	アイドル名誕生日までの時間
+--%in	アイドル名
+--%UTC  worldtime set UTCsetting,	UTC標準時からUI設定の時間を表示,サマータイムは非対応
+--%JST  ISO8601表示日本時間
+--%ISO  ISO8601表示ローカル時間
+--%ISOZ ISO8601表示UTC時間
+--%Z	サマーなしタイムゾーン時差情報,元はタイムゾーンストリングだが文字化けで使えないので（）
+--%ZZ   timezone,HH:mm  timezoneサマーなしタイムゾーン時差情報  
+--%zz   サマータイム有り＋時差情報 HH:mm
+--%DST  夏時間かどうか出力する 引数"J"で夏時間
+--%s    unixtime,フリーズ防止
+--%VR--%Vr--%VH--%Vh--%VS--%Vs--%VT--%Vt 日本の和暦、開始年しかちぇくしてないのでてきとー
+
+
+--OBSlua標準出力
+--画像でまとめてみた　https://imgur.com/a/MYtwxg1
+
+--http://noriko3.blog42.fc2.com/blog-entry-128.html?sp
+--%% the character `%´ %の文字だけをだしたいとき 
+--%a ロケールの省略形の曜日名 (Sun..Sat) 
+--%A ロケールの完全表記の曜日名、可変長 (Sunday..Saturday) 
+--%b ロケールの省略形の月名 (Jan..Dec) 
+--%B ロケールの完全表記の月名、可変長 (January..December) 
+--%c ロケールの日付と時刻 (Sat Nov 4 12:02:33 EST
+--%d 月内通算日数 (01..31) 
+--%D 日付 (mm/dd/yy) 
+--%H hour, using a 24-hour clock (23) [00-23] 時間 
+--%h %b と同じ 
+--%I hour, using a 12-hour clock (11) [01-12] 時間ampm %pとセット 
+--%j 年内通算日数 (001..366) 
+--%k 時 (0..23) 
+--%l 時 (1..12) 
+--%M minute (48) [00-59] 分 
+--%m month (09) [01-12] 月 
+--%n 改行 
+--%p AM あるいは PM のロケール 
+--%r 時刻、12 時間 (hh:mm:ss [AP]M) 
+--%S second (10) [00-61] 秒 
+--%s 1970-01-01 0:00:00 UTC からの秒数 (標準外の拡張) 
+--%T 時刻、24 時間 (hh:mm:ss) 
+--%t 水平タブ 
+--%U 日曜日を週の最初の日とした年内通算週 (00..53) 
+--%V 週番号 
+--%w weekday (3) [0-6 = Sunday-Saturday] 曜日の番号 
+--%w 週のうちの曜日 (0..6) (0 が日曜日) 
+--%W 月曜日を週の最初の日とした年内通算週 (00..53) 
+--%x date (e.g., 09/16/98) 年月日 
+--%X time (e.g., 23:48:10) 時分秒 
+--%X ロケールによる時刻の表現 (%H:%M:%S) 
+--%x ロケールの日付表現 (mm/dd/yy) 
+--%Y full year (1998) 年 
+--%y two-digit year (98) [00-99] ２桁の年 
+--%y 年の最後の 2 つの数字 (00..99) 
+--%Y 年 (1970...) 
+--%Z タイムゾーン (例 EDT)、あるいはタイムゾーンが決定できないならば無し 
+--%z timezone,osdateのサマータイム有り 
+
+--クラッシュ使用不可か別の文字処理に使う
+--%E　デバッグ文字1
+--%J　デバッグ文字2
+--%K　デバッグ文字3
+--%L
+--%N
+--%O
+--%P
+--%Q
+--%f
+--%i あいますの時間
+--%k 
+--%l
+--%o
+--%q
+--%s　　unixtimeに使用
+--%v
+
+--%%A:%A%n%%B:%B%n%%C:%C%n%%D:%D%n%%E:%E%n%%F:%F%n%%G:%G%n
+--%%H:%H%n%%I:%I%n%%J:%J%n%%K:%K%n%%L:%L%n%%M:%M%n%%N:%N%n
+--%%O:%O%n%%P:%P%n%%Q:%Q%n%%R:%R%n%%S:%S%n%%T:%T%n%%U:%U%n
+--%%V:%V%n%%W:%W%n%%X:%X%n%%Y:%Y%n%%Z:%Z%n%%n:%n
+--
+--%%a:%a%n%%b:%b%n%%c:%c%n%%d:%d%n%%e:%e%n%%f:%f%n%%g:%g%n
+--%%h:%h%n%%i:%i%n%%j:%j%n%%k:%k%n%%l:%l%n%%m:%m 
+--%%o:%o%n%%p:%p%n%%q:%q%n%%r:%r%n%%s:%s%n%%t:%t%n%%u:%u
+--%%v:%v%n%%w:%w%n%%x:%x%n%%y:%y%n%%z:%z
+
+--hour	15 os.date("*t").hash　os.dateがもつ構造体
+--min	21 
+--wday	1
+--day	28
+--month	6
+--year	2009
+--sec	48
+--yday	179
+
+
+
+--inum の番号 あいますゲーム誕生日you
+--1={{"THE IDOLM@STER","2005-07-25T15:00:00.000Z","アーケード",""
+--,{"THE IDOLM@STER","2007-01-24T15:00:00.000Z","Xbox 360",""
+--,{"THE IDOLM@STER LIVE FOR YOU!","2008-02-27T15:00:00.000Z","Xbox 360",""
+--,{"THE IDOLM@STER SP","2009-02-18T15:00:00.000Z","PSP",""
+--5,{"THE IDOLM@STER Dearly Stars","2009-09-16T15:00:00.000Z","DS",""
+--,{"アイドルマスター モバイル","2010-12-20T15:00:00.000Z","フィーチャー・フォン","2016-03-30T15:00:00.000Z"
+--,{"THE IDOLM@STER 2","2011-02-23T15:00:00.000Z","Xbox 360",""
+--,{"THE IDOLM@STER 2","2011-10-26T15:00:00.000Z","PS3",""
+--,{"アイドルマスター シンデレラガールズ","2011-11-27T15:00:00.000Z","Mobage",""
+--10,{"アイドルマスター モバイルi","2012-03-29T15:00:00.000Z","iOS","2016-01-17T15:00:00.000Z"
+--,{"THE IDOLM@STER SHINY FESTA","2012-10-24T15:00:00.000Z","PSP",""
+--,{"アイドルマスター ミリオンライブ!","2013-02-26T15:00:00.000Z","GREE","2018-03-19T03:00:00.000Z"
+--,{"THE IDOLM@STER SHINY FESTA","2013-04-21T15:00:00.000Z","iOS",""
+--,{"アイマスチャンネル","2013-10-01T15:00:00.000Z","PS3",""
+--15,{"アイドルマスター ワンフォーオール","2014-05-14T15:00:00.000Z","PS3",""
+--,{"アイドルマスター SideM","2014-07-16T15:00:00.000Z","Mobage",""
+--,{"韓国版アイドルマスターシンデレラガールズ","2014-12-01T15:00:00.000Z","Mobage","2016-03-14T06:00:00.000Z"
+--,{"アイドルマスター シンデレラガールズ スターライトステージ","2015-09-02T15:00:00.000Z","iOS、Android",""
+--,{"アイドルマスター マストソングス 赤盤/青盤","2015-12-09T15:00:00.000Z","PS Vita",""
+--20,{"アイドルマスター プラチナスターズ","2016-07-27T15:00:00.000Z","PS4",""
+--,{"アイドルマスター シンデレラガールズ ビューイングレボリューション","2016-10-12T15:00:00.000Z","PS VR",""
+--,{"アイドルマスター ミリオンライブ! シアターデイズ","2017-06-28T15:00:00.000Z","iOS、Android",""
+--,{"アイドルマスター SideM LIVE ON ST@GE!","2017-08-29T15:00:00.000Z","iOS、Android",""
+--,{"アイドルマスター ステラステージ","2017-12-20T15:00:00.000Z","PS4",""
+--25,{"アイドルマスター シャイニーカラーズ","2018-04-23T15:00:00.000Z","enza",""
+--,{"ミリシタ海外版","2019-08-29T15:00:00.000Z","iOS、Android",""
+
 obs           = obslua
 source_name   = ""
 
@@ -93,24 +246,16 @@ return os.date('!%Y/%m/%dT%X(JST)%a',parse_json_date_utc(dt)+3600*9)
 end
 
 function parse_json_date_utc(json_date) --ISO8601datetimeparse パーサー完成版？
-     local pattern = "(%d+)%-(%d+)%-(%d+)%a(%d+)%:(%d+)%:([%d%.]+)([Z%+%-])(%d?%d?)%:?(%d?%d?)"
-    local unix 	  = "^(%d+)$"
-    local normal  = "(%d+)[%-%/](%d+)[%-%/](%d+)%s+(%d+)%:(%d+)%:?([%d?%.]+)"
+    local pattern = "(%d+)%-(%d+)%-(%d+)%a(%d+)%:(%d+)%:([%d+.]+)([Z%+%-])(%d?%d?):?(%d?%d?)"
 
-    
-    if(json_date:match(unix))then
-     return json_date
-    end
     if(json_date:match(pattern)==nil)then
-    
-        if((json_date..":00"):match(normal))then
+   
+    local unix = "^(%d+)$"
+    local normal = "(%d+)[%-%/](%d+)[%-%/](%d+) +(%d+)%:(%d+)%:?([%d%.]+)"--ローカル時間 YYYY/MM/DD HH:MM:ss :ssはなくてもおｋ
+
+        if(json_date:match(normal))then
         local year, month, day, hour, minute,
-                seconds = (json_date..":00"):match(normal)
-        if(seconds==nil or seconds=="")then
-        seconds=0
-        else
-        seconds=seconds:match("[%d%.]+")
-        end
+        seconds = json_date:match(pattern)
     	 return  os.time{year = year, month = month, day = day, hour =  hour, min = minute, sec = seconds}
     	end
     	if(json_date:match(unix)) then
@@ -236,35 +381,6 @@ function parse_jp_era(date)
    local imasname =imas[inum][1] .."("..imas[inum][3]..")"
    local gm = "開始から" 
   
-   
-   --inum の番号
---1={{"THE IDOLM@STER","2005-07-25T15:00:00.000Z","アーケード",""
---,{"THE IDOLM@STER","2007-01-24T15:00:00.000Z","Xbox 360",""
---,{"THE IDOLM@STER LIVE FOR YOU!","2008-02-27T15:00:00.000Z","Xbox 360",""
---,{"THE IDOLM@STER SP","2009-02-18T15:00:00.000Z","PSP",""
---5,{"THE IDOLM@STER Dearly Stars","2009-09-16T15:00:00.000Z","DS",""
---,{"アイドルマスター モバイル","2010-12-20T15:00:00.000Z","フィーチャー・フォン","2016-03-30T15:00:00.000Z"
---,{"THE IDOLM@STER 2","2011-02-23T15:00:00.000Z","Xbox 360",""
---,{"THE IDOLM@STER 2","2011-10-26T15:00:00.000Z","PS3",""
---,{"アイドルマスター シンデレラガールズ","2011-11-27T15:00:00.000Z","Mobage",""
---10,{"アイドルマスター モバイルi","2012-03-29T15:00:00.000Z","iOS","2016-01-17T15:00:00.000Z"
---,{"THE IDOLM@STER SHINY FESTA","2012-10-24T15:00:00.000Z","PSP",""
---,{"アイドルマスター ミリオンライブ!","2013-02-26T15:00:00.000Z","GREE","2018-03-19T03:00:00.000Z"
---,{"THE IDOLM@STER SHINY FESTA","2013-04-21T15:00:00.000Z","iOS",""
---,{"アイマスチャンネル","2013-10-01T15:00:00.000Z","PS3",""
---15,{"アイドルマスター ワンフォーオール","2014-05-14T15:00:00.000Z","PS3",""
---,{"アイドルマスター SideM","2014-07-16T15:00:00.000Z","Mobage",""
---,{"韓国版アイドルマスターシンデレラガールズ","2014-12-01T15:00:00.000Z","Mobage","2016-03-14T06:00:00.000Z"
---,{"アイドルマスター シンデレラガールズ スターライトステージ","2015-09-02T15:00:00.000Z","iOS、Android",""
---,{"アイドルマスター マストソングス 赤盤/青盤","2015-12-09T15:00:00.000Z","PS Vita",""
---20,{"アイドルマスター プラチナスターズ","2016-07-27T15:00:00.000Z","PS4",""
---,{"アイドルマスター シンデレラガールズ ビューイングレボリューション","2016-10-12T15:00:00.000Z","PS VR",""
---,{"アイドルマスター ミリオンライブ! シアターデイズ","2017-06-28T15:00:00.000Z","iOS、Android",""
---,{"アイドルマスター SideM LIVE ON ST@GE!","2017-08-29T15:00:00.000Z","iOS、Android",""
---,{"アイドルマスター ステラステージ","2017-12-20T15:00:00.000Z","PS4",""
---25,{"アイドルマスター シャイニーカラーズ","2018-04-23T15:00:00.000Z","enza",""
---,{"ミリシタ海外版","2019-08-29T15:00:00.000Z","iOS、Android",""
-   
 	local dateu='!%m%d'       --(%a)%X(UTC+09:00)'
 	local nst =os.date(dateu,os.time()+9*3600)
 	local tt = parse_json_date_utc(imas[inum][2])+9*3600
@@ -379,128 +495,6 @@ function parse_jp_era(date)
 
   return os.date(date)
 end
---出力例
---サマータイム有り＋時差情報 先頭に!をつけるとUTC時間になる
---%Y/%m/%d(%Vw)%X(UTC%z%DST)
-
---和暦表示　令和から
--- %VR%m月%d日(%Vw)%H時%M分%S秒
-
---全部出し
---%UTC%n%c%DST%n%x%X%z%n%s%n%ISO%n%ISOZ%n%VR%m月%d日(%Vw)%H時%M分%S秒
-
---複数のタイムゾーン
---%JST%nUTC+?? %UTC%nUTC協定時間%ISOZ%nISO8601 %ISO%n
-
---あいますの情報を出す
---%JST%n%i%n%J%is%n%K%it%n%E%ie%n
-
---誕生日
---%JST%n%in%n%ib%n%ic
-
---独自拡張2020/04/17現在 
---%EM	あいますお誕生日何日以内のやつ
---%E	デバッグ文字1 サービス終了日
---%J	デバッグ文字2 サービス開始日
---%K	デバッグ文字3 今年の周年日
---$i	あいますゲームの名前,フリーズ防止
---%is	あいますの記念日の時間からの経過時間
---%it	あいますの記念日までの時間
---%ie	あいますのサービス終了した時間からの経過時間(データがないものは表示なし)
---%ib	アイドル名誕生日
---%ic	アイドル名誕生日までの時間
---%in	アイドル名
---%UTC  worldtime set UTCsetting,	UTC標準時からUI設定の時間を表示,サマータイムは非対応
---%JST  ISO8601表示日本時間
---%ISO  ISO8601表示ローカル時間
---%ISOZ ISO8601表示UTC時間
---%Z	サマーなしタイムゾーン時差情報,元はタイムゾーンストリングだが文字化けで使えないので（）
---%ZZ   timezone,HH:mm  timezoneサマーなしタイムゾーン時差情報  
---%zz   サマータイム有り＋時差情報 HH:mm
---%DST  夏時間かどうか出力する 引数"J"で夏時間
---%s    unixtime,フリーズ防止
---%VR--%Vr--%VH--%Vh--%VS--%Vs--%VT--%Vt 日本の和暦、開始年しかちぇくしてないのでてきとー
-
-
---OBSlua標準出力
---画像でまとめてみた　https://imgur.com/a/MYtwxg1
-
---http://noriko3.blog42.fc2.com/blog-entry-128.html?sp
---%% the character `%´ %の文字だけをだしたいとき 
---%a ロケールの省略形の曜日名 (Sun..Sat) 
---%A ロケールの完全表記の曜日名、可変長 (Sunday..Saturday) 
---%b ロケールの省略形の月名 (Jan..Dec) 
---%B ロケールの完全表記の月名、可変長 (January..December) 
---%c ロケールの日付と時刻 (Sat Nov 4 12:02:33 EST
---%d 月内通算日数 (01..31) 
---%D 日付 (mm/dd/yy) 
---%H hour, using a 24-hour clock (23) [00-23] 時間 
---%h %b と同じ 
---%I hour, using a 12-hour clock (11) [01-12] 時間ampm %pとセット 
---%j 年内通算日数 (001..366) 
---%k 時 (0..23) 
---%l 時 (1..12) 
---%M minute (48) [00-59] 分 
---%m month (09) [01-12] 月 
---%n 改行 
---%p AM あるいは PM のロケール 
---%r 時刻、12 時間 (hh:mm:ss [AP]M) 
---%S second (10) [00-61] 秒 
---%s 1970-01-01 0:00:00 UTC からの秒数 (標準外の拡張) 
---%T 時刻、24 時間 (hh:mm:ss) 
---%t 水平タブ 
---%U 日曜日を週の最初の日とした年内通算週 (00..53) 
---%V 週番号 
---%w weekday (3) [0-6 = Sunday-Saturday] 曜日の番号 
---%w 週のうちの曜日 (0..6) (0 が日曜日) 
---%W 月曜日を週の最初の日とした年内通算週 (00..53) 
---%x date (e.g., 09/16/98) 年月日 
---%X time (e.g., 23:48:10) 時分秒 
---%X ロケールによる時刻の表現 (%H:%M:%S) 
---%x ロケールの日付表現 (mm/dd/yy) 
---%Y full year (1998) 年 
---%y two-digit year (98) [00-99] ２桁の年 
---%y 年の最後の 2 つの数字 (00..99) 
---%Y 年 (1970...) 
---%Z タイムゾーン (例 EDT)、あるいはタイムゾーンが決定できないならば無し 
---%z timezone,osdateのサマータイム有り 
-
---クラッシュ使用不可か別の文字処理に使う
---%E　デバッグ文字1
---%J　デバッグ文字2
---%K　デバッグ文字3
---%L
---%N
---%O
---%P
---%Q
---%f
---%i あいますの時間
---%k 
---%l
---%o
---%q
---%s　　unixtimeに使用
---%v
-
---%%A:%A%n%%B:%B%n%%C:%C%n%%D:%D%n%%E:%E%n%%F:%F%n%%G:%G%n
---%%H:%H%n%%I:%I%n%%J:%J%n%%K:%K%n%%L:%L%n%%M:%M%n%%N:%N%n
---%%O:%O%n%%P:%P%n%%Q:%Q%n%%R:%R%n%%S:%S%n%%T:%T%n%%U:%U%n
---%%V:%V%n%%W:%W%n%%X:%X%n%%Y:%Y%n%%Z:%Z%n%%n:%n
---
---%%a:%a%n%%b:%b%n%%c:%c%n%%d:%d%n%%e:%e%n%%f:%f%n%%g:%g%n
---%%h:%h%n%%i:%i%n%%j:%j%n%%k:%k%n%%l:%l%n%%m:%m 
---%%o:%o%n%%p:%p%n%%q:%q%n%%r:%r%n%%s:%s%n%%t:%t%n%%u:%u
---%%v:%v%n%%w:%w%n%%x:%x%n%%y:%y%n%%z:%z
-
---hour	15 os.date("*t").hash　os.dateがもつ構造体
---min	21 
---wday	1
---day	28
---month	6
---year	2009
---sec	48
---yday	179
 
 function set_time_text()
 	local text = parse_jp_era(format_string)  --os.date(format_string)
