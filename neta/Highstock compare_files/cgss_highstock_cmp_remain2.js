@@ -273,6 +273,14 @@ $RM.click(function () {
         else if(!chart.series[i].visible){
             chart.series[i].visible=true;
         }}
+        
+	for(var i=0;i<chart.series.length;i++){
+         if (chart.series[i].visible) {
+    chart.series[i].show();
+  	}
+  	else {
+   chart.series[i].hide();
+	  }}
     return false;
     }
         
@@ -330,6 +338,15 @@ $RM.click(function () {
         else if(!chart.series[i].visible){
             chart.series[i].visible=true;
         }}
+        
+	for(var i=0;i<chart.series.length;i++){
+         if (chart.series[i].visible) {
+    chart.series[i].show();
+  	}
+  	else {
+   chart.series[i].hide();
+	  }}
+        
 	}
 	else{
 	houji(st);
