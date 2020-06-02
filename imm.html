@@ -95,20 +95,24 @@ date_fm=date_fm.replace(/\(J.+/,"");
 
     var prog=(moment.utc()-moment.utc(ibekaishi))/(moment.utc(ibeowari)-moment.utc(ibekaishi))*100
    prog=prog.toFixed(2);
+   var prog2="";
    if(prog=="NaN"){
    prog="";
    }
    else{
    if(prog<0){
    prog="0";
-   prog2="0/"+((moment.utc(ibeowari)-moment.utc(ibekaishi))/3600000).toFixed(2);
+   prog2="0/"+((moment.utc(ibeowari)-moment.utc(ibekaishi))/3600000).toFixed(3)+"時間";
+   prog2+=",0/"+((moment.utc(ibeowari)-moment.utc(ibekaishi))/3600000/24).toFixed(3)+"日";
    }
    else if(prog>100){
    prog="100";
-   prog2=((moment.utc(ibeowari)-moment.utc(ibekaishi))/3600000).toFixed(2)+"/"+((moment.utc(ibeowari)-moment.utc(ibekaishi))/3600000).toFixed(2);
+   prog2=((moment.utc(ibeowari)-moment.utc(ibekaishi))/3600000).toFixed(3)+"/"+((moment.utc(ibeowari)-moment.utc(ibekaishi))/3600000).toFixed(3)+"時間";
+   prog2+=","+((moment.utc(ibeowari)-moment.utc(ibekaishi))/3600000/24).toFixed(3) +"/"+((moment.utc(ibeowari)-moment.utc(ibekaishi))/3600000/24).toFixed(3)+"日";
    }
    else{
-   prog2=((moment.utc()-moment.utc(ibekaishi))/3600000).toFixed(2)+"/"+((moment.utc(ibeowari)-moment.utc(ibekaishi))/3600000).toFixed(2);
+   prog2=((moment.utc()-moment.utc(ibekaishi))/3600000).toFixed(3)+"/"+((moment.utc(ibeowari)-moment.utc(ibekaishi))/3600000).toFixed(3)+"時間";
+   prog2+=","+((moment.utc()-moment.utc(ibekaishi))/3600000/24).toFixed(3)+"/"+((moment.utc(ibeowari)-moment.utc(ibekaishi))/3600000/24).toFixed(3)+"日";
    }}
    
 	var user=document.getElementById("userdt").value;
@@ -136,7 +140,7 @@ date_fm=date_fm.replace(/\(J.+/,"");
 	timest += now.format(date_fm)+"<br>";
 	}
 	
-	timest += kaishi +esps+ "("+prog+"%)" +"<br>"
+	timest += kaishi +esps+"("+prog +"%"+ '<progress id="myProgress" value="' + prog +'" max="100"></progress>' +")<br>"
 	+zan +timetxt+"<br><br>";
 	
 	if(ostime){
@@ -176,7 +180,8 @@ if(ts!=""){tstring=ts;}
 	tstring=tstring.replace("%V",prog2);
 	
 	tstring="<font size=\"20\">"+escapeHTML(tstring) +"</font>";
-	tstring=tstring.replace(/%n/gm,"<br>");
+	tstring=tstring.replace("%B",'<progress id="myProgress" value="' + prog +'" max="100"></progress>')
+	tstring=tstring.replace(/%n/gm,"<br>");	
 	document.getElementById("html").innerHTML=tstring;
 }
 else{
@@ -368,7 +373,7 @@ s+=","+encodeURIComponent(document.getElementById("userdt").value);
 }
 var cs=document.getElementById("CUSTOM").checked;
 if(cs){
-var tstring="%T(%P%)%n現在時刻:%N%n%KS%K%n%LS%L%n開始時間:%S%n終了時間:%E%nイベ時間:%V"
+var tstring="%T%n現在時刻:%N%n%KS%K(%P%%B)%n%LS%L%n開始時間:%S%n終了時間:%E%nイベ時間:%V"
 var ts=document.getElementById("titlecs").value;
 if(ts!=""){tstring=ts;}
 s+=","+encodeURIComponent(tstring);
@@ -464,7 +469,7 @@ return;
 
 <form name="tzone">
 
-<p align="center"><a href="javascript:toTwitter()"><img src="./imm_files/saved_resource" alt="Send to Twitter" width="61" height="23" border="0"></a></p>
+<p align="center"><a href="javascript:toTwitter()"><img src="./imm_files/saved_resource" alt="Send to Twitter" width="61" height="61" border="0"></a></p>
 <b>タイムゾーン設定</b><br>
 <label for="OS"><input type="radio" checked="checked" name="hyouka" id="OS">OSのタイムゾーンを優先する</label>
 <label for="useutc"><input type="radio" name="hyouka" id="useutc"><a href="https://support.microsoft.com/ja-jp/help/973627/microsoft-time-zone-index-values">M$</a>のUTC固定時差情報を使う</label>
@@ -579,8 +584,8 @@ return;
 <span id="RC">-----</span><br>
 </form>
 
-<b>カレンダーアプリに登録する(iClander/CSV作成):</b>
-<input type="Submit" value="iCalender(推奨)" generate"="" onclick="makeical();return false">
+<b>カレンダーアプリに登録する(iCalendar/CSV作成):</b>
+<input type="Submit" value="iCalendar(推奨)" generate"="" onclick="makeical();return false">
 <input type="Submit" value="OutlookCSV(※OS現地時間になります)" generate"="" onclick="makeicsv();return false"><br>
 
 <p><b>クロマキー合成、背景色</b>
@@ -596,13 +601,13 @@ return;
 開始時間<input type="text" name="" value="" id="start"maxlength="30" size="20" >(ISO8601かぐぐる入力で"日時,ないときは null か 空欄)<br>
 終了時間<input type="text" name="" value="" id="end"maxlength="30" size="20" >(ISO8601かぐぐる入力で"日時,ないときは nullか 空欄)<br>
 ※ぐぐる入力で"日時"変換ででてくる　2020/04/05 15:00　とかはOSの現地時間になります（）<br>
-表示形式<input type="text" name="" value="" id="userdt" maxlength="30"width:200px;><a href="https://momentjs.com/docs/#/displaying/">もめんとの表示形式(例YYYY/MM-DD HH:mm:ssZz)</a>　%DST(独自拡張)で夏時間かどうか Z時差　zタイム損名前<br>
+日時表示形式<input type="text" name="" value="" id="userdt" maxlength="30"width:200px;><a href="https://momentjs.com/docs/#/displaying/">もめんとの表示形式(例YYYY/MM-DD HH:mm:ssZz)</a>　%DST(独自拡張)で夏時間かどうか Z時差　zタイム損名前<br>
 標準出力は"YYYY/MM/DD(ddd) HH:mm:ss(UTC,Z%DST)です<br>
 <input type="Submit" value="HTMLに反映" Generate" onclick="setting();return false"> <input type="Submit" value="URLにしてブックマーク（）" Generate" onclick="document.location.href=url();return false"><br>
 </p>
 <p><b>表示おぷしょん</b><br>
 <label for="CUSTOM"><input type="checkbox" name="hyouka" id="CUSTOM">カスタム表示</label>
-<input type="text" name="" value="%T(%P%)%n現在時刻:%N%n%KS%K%n%LS%L%n開始時間:%S%n終了時間:%E%nイベ時間:%V" id="titlecs" maxlength="100"  size="100" ><br>
+<input type="text" name="" value="%T%n現在時刻:%N%n%KS%K(%P%%B)%n%LS%L%n開始時間:%S%n終了時間:%E%nイベ時間:%V" id="titlecs" maxlength="100"  size="100" ><br>
 </p>
 </body>
 </html>
