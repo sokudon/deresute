@@ -248,14 +248,33 @@ end
 function parse_json_date_utc(json_date) --ISO8601datetimeparse パーサー完成版？
     local pattern = "(%d+)%-(%d+)%-(%d+)%a(%d+)%:(%d+)%:([%d+.]+)([Z%+%-])(%d?%d?):?(%d?%d?)"
 
+  
     if(json_date:match(pattern)==nil)then
    
     local unix = "^(%d+)$"
-    local normal = "(%d+)[%-%/](%d+)[%-%/](%d+) +(%d+)%:(%d+)%:?([%d%.]+)"--ローカル時間 YYYY/MM/DD HH:MM:ss :ssはなくてもおｋ
+    local normalp = "(%d+)[%-%/](%d+)[%-%/](%d+)$"--ローカル時間MD
+    local normalq = "(%d+)[%-%/](%d+)[%-%/](%d+) +(%d+)$"--ローカル時間MD+h
+    local normal = "(%d+)[%-%/](%d+)[%-%/](%d+) +(%d+)%:(%d+)$"--ローカル時間MD+HM
+    local normalr = "(%d+)[%-%/](%d+)[%-%/](%d+) +(%d+)%:(%d+)%:([%d%.]+)"--ローカル時間MDhms
 
         if(json_date:match(normal))then
         local year, month, day, hour, minute,
-        seconds = json_date:match(pattern)
+        seconds = json_date:match(normal)
+    	 return  os.time{year = year, month = month, day = day, hour =  hour, min = minute, sec = 0}
+    	end
+    	if(json_date:match(normalp))then
+        local year, month, day, hour, minute,
+        seconds = json_date:match(normalp)
+    	 return  os.time{year = year, month = month, day = day, hour =  0, min =0, sec = 0}
+    	end
+    	 if(json_date:match(normalq))then
+        local year, month, day, hour, minute,
+        seconds = json_date:match(normalq)
+    	 return  os.time{year = year, month = month, day = day, hour =  hour, min = 0, sec = 0}
+    	end
+    	 if(json_date:match(normalr))then
+        local year, month, day, hour, minute,
+        seconds = json_date:match(normalr)
     	 return  os.time{year = year, month = month, day = day, hour =  hour, min = minute, sec = seconds}
     	end
     	if(json_date:match(unix)) then
