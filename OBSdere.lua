@@ -4,6 +4,10 @@
 --現地時間%N%n日本時間%JST%n達成率%P%nS %S%nE %E%nSJ %SJ%nEJ %EJ"
 --拡張前　旧版残り時間だけのやつ　https://raw.githubusercontent.com/sokudon/deresute/2c8516d114a6500b0ad4e91d31a776f5b5d48891/OBSdere.lua
 
+--みりした、でれすてのイベント時間　現行イベントのみ(event duration) ISO8601 recommanded☆ >>> unix >> localtime(OS)
+--http://sokudon.s17.xrea.com/sekai.html
+--http://sokudon.s17.xrea.com/sekai-dere.html
+
 
 --[[
 //全部出しさんぷる
@@ -435,7 +439,7 @@ function lefttime(dt)
 	return  t
 end
 
-function parse_json_date_utc(json_date)  --ISO8601datetimeparse パーサー完成版？
+function parse_json_date_utc(json_date)
     local pattern = "(%d+)%-(%d+)%-(%d+)%a(%d+)%:(%d+)%:([%d%.]+)([Z%+%-])(%d?%d?)%:?(%d?%d?)"
  
     if(json_date:match(pattern)==nil)then
