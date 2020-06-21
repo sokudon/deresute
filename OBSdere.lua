@@ -117,6 +117,7 @@ timer_active  = false
 minute        = 0
 hour          = 0
 utc			  = 0
+debugtxt      =""
 
 hotkey_id_reset     = obs.OBS_INVALID_HOTKEY_ID
 hotkey_id_pause     = obs.OBS_INVALID_HOTKEY_ID
@@ -459,8 +460,39 @@ function lefttime(dt)
 	return  t
 end
 
+function timezoneparse(tz)
+local timezone={{"WITA","+0800"},{"WIT","+0900"},{"WIB","+0700"},{"WET","+0000"},{"WEST","+0100"},{"WAT","+0100"},{"UYT","-0300"},{"UTC","+0000"},{"SST","-1100"},{"PWT","+0900"},{"PST","-0800"},{"PKT","+0500"},{"PHT","+0800"},{"PET","-0500"},{"PDT","-0700"},{"NZST","+1200"},{"NZDT","+1300"},{"NPT","+0545"},{"MYT","+0800"},{"MST","-0700"},{"MMT","+0630"},{"MDT","-0600"},{"KST","+0900"},{"JST","+0900"},{"IST","+0530"},{"IST","+0200"},{"IRST","+0330"},{"IRDT","+0430"},{"IDT","+0300"},{"ICT","+0700"},{"HST","-1000"},{"HKT","+0800"},{"GST","+0400"},{"GMT","+0000"},{"FJT","+1200"},{"FJST","+1300"},{"EST","-0500"},{"EET","+0200"},{"EEST","+0300"},{"EDT","-0400"},{"ECT","-0500"},{"EAT","+0300"},{"ChST","+1000"},{"CST","-0600"},{"CST","-0500"},{"CST","+0800"},{"COT","-0500"},{"CLT","-0400"},{"CLST","-0300"},{"CET","+0100"},{"CEST","+0200"},{"CDT","-0500"},{"CDT","-0400"},{"CCT","+0630"},{"CAT","+0200"},{"BTT","+0600"},{"BST","+0100"},{"BRT","-0300"},{"BOT","-0400"},{"BNT","+0800"},{"BDT","+0600"},{"AWST","+0800"},{"AWDT","+0900"},{"ART","-0300"},{"AKST","-0900"},{"AKDT","-0800"},{"AFT","+0430"},{"AEST","+1000"},{"AEDT","+1100"},{"ACST","+0930"},{"ACDT","+1030"}}
+
+if(tz=="U")then
+return get_tzoffset(utc*3600)
+end
+
+stlen=tonumber(#timezone)
+for i=1,stlen do
+if(tz==timezone[i][1])then
+local sig,h,m=timezone[i][2]:match("([%+%-])(%d%d)(%d%d)")
+local offset= h + m/60
+if(sig=="-")then
+offset = -offset
+end
+return get_tzoffset(offset*3600)
+end
+end
+
+return 0 --utc
+end
+
 function parse_json_date_utc(json_date)
     local pattern = "(%d+)%-(%d+)%-(%d+)%a(%d+)%:(%d+)%:([%d%.]+)([Z%+%-])(%d?%d?)%:?(%d?%d?)"
+    
+    if(json_date:match("[A-W]+$")) then --try parse UTC FIX
+    local normal = "(%d+)[%-%/](%d+)[%-%/](%d+) +(%d+)%:(%d+)[A-W]+$"--ローカル時間MD+HM
+        if(json_date:match(normal))then
+        local year, month, day, hour, minute,
+        seconds = json_date:match(normal)
+        json_date = year.."-"..month.."-"..day.."T"..hour..":"..minute..":00".. timezoneparse(json_date:match("[A-W]+$"))
+     end
+    end
  
     if(json_date:match(pattern)==nil)then
    
