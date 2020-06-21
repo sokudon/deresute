@@ -256,6 +256,7 @@ function parse_json_date_utc(json_date) --ISO8601datetimeparse パーサー完�
         seconds = json_date:match(normal)
         json_date = year.."-"..month.."-"..day.."T"..hour..":"..minute..":00".. get_tzoffset(utc*3600)
      end
+     end
      
      
     if(json_date:match(pattern)==nil)then
