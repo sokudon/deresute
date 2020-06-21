@@ -245,10 +245,19 @@ function JST(dt)
 return os.date('!%Y/%m/%dT%X(JST)%a',parse_json_date_utc(dt)+3600*9)
 end
 
+
 function parse_json_date_utc(json_date) --ISO8601datetimeparse パーサー完成版？
     local pattern = "(%d+)%-(%d+)%-(%d+)%a(%d+)%:(%d+)%:([%d+.]+)([Z%+%-])(%d?%d?):?(%d?%d?)"
 
-  
+    if(json_date:match("U$")) then --try parse UTC FIX
+    local normal = "(%d+)[%-%/](%d+)[%-%/](%d+) +(%d+)%:(%d+)U$"--ローカル時間MD+HM
+        if(json_date:match(normal))then
+        local year, month, day, hour, minute,
+        seconds = json_date:match(normal)
+        json_date = year.."-"..month.."-"..day.."T"..hour..":"..minute..":00".. get_tzoffset(utc*3600)
+     end
+     
+     
     if(json_date:match(pattern)==nil)then
    
     local unix = "^(%d+)$"
