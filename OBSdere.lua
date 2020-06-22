@@ -104,6 +104,7 @@ starttime =""
 title =""
 para_text=""
 time_text=""
+end_text     = ""
 
 total_seconds = 0
 total         = 0
@@ -147,6 +148,10 @@ function get_timestring(t,text)
 	total = t*10
 	if(total<0)then
 	total=-total
+	
+	if(end_text~="") then
+		return end_text
+	end
 	end
 
 	local tenths   = math.floor(total % 10)
@@ -242,7 +247,7 @@ end
 
 function set_time_text()
 	local text = para_text	
-	local elaspted=get_timestring(lefttime(starttime),format)
+	local elaspted=get_timestring(lefttime(starttime)*-1,format)
 	local left=get_timestring(lefttime(finaltime),format)
 	local ibetime=checkdate(lefttime(starttime),lefttime(finaltime))
 	local prog=""
@@ -286,12 +291,6 @@ function set_time_text()
 	
 	text =os.date(text)
 	
-
-	if total < 1 and (mode == "Countdown" or mode == "Specific time") then
-		text = "終了しました"   --stop_text
-	end
-	
-
 	local source = obs.obs_get_source_by_name(source_name)
 	if source ~= nil then
 		local settings = obs.obs_data_create()
@@ -671,6 +670,7 @@ function script_properties()
 	 f_prop = obs.obs_properties_add_text(props, "format", "ELASPED/LEFT format", obs.OBS_TEXT_DEFAULT)
 	 p_para_text = obs.obs_properties_add_text(props, "para_text", "TIME parameter:", obs.OBS_TEXT_DEFAULT)
 	 p_time_text = obs.obs_properties_add_text(props, "time_text", "TIME format:", obs.OBS_TEXT_DEFAULT)
+	 p_end_text = obs.obs_properties_add_text(props, "end_text", "STOP text:(empty not use)", obs.OBS_TEXT_DEFAULT)
 	else
 	 p_title_text = obs.obs_properties_add_text(props, "title_text", "イベント名:", obs.OBS_TEXT_DEFAULT)
 	 p_start_text = obs.obs_properties_add_text(props, "start_text", "開始時間:例　2020-02-26T15:00:00+09:00", obs.OBS_TEXT_DEFAULT)
@@ -678,6 +678,7 @@ function script_properties()
 	 f_prop = obs.obs_properties_add_text(props, "format", "経過/残表示形式", obs.OBS_TEXT_DEFAULT)
 	 p_para_text = obs.obs_properties_add_text(props, "para_text", "表示する時間:", obs.OBS_TEXT_DEFAULT)
 	 p_time_text = obs.obs_properties_add_text(props, "time_text", "時刻表記:", obs.OBS_TEXT_DEFAULT)
+	 p_end_text = obs.obs_properties_add_text(props, "end_text", "タイマー停止の文字:(空欄だと未使用)", obs.OBS_TEXT_DEFAULT)
 	end
 	
 	local p_a_mode = obs.obs_properties_add_list(props, "a_mode", "Activation mode", obs.OBS_COMBO_TYPE_EDITABLE, obs.OBS_COMBO_FORMAT_STRING)
@@ -692,6 +693,7 @@ function script_properties()
 	obs.obs_property_set_visible(p_start_text, true)
 	obs.obs_property_set_visible(p_para_text, true)
 	obs.obs_property_set_visible(p_title_text, true)
+	obs.obs_property_set_visible(p_end_text, true)
 	obs.obs_property_set_visible(button_pause, true)
 	obs.obs_property_set_visible(button_reset, true)
 	obs.obs_property_set_visible(p_a_mode, true)
@@ -750,6 +752,7 @@ function script_update(settings)
 	minute = obs.obs_data_get_int(settings, "minutes")
 	source_name = cut_string(obs.obs_data_get_string(settings, "source"),100)
 	stop_text = cut_string(obs.obs_data_get_string(settings, "stop_text"),30)
+	end_text = cut_string(obs.obs_data_get_string(settings, "end_text"),30)
 	format = cut_string(obs.obs_data_get_string(settings, "format"),100)
 	title=cut_string(obs.obs_data_get_string(settings, "title_text"),100)
 	para_text=cut_string(obs.obs_data_get_string(settings, "para_text"),255)
@@ -770,6 +773,7 @@ function script_defaults(settings)
 	obs.obs_data_set_default_string(settings, "title", "でれすて")
 	obs.obs_data_set_default_string(settings, "time_text", "%Y/%m/%d %H:%M:%S")
 	obs.obs_data_set_default_string(settings, "para_text", "タイトル%T%n経過時間%K%n残り時間%L%nイベント時間%I%n現地時間%N%n日本時間%JST%n達成率%P%nS %S%nE %E%nSJ %SJ%nEJ %EJ")
+	obs.obs_data_set_default_string(settings, "stop_text", "タイマー停止中(開始前/終了)")
 
 end
 
