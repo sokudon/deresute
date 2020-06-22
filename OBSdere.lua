@@ -9,7 +9,7 @@
 --http://sokudon.s17.xrea.com/sekai-dere.html
 
 
---UI ENGLISH MODE view textline, 620-630
+--UI ENGLISH MODE view textline, 670
 --parameter https://github.com/sokudon/deresute/wiki/OBS-EVENT-DURATION-TIMER(luascript)
 
 --[[
@@ -470,12 +470,7 @@ end
 stlen=tonumber(#timezone)
 for i=1,stlen do
 if(tz==timezone[i][1])then
-local sig,h,m=timezone[i][2]:match("([%+%-])(%d%d)(%d%d)")
-local offset= h + m/60
-if(sig=="-")then
-offset = -offset
-end
-return get_tzoffset(offset*3600)
+return timezone[i][2]
 end
 end
 
@@ -486,7 +481,7 @@ function parse_json_date_utc(json_date)
     local pattern = "(%d+)%-(%d+)%-(%d+)%a(%d+)%:(%d+)%:([%d%.]+)([Z%+%-])(%d?%d?)%:?(%d?%d?)"
     
     if(json_date:match("[A-W]+$")) then --try parse UTC FIX
-    local normal = "(%d+)[%-%/](%d+)[%-%/](%d+) +(%d+)%:(%d+)[A-W]+$"--ローカル時間MD+HM
+    local normal = "(%d+)[%-%/](%d+)[%-%/](%d+) +(%d+)%:(%d+)%s?[A-W]+$"--ローカル時間MD+HM
         if(json_date:match(normal))then
         local year, month, day, hour, minute,
         seconds = json_date:match(normal)
