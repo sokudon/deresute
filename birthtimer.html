@@ -84,6 +84,18 @@ var t=moment(tmp)-moment();
 var tt=moment(tmp2)-moment();
 t=Math.ceil(t/1000/3600/24);
 tt=Math.ceil(tt/1000/3600/24);
+
+if((t>=0 && t<=daycalc) || (tt>=0 && tt<=daycalc)){}
+else if(gamedata[i][4]!=""){
+tmp=gamedata[i][4].replace(/^\d\d\d\d/gm,year);
+tmp2=gamedata[i][4].replace(/^\d\d\d\d/gm,yearn);
+t=moment(tmp)-moment();
+tt=moment(tmp2)-moment();
+t=Math.ceil(t/1000/3600/24);
+tt=Math.ceil(tt/1000/3600/24);
+gamedata[i][2]=(gamedata[i][2]+",ゲーム内実周年日").replace(/(,ゲーム内実周年日)*$/,",ゲーム内実周年日");
+}
+
 if((t>=0 && t<=daycalc) || (tt>=0 && tt<=daycalc)){
 dtab[j]=[];
 dtab[j][0]=t;
@@ -171,7 +183,7 @@ function toTwitter() {
 <span id="now">text</span><br>
 <span id="cdt_now">text</span><br><br>
 
-<p align="center"><a href="javascript:toTwitter()"><img src="./" alt="Send to Twitter" width="61" height="23" border="0"></a></p>
+<p align="center"><a href="javascript:toTwitter()"><img src="./neta/imm_files/saved_resource" alt="Send to Twitter" width="61" height="61" border="0"></a></p>
 
 <form name="gm">
 周年の何日前まで表示:

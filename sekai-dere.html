@@ -10,6 +10,7 @@
 <script src="https://script.google.com/macros/s/AKfycbz55fDemdeSdeoURqPp_WWJJ4n3nBIuT1_PsBGVx8zUJDRET6LA/exec"></script>
 <script>
 <!--
+var ibemie=ibe;
 var ibeowari=ibeend;
 var ibekaishi=ibestart;
 
@@ -20,9 +21,73 @@ window.onload = function () {
 timer_update = 500;
 createSelectBox();
 document.gm.gm.selectedIndex=511;//JP
+get_web_para();
 ibetime();
 setInterval("get_count()",timer_update);
 }
+
+function escapeHTML(html) {
+  return jQuery('<div>').text(html).html();
+}
+
+function parsedate(dt){
+var timezone=[["WITA","+0800"],["WIT","+0900"],["WIB","+0700"],["WET","+0000"],["WEST","+0100"],["WAT","+0100"],["UYT","-0300"],["UTC","+0000"],["SST","-1100"],["PWT","+0900"],["PST","-0800"],["PKT","+0500"],["PHT","+0800"],["PET","-0500"],["PDT","-0700"],["NZST","+1200"],["NZDT","+1300"],["NPT","+0545"],["MYT","+0800"],["MST","-0700"],["MMT","+0630"],["MDT","-0600"],["KST","+0900"],["JST","+0900"],["IST","+0530"],["IST","+0200"],["IRST","+0330"],["IRDT","+0430"],["IDT","+0300"],["ICT","+0700"],["HST","-1000"],["HKT","+0800"],["GST","+0400"],["GMT","+0000"],["FJT","+1200"],["FJST","+1300"],["EST","-0500"],["EET","+0200"],["EEST","+0300"],["EDT","-0400"],["ECT","-0500"],["EAT","+0300"],["ChST","+1000"],["CST","-0600"],["CST","-0500"],["CST","+0800"],["COT","-0500"],["CLT","-0400"],["CLST","-0300"],["CET","+0100"],["CEST","+0200"],["CDT","-0500"],["CDT","-0400"],["CCT","+0630"],["CAT","+0200"],["BTT","+0600"],["BST","+0100"],["BRT","-0300"],["BOT","-0400"],["BNT","+0800"],["BDT","+0600"],["AWST","+0800"],["AWDT","+0900"],["ART","-0300"],["AKST","-0900"],["AKDT","-0800"],["AFT","+0430"],["AEST","+1000"],["AEDT","+1100"],["ACST","+0930"],["ACDT","+1030"]];
+if(dt.match(/(\d\d\d\d)[\/\-](\d\d)[\/\-](\d\d) +(\d\d):(\d\d) *[A-W]+$/)){
+var tzstring= dt.match(/[A-W]+$/);
+var offset=0
+if(tzstring=="U"){
+	var tz=document.tzone.owata.options[document.tzone.owata.selectedIndex].text;
+    offset=tz.match(/[\+\-]\d\d\d\d/);
+}
+else{
+for(var i=0;i<timezone.length;i++){
+if(tzstring==timezone[i][0]){
+offset=timezone[i][1];
+break;
+}}
+}
+dt=dt.replace(/(\d\d\d\d)[\/\-](\d\d)[\/\-](\d\d) +(\d\d):(\d\d) *[A-W]+$/,"$1-$2-$3T$4:$5:00"+offset);
+}
+
+var mm=moment(dt);
+if(moment.isMoment(mm)){
+return mm;
+}
+return "null";
+}
+
+function get_web_para(){
+var url=document.location.href;
+var s="";
+var n = url.indexOf("#");
+if (n > -1) {
+s = url.substring(n+1,url.length);
+url= url.substring(0,n);
+var nn=s.split(",");
+
+url= url.substring(0,n);
+var nn=s.split(",");
+ibemie=escapeHTML(decodeURIComponent(nn[0]));//utf8
+if(nn.length>=2){ibekaishi= parsedate(decodeURIComponent(nn[1])).format();}
+if(nn.length>=3){ibeowari=parsedate(decodeURIComponent(nn[2])).format();}
+if(nn.length>=4){
+var mode=decodeURIComponent(nn[3]);
+ var ms= $('#utcdiff option');
+ var reg = new RegExp(mode.replace("$","\\$")+"$");
+ for(var i=0;i<ms.length;i++){
+ var tmp=ms[i].text;
+ if(tmp.match(reg)){
+ ms[i].selected=true;
+ break;}
+ }
+
+}
+
+if(nn.length>=5){
+ var m=nn[4].match(/\d+/);
+ document.gm.gm.selectedIndex=m[0];
+}
+}}
 
 function createSelectBox(){
 
@@ -69,34 +134,51 @@ var tzm =tzz.match(/\-?\d+/g);
 var tzadd= tzm[0]*1 +  tzm[1]/60;
 var tzst=tzJAP[document.gm.gm.selectedIndex][0];
 
+var tzs=moment(ibekaishi).tz(tzst).format("z");
+var tze=moment(ibeowari).tz(tzst).format("z");
+
 if(ostime){
- st= 	"OS時間\t"
+ st= 	"OS時間(LOCAL)\t"
  		+moment(ibekaishi).format(iso+"ZZ")+"\t"
 		+moment(ibeowari).format(iso+"ZZ")+"\r\n"
-		+"日本時間\t"
+		+"日本時間(JST)\t"
      	+moment(ibekaishi).utc().add("Hours",9).format(iso+"+09:00")+"\t"
 		+moment(ibeowari).utc().add("Hours",9).format(iso+"+09:00")+"\r\n"
 +"M$時間\t"
 +moment.utc(ibekaishi).add("Hours",tzadd).format().replace("Z","+"+tzm[0] +":"+tzm[1])+"\t"
 +moment.utc(ibeowari).add("Hours",tzadd).format().replace("Z","+"+tzm[0] +":"+tzm[1])+"\r\n"
-+"もめんと時間\t"
++"もめんと時間"+tzs+"/"+tze+"\t"
 +moment(ibekaishi).tz(tzst).format()+"\t"
-+moment(ibeowari).tz(tzst).format();
++moment(ibeowari).tz(tzst).format()+"\r\n"
++"もめんとlocal時間+TZST\t"
++moment(ibekaishi).tz(tzst).format("YYYY/MM/DD HH:mm z")+"\t"
++moment(ibeowari).tz(tzst).format("YYYY/MM/DD HH:mm z")+"\r\n"
+	+"UNIXepoc秒\t"
+	+moment(ibekaishi).unix()+"\t"
+	+moment(ibeowari).unix();
 
 }
 else{
-st= 	"OS時間\t"
+
+st= 	"OS時間(LOCAL)\t"
 		+moment(ibekaishi).format(nomal)+"\t"
 		+moment(ibeowari).format(nomal)+"\r\n"
-		+"日本時間\t"
+		+"日本時間(JST)\t"
      	+moment(ibekaishi).utc().add("Hours",9).format(nomal)+"\t"
 		+moment(ibeowari).utc().add("Hours",9).format(nomal)+"\r\n"
 		+"M$時間\t"
 +moment.utc(ibekaishi).add("Hours",tzadd).format(nomal)+"\t"
 +moment.utc(ibeowari).add("Hours",tzadd).format(nomal)+"\r\n"
-+"もめんと時間\t"
++"もめんと時間"+tzs+"/"+tze+"\t"
 +moment(ibekaishi).tz(tzst).format(nomal)+"\t"
-+moment(ibeowari).tz(tzst).format(nomal);
++moment(ibeowari).tz(tzst).format(nomal)+"\r\n"
++"もめんとlocal時間+TZST\t"
++moment(ibekaishi).tz(tzst).format("YYYY/MM/DD HH:mm ")+"\t"
++moment(ibeowari).tz(tzst).format("YYYY/MM/DD HH:mm z")+"\r\n"
+	+"UNIXepoc秒\t"
+	+moment(ibekaishi).unix()+"\t"
+	+moment(ibeowari).unix();
+
 
 }
 	st = st.replace(/\r\n/gm,"	</td></tr><tr><td>");
@@ -106,7 +188,7 @@ st= 	"OS時間\t"
 	st = st.replace(/\+\-/gm,"-");
 	st = st.replace(/Invalid date/gm,"--(未確定)");
 	
-	var header="<th></th><th>開始時刻</th><th>終了時刻</th>"
+	var header="<th></th><th>開始時刻(START)</th><th>終了時刻(END)</th>"
 	var  st="<table id=\"sampleTable\" class=\"tablesorter\">"
 +"<thead><tr>" +header
 +"</tr></thead><tbody>"
@@ -115,6 +197,11 @@ st= 	"OS時間\t"
 
 	
 document.getElementById("end").innerHTML=st;
+var tmp="でれすて"+ibe;
+if(ibe!=ibemie){
+tmp=ibemie;
+}
+document.getElementById("dere").innerHTML=tmp;
 
 }
 
@@ -161,7 +248,7 @@ var now=moment();
 	st = st.replace(/<td><\/td>/gm,"");
 	st = st.replace(/Invalid date/gm,"--(未確定)");
 	
-	var header="<th>現在時刻</th><th>開始時刻</th><th>終了時刻</th><th>UTC</th><th>JSTとの時差</th>"
+	var header="<th>現在時刻(NOW)</th><th>開始時刻(START)</th><th>終了時刻(END)</th><th>UTC</th><th>JSTとの時差</th>"
 	var  st="<table id=\"sampleTable\" class=\"tablesorter\">"
 +"<thead><tr>" +header
 +"</tr></thead><tbody>"
@@ -174,7 +261,7 @@ var now=moment();
 -->
 </script>
 <body>
-<h1>でれすて(終了)時刻世界時計</h1>
+<h1><span id="dere"></span>(終了)時刻世界時計</h1>
 
 <label for="OF"><input type="checkbox" checked="checked" value="NEW" id="OF" onChange="ibetime();">ISO8601形式で表示<br></label><div id="end"></div><br>
 <form name="tzone">
@@ -205,7 +292,7 @@ var now=moment();
 <option>(GMT-02:00)中部大西洋 中央大西洋標準時,M$4B</option>
 <option>(GMT-01:00)アゾレス諸島 アゾレス諸島標準時,M$50</option>
 <option>(GMT-01:00)カーボベルデ諸島 カーボベルデ標準時,M$53</option>
-<option>(GMT+00:00)グリニッジ標準時: ダブリン、エジンバラ、リスボン、ロンドン GMT 標準時,M$55</option>
+<option selected="selected">(GMT+00:00)グリニッジ標準時: ダブリン、エジンバラ、リスボン、ロンドン GMT 標準時,M$55</option>
 <option>(GMT+00:00)モンロビア、レイキャビク グリニッジ標準時,M$5A</option>
 <option>(GMT+01:00)サニーベイル, カリフォルニア州、ブラチスラバ、ブダペスト、Ljubljana、プラハ 中央ヨーロッパ標準時,M$5F</option>
 <option>(GMT+01:00)サラエボ、Skopje、ワルシャワ、Zagreb 中央ヨーロッパ標準時,M$64</option>
@@ -242,7 +329,7 @@ var now=moment();
 <option>(GMT+08:00)パース 西オーストラリア標準時,M$E1</option>
 <option>(GMT+08:00)イルクーツク、ウランバートル 北アジア東部標準時,M$E3</option>
 <option>(GMT+09:00)(ソウル) 韓国 (標準時),M$E6</option>
-<option selected="selected">(GMT+09:00)大阪、札幌、東京 東京 (標準時),M$EB</option>
+<option>(GMT+09:00)大阪、札幌、東京 東京 (標準時),M$EB</option>
 <option>(GMT+09:00)ヤクーツク ヤクーツク標準時,M$F0</option>
 <option>(GMT+09:30)ダーウィン オーストラリア中央標準時,M$F5</option>
 <option>(GMT+09:30)アデレード 中央オーストラリア標準時,M$FA</option>
