@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<!-- saved from url=(0064)http://sokudon.s17.xrea.com/cgss_pare_highstock_cmpz_remain.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="./Highstock compare_files/tbl.css" type="text/css" rel="stylesheet">
+<title>Highstock compare</title>
+
+<script type="text/javascript" src="./Highstock compare_files/tz/moment-with-locales.js"></script>
+<script type="text/javascript" src="./Highstock compare_files/tz/moment-timezone-with-data-10-year-range.js"></script>
+<script type="text/javascript" src="./Highstock compare_files/tz/mtz_translate_echo.js"></script>
+<script type="text/javascript" src="./Highstock compare_files/jquery.min.js"></script>
+<script type="text/javascript" src="./Highstock compare_files/tz/cgss_highstock_cmp_remain2_tz.js"></script>
+<script src="./Highstock compare_files/highstockv8.js"></script>
+<script src="./Highstock compare_files/exporting.js"></script>
+<script src="./Highstock compare_files/export-data.src.js"></script>
+<script type="text/javascript" src="./Highstock compare_files/tz/moment-with-locales.js"></script>
+<script type="text/javascript" src="./Highstock compare_files/tz/moment-timezone-with-data-10-year-range.js"></script>
+<script type="text/javascript" src="./Highstock compare_files/tz/mtz_translate_echo.js"></script>
+<script src="https://script.googleusercontent.com/macros/echo?user_content_key=1HCjwDgooSrmLIit-kWxhnojWJM59cMFM6__lBeVLIPyOLCdnp3Vg4_3rrM1LNeCQ2eksoW5W_QuvEEH4W_T3rMzYwBixzzHm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnBT4TQs36VO96QWKkeEvLb4kY7NZNTJJI6nWH3wTET7baA6SKyZsjrbCeKHyoiDHCOrH0QulUKuK&lib=Mz9c-W5b2oX_w2vwGZs-LgHndBJ9ix56c"></script>
+<script type="text/javascript" src="../dere_pare_cr.js"></script>
+<script type="text/javascript" src="../dere_pare.js"></script>
+<script src="./Highstock compare_files/cgss_pare_high_title.js"></script>
+<style type="text/css">
+${demo.css}
+</style>
+<script type="text/javascript">
+
+<!--
+var border=[];
+for(var i=0;i<base.length;i++){
+border[i]=new Array();
+border[i]['name'] = base[i]['name'];
+border[i]["data"] = base[i]['data'];
+}
+
+
+var mode="";
+var csvindex=8;
+var events;
+var ranking=get_web_para("5001位");
+var border_data=datafilter(utc_adjust(border.concat(compare)),ranking);
+border_data=eventfilter(border_data,events)
+convert_left_time(border_data);
+
+window.onload = function() {
+createSelectBox();
+document.gm.gm.selectedIndex=511;//jp
+document.trg.time.selectedIndex=csvindex;
+if(mode=="MS"){document.getElementById("MS").click();}
+if(mode=="RM"){document.getElementById("RM").click();}
+if(mode=="PER"){document.getElementById("PER").click();}
+}
+
+
+function escapeHTML(html) {
+  return jQuery('<div>').text(html).html();
+}
+
+function url(){
+var url=document.location.href;
+var n = url.indexOf("#");
+if (n > -1) {
+url= url.substring(0,n);
+}
+var s="";
+var reg="";
+var cc=Highcharts.charts[0];
+for(var i=0;i<cc.series.length;i++){
+if(cc.series[i].visible){
+if(cc.series[i].name.match(/\d+位/)){
+reg +="^"
+}
+reg +=cc.series[i].name +"|";
+}
+}
+s = "%28"+encodeURIComponent(reg.replace(/\|$/,""))+"%29";
+s+= ","+document.trg.time.selectedIndex;
+if(PER){s+= ",PER";}
+else if(RM){s+= ",RM";}
+else if(DMS==false){s+= ",MS";}
+document.location.href=url+"#," +s;
+
+return;
+}
+
+function get_web_para(s){
+var url=document.location.href;
+
+var n = url.indexOf("#");
+if (n > -1) {
+s = url.substring(n+1,url.length);
+url= url.substring(0,n);
+var nn=s.split(",");
+if(nn.length>=2){
+s=nn[0];
+events=decodeURIComponent(decodeURIComponent(nn[1]));
+}
+if(nn.length>=3){
+var m=nn[2].match(/\d+/);
+csvindex=m[0];
+}
+if(nn.length>=4){
+mode=nn[3];
+}
+
+}
+s=escapeHTML(decodeURIComponent(s));
+return s;
+}
+
+
+function eventfilter(bd,s){
+
+var reg = new RegExp(s);
+
+for(var i=0;i<bd.length;i++){
+if(bd[i]['name'].match(reg)==null){
+bd[i].visible =false;
+}}
+		diff=1;
+return bd
+}
+
+function createSelectBox(){
+
+  //連想配列をループ処理で値を取り出してセレクトボックスにセットする
+  for(var i=0;i<tzJAP.length;i++){
+    let op = document.createElement("option");
+    op.value = "";  //value値
+    op.text = i+";"+tzJAP[i][0]+"|"+tzJAP[i][1];   //テキスト値
+    if(op.text.match(/GMT[\+/]/)){
+    op.text =op.text.replace(/(GMT[\+\-])/,"$1!")
+    op.text =op.text.replace("+!","-");
+    op.text =op.text.replace("-!","+");
+    }
+    document.getElementById("sel1").appendChild(op);
+  }
+
+};
+
+
+function settz(){
+var s=document.getElementById("kuni").value;
+ s=s.toLowerCase();
+for(var i=0;i<tzJAP.length;i++){
+ var cmp=document.gm.gm.options[i].text.toLowerCase();
+ if(cmp.indexOf(s)>=0){
+document.gm.gm.selectedIndex=i;
+break;
+}}
+var tmp="";
+
+for(var i=0;i<tzJAP.length;i++){
+ var cmp=document.gm.gm.options[i].text.toLowerCase();
+ if(cmp.indexOf(s)>=0){
+ tmp+= document.gm.gm.options[i].text+"<br>";
+}}
+document.getElementById("RC").innerHTML=tmp;
+return;
+}
+
+-->
+</script>
+</head>
+<body>
+<div data-highcharts-chart="0" id="container" style="height: 600px; min-width: 310px"></div>
+<div id="tbl"></div>
+
+<button id="5001" class="autocompare">5001のみ</button>
+<button id="10001" class="autocompare">10001のみ</button>
+<button id="50001" class="autocompare">50001のみ</button>
+<button id="all" class="autocompare">すべて</button>
+<form name="seek" style="display: inline">
+<input type="text" id="seek_n" value="/(^|[a-z])1位/">
+</form>
+<button id="md" class="autocompare">けんさく(/～/でせいきひょうげん)</button>
+<br><br>
+<b>X軸の表示切り替え</b><br>
+<button id="DMS">DHM(日時分)で表示</button>
+<button id="MS">HM(時分)で表示</button>
+<button id="RM">イベント時間で表示</button>
+<button id="PER">進行度（%）で表示(現イベ基準)</button>
+<br>
+<form name="trg">
+<b>CSV時刻出力設定※イベント時間で表示時のみ、残り時間はDHMかHMでおｋ（）</b><br>
+<select name="time" onchange="csvOutputChanged();">
+<option>--経過時間で出力--</option>
+<option>0001/01/01 12:00:00 VB.NET</option>
+<option>1899/12/30 00:00:00 VB6,M$エクセル、googleスプレッドシート</option>
+<option>1970-01-01 00:00:00 JS,エポック秒</option>
+<option>2014-01-01 00:00:00 sokudon</option>
+<option>0～ シリアル値M$エクセル、googleスプレッドシート</option>
+<option>0～ utcエポック秒</option>
+<option>--イベント時間で出力(現イベ基準--</option>
+<option selected="selected">イベント開始りある時間(現地) realtime</option>
+<option>イベント開始りある時間 toString()英語表記？</option>
+<option>イベント開始りある時間 エクセルシリアル値</option>
+<option>イベント開始りある時間ISO8601 realtime</option>
+<option>イベント開始りある時間ISO8601 unixtime,utc</option>
+<option>イベント開始りある時間 utcエポック秒</option>
+</select>
+</form>
+<br>
+<b>順位検索ブックマーク版</b><br>
+<a href="#5001"target="_blank" rel="noopener">5001位ブクマ版</a>
+<a href="#10001"target="_blank" rel="noopener">10001位ブクマ版</a>
+<a href="#50001"target="_blank" rel="noopener">50001位ブクマ版</a>
+<a href="#,^\d+位,8,RM"target="_blank" rel="noopener">最新イベントのみ</a>
+<br>
+<input type="Submit" value="URLで状態をほぞん" generate"="" onclick="url();return false">
+</body>
+</html>
+<br><br>
+<b>タイムゾーン設定追加の時計</b><br>
+<label for="useutc"><input type="checkbox" checked="checked" name="hyouka" id="useutc"><a href="https://support.microsoft.com/ja-jp/help/973627/microsoft-time-zone-index-values">M$</a>のUTC固定時差情報を使う</label>
+<label for="usemoment"><input type="checkbox" checked="checked" name="hyouka" id="usemoment"><a href="https://momentjs.com/timezone/">もめんと</a>タイムゾーン（国）を使う</label><br>
+
+<form name="ms" id="msdiff">
+//UTCこていじさ<br>
+<select name="owata" id="utcdiff">
+<option>(GMT-12:00)国際日付変更線西側 日付変更線標準時,M$0</option>
+<option>(GMT-11:00)ミッドウェー島、サモア サモア標準時,M$1</option>
+<option>(GMT-10:00)ハワイ ハワイ標準時,M$2</option>
+<option>(GMT-09:00)アラスカ アラスカ標準時,M$3</option>
+<option>(GMT-08:00)(米国およびカナダ) は、太平洋標準時ティファナ 太平洋標準時,M$4</option>
+<option>(GMT-07:00)(米国およびカナダ)、山地標準時 山地標準時,M$A</option>
+<option>(GMT-07:00)チワワ、ラパス、マサトラン メキシコ標準時 2,M$D</option>
+<option>(GMT-07:00)アリゾナ州 米国山地標準時,M$F</option>
+<option>(GMT-06:00)(米国およびカナダ) の中部標準時 中部標準時,M$14</option>
+<option>(GMT-06:00)サスカチェワン カナダ中部標準時,M$19</option>
+<option>(GMT-06:00)グアダラハラ、メキシコシティ、モンテレイ メキシコ山地標準時,M$1E</option>
+<option>(GMT-06:00)中央アメリカ 中央アメリカ標準時,M$21</option>
+<option>(GMT-05:00)(米国およびカナダ)、東部標準時 東部標準時,M$23</option>
+<option>(GMT-05:00)インディアナ (東部) 米国東部標準時,M$28</option>
+<option>(GMT-05:00)ボゴタ、リマ、Quito 亜北極地帯の太平洋標準時,M$2D</option>
+<option>(GMT-04:00)大西洋標準時 (カナダ) 大西洋標準時,M$32</option>
+<option>(GMT-04:00)ジョージタウン、ラパス、サン ・ ファン 亜北極地帯西部標準時,M$37</option>
+<option>(GMT-04:00)サンティアゴ 太平洋亜北極地帯 (標準時),M$38</option>
+<option>(GMT-03:30)ニューファンドランド ニューファンドランドおよびラブラドル標準時,M$3C</option>
+<option>(GMT-03:00)ブラジリア 南アメリカ東部標準時,M$41</option>
+<option>(GMT-03:00)ジョージタウン 亜北極地帯東部標準時,M$46</option>
+<option>(GMT-03:00)グリーンランド グリーンランド標準時,M$49</option>
+<option>(GMT-02:00)中部大西洋 中央大西洋標準時,M$4B</option>
+<option>(GMT-01:00)アゾレス諸島 アゾレス諸島標準時,M$50</option>
+<option>(GMT-01:00)カーボベルデ諸島 カーボベルデ標準時,M$53</option>
+<option>(GMT+00:00)グリニッジ標準時: ダブリン、エジンバラ、リスボン、ロンドン GMT 標準時,M$55</option>
+<option>(GMT+00:00)モンロビア、レイキャビク グリニッジ標準時,M$5A</option>
+<option>(GMT+01:00)サニーベイル, カリフォルニア州、ブラチスラバ、ブダペスト、Ljubljana、プラハ 中央ヨーロッパ標準時,M$5F</option>
+<option>(GMT+01:00)サラエボ、Skopje、ワルシャワ、Zagreb 中央ヨーロッパ標準時,M$64</option>
+<option>(GMT+01:00)ブリュッセル、コペンハーゲン、マドリッド、パリ ロマンス標準時,M$69</option>
+<option>(GMT+01:00)アムステルダム、ベルリン、ベルン、ローマ、ストックホルム、ウィーン 西ヨーロッパ標準時,M$6E</option>
+<option>(GMT+01:00)西中央アフリカ 西中央アフリカ標準時,M$71</option>
+<option>(GMT+02:00)ミンスク 東ヨーロッパ標準時,M$73</option>
+<option>(GMT+02:00)カイロ エジプト標準時,M$78</option>
+<option>(GMT+02:00)ヘルシンキ、キエフ、リガ、ソフィア、Tallinn、Vilnius ファイル (標準時),M$7D</option>
+<option>(GMT+02:00)アテネ、ブカレスト、イスタンブール GTB 標準時,M$82</option>
+<option>(GMT+02:00)エルサレム イスラエル標準時,M$87</option>
+<option>(GMT+02:00)ハラレ、プレトリア 南アフリカ標準時,M$8C</option>
+<option>(GMT+03:00)モスクワ、サンクト ペテルスブルグ、ボルゴグラード ロシア標準時,M$91</option>
+<option>(GMT+03:00)クウェート、リヤド アラブ標準時,M$96</option>
+<option>(GMT+03:00)ナイロビ 東アフリカ標準時,M$9B</option>
+<option>(GMT+03:00)バグダッド アラブ標準時,M$9E</option>
+<option>(GMT+03:30)テヘラン イラン標準時,M$A0</option>
+<option>(GMT+04:00)アブダビ、マスカット アラビア標準時,M$A5</option>
+<option>(GMT+04:00)バクー、トビリシ、エレバン コーカサス標準時,M$AA</option>
+<option>(GMT+04:30)カブール 移行アフガニスタン標準時,M$AF</option>
+<option>(GMT+05:00)エカテリンバーグ エカテリンバーグ標準時,M$B4</option>
+<option>(GMT+05:00)タシケント 西アジア標準時,M$B9</option>
+<option>(GMT+05:30)チェンナイ、カルカッタ、ムンバイ、ニューデリー インド標準時,M$BE</option>
+<option>(GMT+05:45)カトマンズ ネパール標準時,M$C1</option>
+<option>(GMT+06:00)アスタナ、ダッカ 中央アジア標準時,M$C3</option>
+<option>(GMT+06:00)スリジャヤワルダナプラコッテ スリランカ標準時,M$C8</option>
+<option>(GMT+06:00)アルマアトイ、ノボシビルスク 北中央アジア標準時,M$C9</option>
+<option>(GMT+06:30)ヤンゴン (ラングーン) ミャンマー標準時,M$CB</option>
+<option>(GMT+07:00)バンコク、ハノイ、ジャカルタ 東南アジア標準時,M$CD</option>
+<option>(GMT+07:00)クラスノヤルスク 北アジア標準時,M$CF</option>
+<option>(GMT+08:00)北京、重慶、ホンコン、ウルムチ 中国 (標準時),M$D2</option>
+<option>(GMT+08:00)クアラルンプール、シンガポール シンガポール標準時,M$D7</option>
+<option>(GMT+08:00)台北 台北標準時,M$DC</option>
+<option>(GMT+08:00)パース 西オーストラリア標準時,M$E1</option>
+<option>(GMT+08:00)イルクーツク、ウランバートル 北アジア東部標準時,M$E3</option>
+<option>(GMT+09:00)(ソウル) 韓国 (標準時),M$E6</option>
+<option selected="selected">(GMT+09:00)大阪、札幌、東京 東京 (標準時),M$EB</option>
+<option>(GMT+09:00)ヤクーツク ヤクーツク標準時,M$F0</option>
+<option>(GMT+09:30)ダーウィン オーストラリア中央標準時,M$F5</option>
+<option>(GMT+09:30)アデレード 中央オーストラリア標準時,M$FA</option>
+<option>(GMT+10:00)キャンベラ、メルボルン、シドニー オーストラリア東部標準時,M$FF</option>
+<option>(GMT+10:00)ブリスベン 東オーストラリア標準時,M$104</option>
+<option>(GMT+10:00)ホバート タスマニア標準時,M$109</option>
+<option>(GMT+10:00)ウラジオ ストック ウラジオ ストック標準時,M$10E</option>
+<option>(GMT+10:00)グアム、ポートモレスビー 西太平洋標準時,M$113</option>
+<option>(GMT+11:00)マガダン、ソロモン諸島、ニューカレドニア 中央太平洋標準時,M$118</option>
+<option>(GMT+12:00)フィジー、カムチャツカ、マーシャル フィジー諸島標準時,M$11D</option>
+<option>(GMT+12:00)オークランド、ウェリントン ニュージーランド標準時,M$122</option>
+<option>(GMT+13:00)ヌクアロファ トンガ標準時,M$12C</option>
+<option>(GMT-03:00)ブエノスアイレス アゼルバイジャン標準時,M$80000040</option>
+<option>(GMT+02:00)コロンバス, ジョージア州 中東標準時,M$80000041</option>
+<option>(GMT+02:00)Amman ヨルダン標準時,M$80000042</option>
+<option>(GMT-06:00)グアダラハラ、メキシコシティ、モンテレー - 新規 中部標準時 (メキシコ),M$80000043</option>
+<option>(GMT-07:00)チワワ、ラパス、マサトラン - 新規 山地標準時 (メキシコ),M$80000044</option>
+<option>(GMT-08:00)ティファナ、バハカリフォルニア 太平洋標準時 (メキシコ),M$80000045</option>
+<option>(GMT+02:00)Windhoek ナミビア標準時,M$80000046</option>
+<option>(GMT+03:00)トビリシ グルジア標準時,M$80000047</option>
+<option>(GMT-04:00)Manaus 中央ブラジル標準時,M$80000048</option>
+<option>(GMT-03:00)モンテビデオ モンテビデオ標準時,M$80000049</option>
+<option>(GMT+04:00)エレバン アルメニア標準時,M$8000004A</option>
+<option>(GMT-04:30)カラカス ベネズエラ標準時,M$8000004B</option>
+<option>(GMT-03:00)ブエノスアイレス アルゼンチン標準時,M$8000004C</option>
+<option>(GMT+00:00)カサブランカ モロッコ標準時,M$8000004D</option>
+<option>(GMT+05:00)イスラマバード、カラチ パキスタン標準時,M$8000004E</option>
+<option>(GMT+04:00)ポートルイス モーリシャス標準時,M$8000004F</option>
+<option>(GMT+00:00)世界協定時刻 UTC,M$80000050</option>
+<option>(GMT-04:00)Asuncion パラグアイ標準時,M$80000051</option>
+<option>(GMT+12:00)Petropavlovsk Kamchatsky カムチャツカ標準時,M$80000052</option>
+</select>
+</form>
+
+<form name="gm" id="moment">
+//もめんとたいむぞーん<br>
+<select name="gm" id="sel1">
+</select><br>
+<input type="text" name="" value="日本" id="kuni" size="" maxlength=""><br>
+<input type="Submit" value="検索" Generate" onclick="settz();return false"><br>
+<span id="RC">-----</span><br>
+</form>
+
+</body>
+</html>
