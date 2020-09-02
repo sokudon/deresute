@@ -9,7 +9,7 @@
 --http://sokudon.s17.xrea.com/sekai-dere.html
 
 
---UI ENGLISH MODE view textline, 620-630
+--UI ENGLISH MODE view textline, 670
 --parameter https://github.com/sokudon/deresute/wiki/OBS-EVENT-DURATION-TIMER(luascript)
 
 --[[
@@ -104,6 +104,7 @@ starttime =""
 title =""
 para_text=""
 time_text=""
+end_text     = ""
 
 total_seconds = 0
 total         = 0
@@ -117,6 +118,7 @@ timer_active  = false
 minute        = 0
 hour          = 0
 utc			  = 0
+debugtxt      =""
 
 hotkey_id_reset     = obs.OBS_INVALID_HOTKEY_ID
 hotkey_id_pause     = obs.OBS_INVALID_HOTKEY_ID
@@ -146,6 +148,10 @@ function get_timestring(t,text)
 	total = t*10
 	if(total<0)then
 	total=-total
+	
+	if(end_text~="") then
+		return end_text
+	end
 	end
 
 	local tenths   = math.floor(total % 10)
@@ -241,7 +247,7 @@ end
 
 function set_time_text()
 	local text = para_text	
-	local elaspted=get_timestring(lefttime(starttime),format)
+	local elaspted=get_timestring(lefttime(starttime)*-1,format)
 	local left=get_timestring(lefttime(finaltime),format)
 	local ibetime=checkdate(lefttime(starttime),lefttime(finaltime))
 	local prog=""
@@ -249,8 +255,21 @@ function set_time_text()
 	if(ibetime==true)then
 	ibetime=get_timestring(parse_json_date_utc(finaltime)-parse_json_date_utc(starttime),format)
 	prog=string.format("%2.2f",math.abs(lefttime(starttime)/(parse_json_date_utc(finaltime)-parse_json_date_utc(starttime))*100))
+	
+	if(parse_json_date_utc(starttime)>=os.time())then
+	prog=0
+	--残りイベント時間　経過0時間にする
+	elaspted=get_timestring(0,format)
+	left=get_timestring(parse_json_date_utc(finaltime)-parse_json_date_utc(starttime),format)
+	
+	--または残り開始までの時間にする
+	--left=get_timestring(math.abs(lefttime(finaltime)),format)
+	end
+	end
 	if(tonumber(prog)>100)then
 	prog=100
+	elaspted=get_timestring(parse_json_date_utc(finaltime)-parse_json_date_utc(starttime),format) 
+	left=get_timestring(0,format)
 	end
 	bar=makebar(prog)
 	end
@@ -285,12 +304,6 @@ function set_time_text()
 	
 	text =os.date(text)
 	
-
-	if total < 1 and (mode == "Countdown" or mode == "Specific time") then
-		text = "終了しました"   --stop_text
-	end
-	
-
 	local source = obs.obs_get_source_by_name(source_name)
 	if source ~= nil then
 		local settings = obs.obs_data_create()
@@ -459,15 +472,32 @@ function lefttime(dt)
 	return  t
 end
 
+function timezoneparse(tz)
+local timezone={{"WITA","+0800"},{"WIT","+0900"},{"WIB","+0700"},{"WET","+0000"},{"WEST","+0100"},{"WAT","+0100"},{"UYT","-0300"},{"UTC","+0000"},{"SST","-1100"},{"PWT","+0900"},{"PST","-0800"},{"PKT","+0500"},{"PHT","+0800"},{"PET","-0500"},{"PDT","-0700"},{"NZST","+1200"},{"NZDT","+1300"},{"NPT","+0545"},{"MYT","+0800"},{"MST","-0700"},{"MMT","+0630"},{"MDT","-0600"},{"KST","+0900"},{"JST","+0900"},{"IST","+0530"},{"IST","+0200"},{"IRST","+0330"},{"IRDT","+0430"},{"IDT","+0300"},{"ICT","+0700"},{"HST","-1000"},{"HKT","+0800"},{"GST","+0400"},{"GMT","+0000"},{"FJT","+1200"},{"FJST","+1300"},{"EST","-0500"},{"EET","+0200"},{"EEST","+0300"},{"EDT","-0400"},{"ECT","-0500"},{"EAT","+0300"},{"ChST","+1000"},{"CST","-0600"},{"CST","-0500"},{"CST","+0800"},{"COT","-0500"},{"CLT","-0400"},{"CLST","-0300"},{"CET","+0100"},{"CEST","+0200"},{"CDT","-0500"},{"CDT","-0400"},{"CCT","+0630"},{"CAT","+0200"},{"BTT","+0600"},{"BST","+0100"},{"BRT","-0300"},{"BOT","-0400"},{"BNT","+0800"},{"BDT","+0600"},{"AWST","+0800"},{"AWDT","+0900"},{"ART","-0300"},{"AKST","-0900"},{"AKDT","-0800"},{"AFT","+0430"},{"AEST","+1000"},{"AEDT","+1100"},{"ACST","+0930"},{"ACDT","+1030"}}
+
+if(tz=="U")then
+return get_tzoffset(utc*3600)
+end
+
+stlen=tonumber(#timezone)
+for i=1,stlen do
+if(tz==timezone[i][1])then
+return timezone[i][2]
+end
+end
+
+return 0 --utc
+end
+
 function parse_json_date_utc(json_date)
     local pattern = "(%d+)%-(%d+)%-(%d+)%a(%d+)%:(%d+)%:([%d%.]+)([Z%+%-])(%d?%d?)%:?(%d?%d?)"
     
-    if(json_date:match("U$")) then --try parse UTC FIX
-    local normal = "(%d+)[%-%/](%d+)[%-%/](%d+) +(%d+)%:(%d+)U$"--ローカル時間MD+HM
+    if(json_date:match("[A-W]+$")) then --try parse UTC FIX
+    local normal = "(%d+)[%-%/](%d+)[%-%/](%d+) +(%d+)%:(%d+)%s?[A-W]+$"--ローカル時間MD+HM
         if(json_date:match(normal))then
         local year, month, day, hour, minute,
         seconds = json_date:match(normal)
-        json_date = year.."-"..month.."-"..day.."T"..hour..":"..minute..":00".. get_tzoffset(utc*3600)
+        json_date = year.."-"..month.."-"..day.."T"..hour..":"..minute..":00".. timezoneparse(json_date:match("[A-W]+$"))
      end
     end
  
@@ -653,6 +683,7 @@ function script_properties()
 	 f_prop = obs.obs_properties_add_text(props, "format", "ELASPED/LEFT format", obs.OBS_TEXT_DEFAULT)
 	 p_para_text = obs.obs_properties_add_text(props, "para_text", "TIME parameter:", obs.OBS_TEXT_DEFAULT)
 	 p_time_text = obs.obs_properties_add_text(props, "time_text", "TIME format:", obs.OBS_TEXT_DEFAULT)
+	 p_end_text = obs.obs_properties_add_text(props, "end_text", "STOP text:(empty not use)", obs.OBS_TEXT_DEFAULT)
 	else
 	 p_title_text = obs.obs_properties_add_text(props, "title_text", "イベント名:", obs.OBS_TEXT_DEFAULT)
 	 p_start_text = obs.obs_properties_add_text(props, "start_text", "開始時間:例　2020-02-26T15:00:00+09:00", obs.OBS_TEXT_DEFAULT)
@@ -660,6 +691,7 @@ function script_properties()
 	 f_prop = obs.obs_properties_add_text(props, "format", "経過/残表示形式", obs.OBS_TEXT_DEFAULT)
 	 p_para_text = obs.obs_properties_add_text(props, "para_text", "表示する時間:", obs.OBS_TEXT_DEFAULT)
 	 p_time_text = obs.obs_properties_add_text(props, "time_text", "時刻表記:", obs.OBS_TEXT_DEFAULT)
+	 p_end_text = obs.obs_properties_add_text(props, "end_text", "タイマー停止の文字:(空欄だと未使用)", obs.OBS_TEXT_DEFAULT)
 	end
 	
 	local p_a_mode = obs.obs_properties_add_list(props, "a_mode", "Activation mode", obs.OBS_COMBO_TYPE_EDITABLE, obs.OBS_COMBO_FORMAT_STRING)
@@ -674,6 +706,7 @@ function script_properties()
 	obs.obs_property_set_visible(p_start_text, true)
 	obs.obs_property_set_visible(p_para_text, true)
 	obs.obs_property_set_visible(p_title_text, true)
+	obs.obs_property_set_visible(p_end_text, true)
 	obs.obs_property_set_visible(button_pause, true)
 	obs.obs_property_set_visible(button_reset, true)
 	obs.obs_property_set_visible(p_a_mode, true)
@@ -732,6 +765,7 @@ function script_update(settings)
 	minute = obs.obs_data_get_int(settings, "minutes")
 	source_name = cut_string(obs.obs_data_get_string(settings, "source"),100)
 	stop_text = cut_string(obs.obs_data_get_string(settings, "stop_text"),30)
+	end_text = cut_string(obs.obs_data_get_string(settings, "end_text"),30)
 	format = cut_string(obs.obs_data_get_string(settings, "format"),100)
 	title=cut_string(obs.obs_data_get_string(settings, "title_text"),100)
 	para_text=cut_string(obs.obs_data_get_string(settings, "para_text"),255)
@@ -752,6 +786,7 @@ function script_defaults(settings)
 	obs.obs_data_set_default_string(settings, "title", "でれすて")
 	obs.obs_data_set_default_string(settings, "time_text", "%Y/%m/%d %H:%M:%S")
 	obs.obs_data_set_default_string(settings, "para_text", "タイトル%T%n経過時間%K%n残り時間%L%nイベント時間%I%n現地時間%N%n日本時間%JST%n達成率%P%nS %S%nE %E%nSJ %SJ%nEJ %EJ")
+	obs.obs_data_set_default_string(settings, "stop_text", "タイマー停止中(開始前/終了)")
 
 end
 
