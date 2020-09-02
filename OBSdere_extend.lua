@@ -256,6 +256,7 @@ function set_time_text()
 	ibetime=get_timestring(parse_json_date_utc(finaltime)-parse_json_date_utc(starttime),format)
 	prog=string.format("%2.2f",math.abs(lefttime(starttime)/(parse_json_date_utc(finaltime)-parse_json_date_utc(starttime))*100))
 	
+	--現在＜ibe開始時間
 	if(parse_json_date_utc(starttime)>=os.time())then
 	prog=0
 	--残りイベント時間　経過0時間にする
@@ -263,8 +264,7 @@ function set_time_text()
 	left=get_timestring(parse_json_date_utc(finaltime)-parse_json_date_utc(starttime),format)
 	
 	--または残り開始までの時間にする
-	--left=get_timestring(math.abs(lefttime(finaltime)),format)
-	end
+	left=get_timestring(math.abs(lefttime(finaltime)),format)
 	end
 	if(tonumber(prog)>100)then
 	prog=100
