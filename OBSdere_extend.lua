@@ -786,7 +786,7 @@ function script_defaults(settings)
 	obs.obs_data_set_default_string(settings, "title", "でれすて")
 	obs.obs_data_set_default_string(settings, "time_text", "%Y/%m/%d %H:%M:%S")
 	obs.obs_data_set_default_string(settings, "para_text", "タイトル%T%n経過時間%K%n残り時間%L%nイベント時間%I%n現地時間%N%n日本時間%JST%n達成率%P%nS %S%nE %E%nSJ %SJ%nEJ %EJ")
-	obs.obs_data_set_default_string(settings, "stop_text", "タイマー停止中(開始前/終了)")
+	obs.obs_data_set_default_string(settings, "end_text", "タイマー停止中(開始前/終了)")
 
 end
 
