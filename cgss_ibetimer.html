@@ -198,6 +198,67 @@ function changeBoxColor( newColor ) {
     document.getElementById('bg').style.backgroundColor = newColor;
 }
 
+
+
+function fix_url(a) {
+    if (a.indexOf("http") >= 0) {} else if (a.indexOf("ttp") >= 0) {
+        a = "h" + a;
+    } else {
+        a = "http" + a;
+    }
+    return a.replace("http://127.0.0.1:8823/thread/", "");
+}
+function parseData(data) {
+    stringfilter(data);
+}
+
+function getweb(urls) {
+        var local = new RegExp("(\.\/neta\/[a-zA-Z0-9_\-]+)\.lua");
+        var uri = new RegExp("(h?ttps?)?(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+)");
+        var lcmm = urls.match(local);
+        var urlm = urls.match(uri);
+        var text = "";
+        var your_url = "";
+        if (lcmm != null) {
+            your_url = lcmm[0];
+            $.get(your_url, parseData);
+        } else if (urlm != null) {
+            your_url = fix_url(urlm[0]);
+            text = "";
+            $.ajax({
+                url: your_url,
+                type: 'GET',
+                timeout: 10000,
+                success: function(res) {
+                    stringfilter(rmhtml(res));
+                }
+            });
+        }
+        return false;
+    }
+
+function stringfilter(data){
+var ibeowari=ibeend;
+var ibekaishi=ibestart;
+var ibemie=ibe;
+
+data = data.replace("2020-04-30T12:00:00+09:00",moment(ibekaishi).format());
+data = data.replace("2020-05-07T21:00:00+09:00",moment(ibeowari).format());
+data = data.replace("でれすて",ibemie);
+data = data.replace("でれすて",ibemie);
+data = data.replace("%H:%m:%s","%d %hh:%mm:%ss(%hsH,%dsD)");
+data = data.replace("%Y/%m/%d %H:%M:%S","%Y-%m-%dT%H:%M:%S%z (%a)");
+data = data.replace("タイマー停止中(開始前/終了)","終了しました");
+
+TextDL(data,"obsduration_timer.lua");
+        return false;
+}
+
+function makeplugin(){
+getweb("./neta/OBSdere_extend.lua");
+}
+
+
 function makeical(){
 
 var ibeowari=ibeend;
@@ -356,6 +417,10 @@ M$より機械翻訳とはいえ
 カレンダーアプリに登録する(iCalender作成):
 <input type="Submit" value="iCalendar"" generate"="" onclick="makeical();return false">　
 <a href="./dere_event_calender.html">GOOGLEカレンダー向け</a><br>
+
+<b>OBSタイマープラグイン生成:</b>
+<input type="Submit" value="OBSLUAtimerplugin" generate"="" onclick="makeplugin();return false"><br><br>
+
 
 <p>クロマキー合成、背景色
     <input type="button" value="緑色に変更する" onclick="changeBoxColor('#008000');">
