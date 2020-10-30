@@ -25,7 +25,28 @@ function stringfilter() {
 st="";
 var ptpat={"piano":70,"sta13":34,"sta14":37,"sta15":40,"sta16":44,"pro":240};
 var target=document.getElementById("val").value;
-st="<table id=\"sampleTable\" class=\"tablesorter\"><thead><tr><th>PIANO(SBS)</th><th>STA13</th><th>STA14</th><th>STA15</th><th>STA16</th><th>イベPRO</th><th>曲回数</th></tr></thead><tbody>";
+
+//LIVE消費スタミナ軽減
+//LIVEをプレイする為に必要なスタミナがxx%軽減	Lv1	5%	10000	10000
+//Lv2	10%	10000	20000
+//Lv3	15%	10000	30000
+//消費スタミナ＝端数切捨て(基本消費スタミナ×(1-軽減値))
+var PTBASE=["PIANO(SBS)","STA13","STA14","STA15","STA16","イベPRO","曲回数"];
+var ptlv=0;
+if(document.getElementById("lv1").checked){ptlv=5;}
+if(document.getElementById("lv2").checked){ptlv=10;}
+if(document.getElementById("lv3").checked){ptlv=15;}
+
+st="<table id=\"sampleTable\" class=\"tablesorter\"><thead><tr>";
+//<th>PIANO(SBS)</th><th>STA13</th><th>STA14</th><th>STA15</th><th>STA16</th><th>イベPRO</th><th>曲回数</th>
+for(var i=0;i<PTBASE.length;i++){
+if(PTBASE[i].match("STA")){
+PTBASE[i]="STA"+Math.floor(PTBASE[i].match(/[0-9]+/)*(100-ptlv)/100);
+}
+
+st+="<th>"+PTBASE[i]+"</th>";
+}
+st+="</tr></thead><tbody>";
 
 var div=0;
 
@@ -37,6 +58,7 @@ target +=240;
 div--;
 }}
 
+//消費スタミナ＝端数切捨て(基本消費スタミナ×(1-軽減値))
 var ptt={"piano":70,"sta13":34,"sta14":37,"sta15":40,"sta16":44,"pro":240}
 
 for(var i=0;i<pat.length;i++){
@@ -75,6 +97,8 @@ window.onload = function () {
 
 var currentSort=[[6,0]];//ぼだ
     
+    
+//消費スタミナ＝端数切捨て(基本消費スタミナ×(1-軽減値))
     -->
     </script>
 <h1>でれすてれいんぼうPTさーち　</h1>
@@ -83,6 +107,12 @@ PTポイント；{"piano":70,"sta13":34,"sta14":37,"sta15":40,"sta16":44,"いべ
 <a href="./dere_pt.zip">↑以外のでれ高低難易度のCVS,JSON</a><br>
 <label for="val">検索スコア:<input type="text" id="val"><br></label>
 <label for="ibe">いべ曲あり:<input type="checkbox" id="ibe"><br></label>
+<b>スタミナ軽減LV※暫定情報</b><br>
+<label for="lv0"><input type="radio" name="hyouka" id="lv0">LV0(0%)</label>
+<label for="lv1"><input type="radio" name="hyouka" id="lv1">LV1(5%)</label>
+<label for="lv2"><input type="radio" name="hyouka" id="lv2">LV2(10%)</label>
+<label for="lv3"><input type="radio" checked="checked" name="hyouka" id="lv3">LV3(15%)</label><br>
+
 <input type="Submit" value="Convert" generate"="" onclick="stringfilter();return false">
 </form>
 <div id="tbl">
@@ -90,5 +120,6 @@ PTポイント；{"piano":70,"sta13":34,"sta14":37,"sta15":40,"sta16":44,"いべ
 </table>
 </div>
 
-
+<a href="https://docs.google.com/spreadsheets/d/1WfsqW4nlEnLAtEcK9BUTgRRi-_UecHjtv6FSJU87C0I/edit#gid=501375567">スプレッドシートばｎ（こぴーしてつかう</a>
+※消費スタミナ軽減情報、暫定より　https://imascg-slstage-wiki.gamerch.com/%E3%83%97%E3%83%AD%E3%83%87%E3%83%A5%E3%83%BC%E3%82%B5%E3%83%BC%E8%A8%AD%E5%AE%9A#content_2_15
 </body></html>
