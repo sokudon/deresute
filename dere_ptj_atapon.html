@@ -18,12 +18,12 @@ resize: none;
 <title>deresuteptjust</title>
 </head>
 <body style="">
-<script async="" src="./dere_ata.txt"></script>
+<script async="" src="./sta11.txt"></script>
 <script type="text/javascript">
 
 function stringfilter() {
 st="";
-var ptpat={"piano":70,"sta13":34,"sta14":37,"sta15":40,"sta16":44,"pro":240};
+var ptpat={"sta11":28,"sta12":31,"sta15":40,"sta16":44,"piano":70,"pro":240};
 var target=document.getElementById("val").value;
 
 //LIVE消費スタミナ軽減
@@ -31,14 +31,13 @@ var target=document.getElementById("val").value;
 //Lv2	10%	10000	20000
 //Lv3	15%	10000	30000
 //消費スタミナ＝端数切捨て(基本消費スタミナ×(1-軽減値))
-var PTBASE=["PIANO(SBS)","STA13","STA14","STA15","STA16","イベPRO","曲回数"];
+var PTBASE=["STA11","STA12","STA15","STA16","PIANO(SBS)","イベPRO","曲回数"];
 var ptlv=0;
 if(document.getElementById("lv1").checked){ptlv=5;}
 if(document.getElementById("lv2").checked){ptlv=10;}
 if(document.getElementById("lv3").checked){ptlv=15;}
 
 st="<table id=\"sampleTable\" class=\"tablesorter\"><thead><tr>";
-//<th>PIANO(SBS)</th><th>STA13</th><th>STA14</th><th>STA15</th><th>STA16</th><th>イベPRO</th><th>曲回数</th>
 for(var i=0;i<PTBASE.length;i++){
 if(PTBASE[i].match("STA")){
 PTBASE[i]="STA"+Math.floor(PTBASE[i].match(/[0-9]+/)*(100-ptlv)/100);
@@ -59,11 +58,11 @@ div--;
 }}
 
 //消費スタミナ＝端数切捨て(基本消費スタミナ×(1-軽減値))
-var ptt={"piano":70,"sta13":34,"sta14":37,"sta15":40,"sta16":44,"pro":240}
+var ptt={"sta11":28,"sta12":31,"sta15":40,"sta16":44,"piano":70,"pro":240};
 
 for(var i=0;i<pat.length;i++){
 if(target==pat[i][5]){
-pts= ptt["piano"]*pat[i][0]+ptt["sta13"]*pat[i][1]+ptt["sta14"]*pat[i][2]+ptt["sta15"]*pat[i][3]+ptt["sta16"]*pat[i][4];
+pts= ptt["sta11"]*pat[i][0]+ptt["sta12"]*pat[i][1]+ptt["sta15"]*pat[i][2]+ptt["sta16"]*pat[i][3]+ptt["piano"]*pat[i][4];
 st += "<tr><td>" + pat[i][0] +"</td><td>" +  pat[i][1] +"</td><td>" +  pat[i][2] +"</td><td>" + pat[i][3] +"</td><td>" + pat[i][4] +"</td><td>" + div+"</td><td>"+(pat[i][0]+pat[i][1]+pat[i][2]+pat[i][3]+pat[i][4]+div) +"</td></tr>";
 }}
 st +="</tbody></table>";
@@ -101,9 +100,9 @@ var currentSort=[[6,0]];//ぼだ
 //消費スタミナ＝端数切捨て(基本消費スタミナ×(1-軽減値))
     -->
     </script>
-<h1>でれすてれいんぼうPTさーち　</h1>
-PTポイント；{"piano":70,"sta13":34,"sta14":37,"sta15":40,"sta16":44,"いべPRO":240};<br>
-<a href="./dere_ata.txt">検索可能なPT</a><br><br>
+<h1>でれすてれいんぼうPTさーち　<a href="dere_ptj_atapon_old.html">旧版sta14,sta13あり版</a></h1>
+PTポイント；{"sta11":28,"sta12":31,"sta15":40,"sta16":44,"piano":70,"pro":240}<br>
+<a href="./sta11.txt">検索可能なPT</a><br><br>
 <a href="./dere_pt.zip">↑以外のでれ高低難易度のCVS,JSON</a><br>
 <label for="val">検索スコア:<input type="text" id="val"><br></label>
 <label for="ibe">いべ曲あり:<input type="checkbox" id="ibe"><br></label>
@@ -116,10 +115,11 @@ PTポイント；{"piano":70,"sta13":34,"sta14":37,"sta15":40,"sta16":44,"いべ
 <input type="Submit" value="Convert" generate"="" onclick="stringfilter();return false">
 </form>
 <div id="tbl">
-<table id="sampleTable" class="tablesorter"><thead><tr><th>PIANO(SBS)</th><th>STA13</th><th>STA14</th><th>STA15</th><th>STA16</th><th>イベPRO</th><th>曲回数</th></tr>
+<table id="sampleTable" class="tablesorter">
 </table>
 </div>
 
-<a href="https://docs.google.com/spreadsheets/d/1WfsqW4nlEnLAtEcK9BUTgRRi-_UecHjtv6FSJU87C0I/edit#gid=501375567">スプレッドシートばｎ（こぴーしてつかう</a>
-※消費スタミナ軽減情報、暫定より　https://imascg-slstage-wiki.gamerch.com/%E3%83%97%E3%83%AD%E3%83%87%E3%83%A5%E3%83%BC%E3%82%B5%E3%83%BC%E8%A8%AD%E5%AE%9A#content_2_15
+<a href="https://docs.google.com/spreadsheets/d/1WfsqW4nlEnLAtEcK9BUTgRRi-_UecHjtv6FSJU87C0I/edit#gid=501375567">スプレッドシートばん（こぴーしてつかう、でーたはスタミナ軽減前のもの）</a><br>
+※消費スタミナ軽減情報、<a href="https://imascg-slstage-wiki.gamerch.com/%E3%83%97%E3%83%AD%E3%83%87%E3%83%A5%E3%83%BC%E3%82%B5%E3%83%BC%E8%A8%AD%E5%AE%9A#content_2_15">暫定情報より</a><br>
+消費スタミナがおなじになったときの判定法sta13,sta14→LV3でsta11 https://www.youtube.com/watch?v=W8aUnEgSqe4
 </body></html>
