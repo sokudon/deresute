@@ -426,6 +426,8 @@ function parse_jp_era(date)
   local theyear=string.format("%04d",tonumber(os.date("!%Y",os.time()+9*3600)))
   local dt = theyear .. "-".. string.format("%02d",tonumber(os.date('!%m',tt))).."-".. string.format("%02d",tonumber(os.date('!%d',tt))).."T"..string.format("%02d",tonumber(os.date('!%H',tt))) ..":00:00+09:00"
  
+    debugtxt3=dt
+    
   local gm = "周年" 
   local aniv=lefttime(dt)
   if(aniv<0) then
@@ -460,7 +462,6 @@ function parse_jp_era(date)
   end
   	
   	local imm=imas[inum][4]
-    debugtxt3=dt
   	debugtxt2=JST(imas[inum][2])  --開始日
   	debugtxt1=""
   	
