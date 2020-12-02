@@ -256,15 +256,10 @@ function set_time_text()
 	ibetime=get_timestring(parse_json_date_utc(finaltime)-parse_json_date_utc(starttime),format)
 	prog=string.format("%2.2f",math.abs(lefttime(starttime)/(parse_json_date_utc(finaltime)-parse_json_date_utc(starttime))*100))
 	
-	--現在＜ibe開始時間
 	if(parse_json_date_utc(starttime)>=os.time())then
 	prog=0
-	--残りイベント時間　経過0時間にする
+	left=get_timestring(parse_json_date_utc(finaltime)-parse_json_date_utc(starttime),format) 
 	elaspted=get_timestring(0,format)
-	left=get_timestring(parse_json_date_utc(finaltime)-parse_json_date_utc(starttime),format)
-	
-	--または残り開始までの時間にする
-	--left=get_timestring(math.abs(lefttime(starttime)),format)
 	end
 	if(tonumber(prog)>100)then
 	prog=100
@@ -687,7 +682,7 @@ function script_properties()
 	else
 	 p_title_text = obs.obs_properties_add_text(props, "title_text", "イベント名:", obs.OBS_TEXT_DEFAULT)
 	 p_start_text = obs.obs_properties_add_text(props, "start_text", "開始時間:例　2020-02-26T15:00:00+09:00", obs.OBS_TEXT_DEFAULT)
-	 p_stop_text = obs.obs_properties_add_text(props, "stop_text", "終了時間:例　2020-02-26T21:00:00+09:00", obs.OBS_TEXT_DEFAULT)
+	 p_stop_text = obs.obs_properties_add_text(props, "stop_text",   "終了時間:例　2020/02/26 21:00 JST", obs.OBS_TEXT_DEFAULT)
 	 f_prop = obs.obs_properties_add_text(props, "format", "経過/残表示形式", obs.OBS_TEXT_DEFAULT)
 	 p_para_text = obs.obs_properties_add_text(props, "para_text", "表示する時間:", obs.OBS_TEXT_DEFAULT)
 	 p_time_text = obs.obs_properties_add_text(props, "time_text", "時刻表記:", obs.OBS_TEXT_DEFAULT)
@@ -777,7 +772,7 @@ function script_update(settings)
 end
 
 function script_defaults(settings)
-	obs.obs_data_set_default_double(settings, "UTC", 9)
+	obs.obs_data_set_default_double(settings, "UTC", 0)
 	obs.obs_data_set_default_string(settings, "start_text", "2020-04-30T12:00:00+09:00")
 	obs.obs_data_set_default_string(settings, "stop_text", "2020-05-07T21:00:00+09:00")
 	obs.obs_data_set_default_string(settings, "mode", "Countdown")
@@ -785,7 +780,7 @@ function script_defaults(settings)
 	obs.obs_data_set_default_string(settings, "format", "%H:%m:%s")
 	obs.obs_data_set_default_string(settings, "title_text", "でれすて")
 	obs.obs_data_set_default_string(settings, "time_text", "%Y/%m/%d %H:%M:%S")
-	obs.obs_data_set_default_string(settings, "para_text", "タイトル%T%n経過時間%K%n残り時間%L%nイベント時間%I%n現地時間%N%n日本時間%JST%n達成率%P%nS %S%nE %E%nSJ %SJ%nEJ %EJ")
+	obs.obs_data_set_default_string(settings, "para_text", "%T%n経過時間%K%n残り時間%L%nイベント時間%I%n現地時間%N%n日本時間%JST%n達成率%P%nS %S%nE %E%n%nSJ %SJ%nEJ %EJ%n%nSU %SU%nEU %EU")
 	obs.obs_data_set_default_string(settings, "end_text", "タイマー停止中(開始前/終了)")
 
 end

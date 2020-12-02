@@ -1,0 +1,33 @@
+画像つき設定例
+https://photos.app.goo.gl/anwmTnhhAua4p8aP9
+
+//OBSで表示する項目、くわしくはプラグインをTXTで開いてください_m（）m_
+OS時間:%N      UTC:%UTC%n経過時間%K                %t日本時間:%JST  %n残り時間:%L              %t%t開始時間:%SJ%nイベント時間:%I        %t%t終了時間%EJ                    %T%P％%n%Q
+OSTIME:%N      UTC:%UTC%nELAPSED:%K         %tJST:%JST  %nLEFT:%L                  %t%tSTART:%SJ%nDURATION:%I      %t%tEND%EJ                    %T%P％%n%Q
+
+%T%n経過時間%K%n残り時間%L%nイベント時間%I%n現地時間%N%n日本時間%JST%n達成率%P%nS %S%nE %E%n%nSJ %SJ%nEJ %EJ%n%nSU %SU%nEU %EU
+%T%nELAPSED:%K%nLEFT:%L%nDURATION:%I%nLOCAL:%N%nJST%JST%nPROGRESS:%P%nS %S%nE %E%n%nSJ %SJ%nEJ %EJ%n%nSU %SU%nEU %EU
+
+日本時間%JST %T%n経過時間%K%n残り時間%L%nイベント時間%I%n
+JST%JST %T%nELAPSED:%K%nLEFT:%L%nDURATION:%I%n
+
+
+日本時間%JST%n経過時間%K%n残り時間%L%nイベント時間%I%n%T%P％%n%Q
+JST%JST%nELAPSED:%K%nLEFT:%L%nDURATION:%I%n%T%P％%n%Q
+
+
+
+//経過時間,残り時間、イベント時間表示
+%d %hh:%mm:%ss(%hsH,%dsD)	7 06:00:00(174H,7.25D)
+%d %hh:%mm:%ss	7 06:00:00
+%HH:%mm:%ss	174:00:00
+
+
+
+//現在時刻表示
+%Y-%m-%dT%H:%M:%S%z (%a)	2020-08-28T12:00:00+0900 (DAY)
+%Y-%m-%d %H:%M:%S(%a)	2020-08-28 12:00:00 (DAY)
+%Y/%m/%dT%H:%M:%S		2020-08-28 12:00:00
+%Y/%m/%dT%H:%M:%S%z (%a)	2020/08/28T12:00:00+0900 (DAY)
+%Y/%m/%d %H:%M:%S(%a)	2020/08/28 12:00:00 (DAY)
+%Y/%m/%dT%H:%M:%S		2020/08/28 12:00:00

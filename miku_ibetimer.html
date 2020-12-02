@@ -1,10 +1,10 @@
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>でれすていべたいまー改</title>
+<title>プロセカいべたいまー改</title>
 <head>
 </head>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
 <script src="./LIB/moment-with-locales.js"></script>
-<script src="https://script.google.com/macros/s/AKfycbz55fDemdeSdeoURqPp_WWJJ4n3nBIuT1_PsBGVx8zUJDRET6LA/exec"></script>
+<script src="https://script.googleusercontent.com/macros/echo?user_content_key=bcqmkiLZo47zHFrQYc3Va-r4aMrzygcLRr613KlNPekpPk3WZgjhNWdRl-MssVwC4XNqBDOUJm2ylcMu4m6wts1VwTIVfa-em5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnNrlEvqAn7dPRhRZQ-v5-8Y2A9YFtbTZG76QvZJvxcPCPJuuzkVeVCy8mzDTCqnGIg&lib=MZpfFxa5O7Ug6FBst2kEU43ndBJ9ix56c"></script>
 <!--<script src="settei.txt"></script>-->
 <script>
 <!--
@@ -15,9 +15,6 @@ setInterval("get_count()",timer_update);
 
 function get_count() {
 
-var ibeowari=ibeend;
-var ibekaishi=ibestart;
-var ibemie=ibe;
 
    var jtc=9;
    var jtc_sm=11;
@@ -238,9 +235,6 @@ function getweb(urls) {
     }
 
 function stringfilter(data){
-var ibeowari=ibeend;
-var ibekaishi=ibestart;
-var ibemie=ibe;
 
 data = data.replace("2020-04-30T12:00:00+09:00",moment(ibekaishi).format());
 data = data.replace("2020-05-07T21:00:00+09:00",moment(ibeowari).format());
@@ -250,7 +244,7 @@ data = data.replace("%H:%m:%s","%d %hh:%mm:%ss(%hsH,%dsD)");
 data = data.replace("%Y/%m/%d %H:%M:%S","%Y-%m-%dT%H:%M:%S%z (%a)");
 data = data.replace("タイマー停止中(開始前/終了)","終了しました");
 
-TextDL(data,"obsduration_timer_deresute.lua");
+TextDL(data,"obsduration_timer_39.lua");
         return false;
 }
 
@@ -260,10 +254,6 @@ getweb("./neta/OBSdere_extend.lua");
 
 
 function makeical(){
-
-var ibeowari=ibeend;
-var ibekaishi=ibestart;
-var ibemie=ibe;
 
 var tmp="BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//はんようたいまー//NONSGML v1.0//EN\r\nBEGIN:VEVENT\r\nDTSTART:20200423T150000Z\r\nDTEND:20200424T150000Z\r\nSUMMARY:うづき\r\nEND:VEVENT\r\nEND:VCALENDAR";
 
@@ -290,7 +280,7 @@ else{
 tmp=tmp.replace(/DTEND:\d+T\d+Z/,"DTEND:"+moment.utc(ibeowari).format("YYYYMMDDTHHmmss[Z]"));
 }
 tmp=tmp.replace(/SUMMARY:うづき/,"SUMMARY:"+ibemie);
-TextDL(tmp,"deresute_event.ics")
+TextDL(tmp,"proseka_event.ics")
 }
 }
 function TextDL(n,t){b=new Blob([n],{type:"text/plain"}),a=document.createElement("a"),a.download=t,a.href=window.URL.createObjectURL(b),e=document.createEvent("MouseEvent"),e.initEvent("click",!0,!0),a.dispatchEvent(e)}
@@ -305,7 +295,7 @@ function toTwitter() {
 	s=s.replace(/<br>/gm,"\r\n");
 	s=s.replace(/<.*?>/gm,"");
 	s=s.replace(/\r\n\r\n/gm,"\r\n");
-	s=s+"\r\nhttp://sokudon.s17.xrea.com/cgss_ibetimer.html\r\n#でれすてタイマー";
+	s=s+"\r\nhttp://sokudon.s17.xrea.com/miku_ibetimer.html\r\n#プロセカタイマー";
 	
 	if (url == "") {
 		url = "http://twitter.com/share?text=" + encodeURIComponent(s);
@@ -317,7 +307,7 @@ function toTwitter() {
 
 </script>
 <body id="bg">
-<h1>でれすていべたいまー改</h1>
+<h1>プロセカいべたいまー改</h1>
 <span id="ibe">ibe</span><br>
 <span id="cdt_now">text</span><br><br>
 
@@ -416,7 +406,7 @@ M$より機械翻訳とはいえ
 
 カレンダーアプリに登録する(iCalender作成):
 <input type="Submit" value="iCalendar"" generate"="" onclick="makeical();return false">　
-<a href="./dere_event_calender.html">GOOGLEカレンダー向け</a><br>
+<a href="./miku_event_calender.html">GOOGLEカレンダー向け</a><br>
 
 <b>OBSタイマープラグイン生成:</b>
 <input type="Submit" value="OBSLUAtimerplugin" generate"="" onclick="makeplugin();return false"><br><br>
