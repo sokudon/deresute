@@ -196,7 +196,6 @@ function changeBoxColor( newColor ) {
 }
 
 
-
 function fix_url(a) {
     if (a.indexOf("http") >= 0) {} else if (a.indexOf("ttp") >= 0) {
         a = "h" + a;
@@ -236,12 +235,35 @@ function getweb(urls) {
 
 function stringfilter(data){
 
+var obs=[//miritate,kori,makao,mirdere,proseka
+"%d %hh:%mm:%ss(%hsH,%dsD	,%T%n経過時間%K%n残り時間%L%nイベント時間%I%n現地時間%N%n日本時間%JST%n達成率%P%nS %S%nE %E%n%nSJ %SJ%nEJ %EJ%n%nSU %SU%nEU %EU	%Y-%m-%dT%H:%M:%S%z (%a)",
+"%d %hh:%mm:%ss	miriKOREA%L(%P％)	%Y/%m/%d %H:%M:%S",
+"%d %hh:%mm:%ss	miriCN/TW;%L(%P％)	%Y/%m/%d %H:%M:%S",
+"%d %hh:%mm:%ss(%hsH,%dsD)	OS時間:%N      UTC:%UTC%n経過時間%K                %t日本時間:%JST  %n残り時間:%L              %t%t開始時間:%SJ%nイベント時間:%I        %t%t終了時間%EJ                    %T%P％%n%Q	%Y-%m-%dT%H:%M:%S%z (%a)",
+"%d %hh:%mm:%ss(%hsH,%dsD)	日本時間%JST%n経過時間%K%n残り時間%L%nイベント時間%I%n%T%P％%n%Q	%Y-%m-%dT%H:%M:%S%z (%a)",
+""
+];
+var sel=$("#obstxt").prop("selectedIndex");
+obs[5]=document.getElementById("user").value;
+
+var rptxt=obs[sel];
+var rp=rptxt.split("	");
+
+
 data = data.replace("2020-04-30T12:00:00+09:00",moment(ibekaishi).format());
 data = data.replace("2020-05-07T21:00:00+09:00",moment(ibeowari).format());
 data = data.replace("でれすて",ibemie);
 data = data.replace("でれすて",ibemie);
+
+if(rp.length==3){
+data = data.replace("%T%n経過時間%K%n残り時間%L%nイベント時間%I%n現地時間%N%n日本時間%JST%n達成率%P%nS %S%nE %E%n%nSJ %SJ%nEJ %EJ%n%nSU %SU%nEU %EU",rp[1]);
+data = data.replace("%H:%m:%s",rp[0]);
+data = data.replace("%Y/%m/%d %H:%M:%S",rp[2]);
+}
+else{
 data = data.replace("%H:%m:%s","%d %hh:%mm:%ss(%hsH,%dsD)");
 data = data.replace("%Y/%m/%d %H:%M:%S","%Y-%m-%dT%H:%M:%S%z (%a)");
+}
 data = data.replace("タイマー停止中(開始前/終了)","終了しました");
 
 TextDL(data,"obsduration_timer_39.lua");
@@ -321,8 +343,8 @@ M$より機械翻訳とはいえ
  -->
 
 <p align="center"><a href="javascript:toTwitter()"><img src="./neta/imm_files/saved_resource" alt="Send to Twitter" width="61" height="61" border="0"></a></p>
-<b>タイムゾーン</b><br>
-<label for="OF"><input type="checkbox" checked="checked" value="NEW" id="OF"">OSのタイムゾーンを優先する<br></label><br>
+<p><b>タイムゾーン</b><br>
+<label for="OF"><input type="checkbox" checked="checked" value="NEW" id="OF"">OSのタイムゾーンを優先する<br></label>
 <select name="owata">
 <option value="">UTC -12:00　国際日付変更線西側</option>
 <option value="">UTC -11:00　ミッドウェー島</option>
@@ -403,16 +425,24 @@ M$より機械翻訳とはいえ
 <option value="">UTC +14:00　サモア夏</option>
 </select>
 </form>
-
-カレンダーアプリに登録する(iCalender作成):
-<input type="Submit" value="iCalendar"" generate"="" onclick="makeical();return false">　
-<a href="./miku_event_calender.html">GOOGLEカレンダー向け</a><br>
-
-<b>OBSタイマープラグイン生成:</b>
-<input type="Submit" value="OBSLUAtimerplugin" generate"="" onclick="makeplugin();return false"><br><br>
-
-
-<p>クロマキー合成、背景色
+</p>
+<p><b>カレンダーアプリに登録する(iCalender作成):</b><br>
+<input type="Submit" value="iCalendar"" generate"="" onclick="makeical();return false">
+<a href="./miku_event_calender.html">GOOGLEカレンダー向け</a>
+</p>
+<p><b>OBSタイマープラグイン生成:</b><br>
+<input type="Submit" value="OBSLUAtimerplugin" generate"="" onclick="makeplugin();return false">
+<a href="https://photos.app.goo.gl/anwmTnhhAua4p8aP9">obs設定さんぷる</a><select name="obs" id="obstxt">
+<option value="">ミリ縦</option>
+<option value="">ミリコリア</option>
+<option value="">台湾</option>
+<option value="">ミリミリデレ</option>
+<option selected="">プロセカ</option>
+<option value="">ユーザー設定(タブ区切り)</option>
+</select>
+<a href="OBSdere_sample.txt">ユーザー設定:</a><input type="text" name="" value="" id="user" maxlength="200"  size="50" ><br>
+</p>
+<p><b>クロマキー合成、背景色</b><br>
     <input type="button" value="緑色に変更する" onclick="changeBoxColor('#008000');">
     <input type="button" value="青色に変更する" onclick="changeBoxColor('#0000ff');">
     <input type="button" value="黄色に変更する" onclick="changeBoxColor('#ffff00');">
