@@ -119,6 +119,8 @@ minute        = 0
 hour          = 0
 utc			  = 0
 debugtxt      =""
+obsbar 		  =1
+
 
 hotkey_id_reset     = obs.OBS_INVALID_HOTKEY_ID
 hotkey_id_pause     = obs.OBS_INVALID_HOTKEY_ID
@@ -223,20 +225,26 @@ end
 return true
 end
 
+
 function makebar(p)
 local base ="="
+q=obsbar
+
+p=p/q
+
 p=math.floor(p)
 local s=""
 for i=0,p-1 do
 s= s .. base
 end
 s=s..">"
-for i=p+1,100 do
+for i=p+1,100/q do
 s= s .."_"
 end
 local bar = "["..s.."]"
 return bar
 end
+
 
 
 
@@ -689,6 +697,9 @@ function script_properties()
 	 p_end_text = obs.obs_properties_add_text(props, "end_text", "タイマー停止の文字:(空欄だと未使用)", obs.OBS_TEXT_DEFAULT)
 	end
 	
+	
+	obs.obs_properties_add_int(props, "bar", "進捗BARの段階(100÷X)", 1, 10, 1)
+	
 	local p_a_mode = obs.obs_properties_add_list(props, "a_mode", "Activation mode", obs.OBS_COMBO_TYPE_EDITABLE, obs.OBS_COMBO_FORMAT_STRING)
 	obs.obs_property_list_add_string(p_a_mode, "Global (timer always active)", "global")
 	obs.obs_property_list_add_string(p_a_mode, "Start timer on activation", "start_reset")
@@ -765,6 +776,7 @@ function script_update(settings)
 	title=cut_string(obs.obs_data_get_string(settings, "title_text"),100)
 	para_text=cut_string(obs.obs_data_get_string(settings, "para_text"),255)
 	time_text=cut_string(obs.obs_data_get_string(settings, "time_text"),100)
+	obsbar= obs.obs_data_get_int(settings, "bar")
 
 	set_time_text()
 
@@ -782,6 +794,8 @@ function script_defaults(settings)
 	obs.obs_data_set_default_string(settings, "time_text", "%Y/%m/%d %H:%M:%S")
 	obs.obs_data_set_default_string(settings, "para_text", "%T%n経過時間%K%n残り時間%L%nイベント時間%I%n現地時間%N%n日本時間%JST%n達成率%P%nS %S%nE %E%n%nSJ %SJ%nEJ %EJ%n%nSU %SU%nEU %EU")
 	obs.obs_data_set_default_string(settings, "end_text", "タイマー停止中(開始前/終了)")
+	obs.obs_data_set_default_double(settings, "bar", 1)
+
 
 end
 
