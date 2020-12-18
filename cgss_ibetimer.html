@@ -309,7 +309,7 @@ else{
 tmp=tmp.replace(/DTEND:\d+T\d+Z/,"DTEND:"+moment.utc(ibeowari).format("YYYYMMDDTHHmmss[Z]"));
 }
 tmp=tmp.replace(/SUMMARY:うづき/,"SUMMARY:"+ibemie);
-TextDL(tmp,"proseka_event.ics")
+TextDL(tmp,"dere_event.ics")
 }
 }
 function TextDL(n,t){b=new Blob([n],{type:"text/plain"}),a=document.createElement("a"),a.download=t,a.href=window.URL.createObjectURL(b),e=document.createEvent("MouseEvent"),e.initEvent("click",!0,!0),a.dispatchEvent(e)}
@@ -324,7 +324,7 @@ function toTwitter() {
 	s=s.replace(/<br>/gm,"\r\n");
 	s=s.replace(/<.*?>/gm,"");
 	s=s.replace(/\r\n\r\n/gm,"\r\n");
-	s=s+"\r\nhttp://sokudon.s17.xrea.com/miku_ibetimer.html\r\n#プロセカタイマー";
+	s=s+"\r\nhttp://sokudon.s17.xrea.com/cgss_ibetimer.html\r\n#でれすてタイマー";
 	
 	if (url == "") {
 		url = "http://twitter.com/share?text=" + encodeURIComponent(s);
