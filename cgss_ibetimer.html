@@ -216,7 +216,7 @@ function parseData(data) {
 }
 
 function getweb(urls) {
-        var local = new RegExp("(\.\/neta\/[a-zA-Z0-9_\-]+)\.lua");
+        var local = new RegExp("(\.\/neta\/[a-zA-Z0-9_\-]+)\.(lua|py)");
         var uri = new RegExp("(h?ttps?)?(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+)");
         var lcmm = urls.match(local);
         var urlm = urls.match(uri);
@@ -241,6 +241,11 @@ function getweb(urls) {
     }
 
 function stringfilter(data){
+
+if(data.match(/^from tkinter import/)){
+makepyscript(data);
+return;
+}
 
 var obs=[//miritate,kori,makao,mirdere,proseka
 "%d %hh:%mm:%ss(%hsH,%dsD	,%T%n経過時間%K%n残り時間%L%nイベント時間%I%n現地時間%N%n日本時間%JST%n達成率%P%nS %S%nE %E%n%nSJ %SJ%nEJ %EJ%n%nSU %SU%nEU %EU	%Y-%m-%dT%H:%M:%S%z (%a)",
@@ -277,8 +282,25 @@ TextDL(data,"obsduration_timer_dere.lua");
         return false;
 }
 
+
+function makepyscript(data){
+
+data = data.replace("ぷろせか",ibemie);
+
+//s = '2020-12-10T14:00:00+08:00'
+//ss = '2020-12-18T12:00:00Z'
+data = data.replace("2020-12-10T14:00:00+08:00",moment(ibekaishi).format());
+data = data.replace("2020-12-18T12:00:00Z",moment(ibeowari).format());
+
+TextDL(data,"pythonduration_timer_dere.py");
+        return false;
+}
+
 function makeplugin(){
 getweb("./neta/OBSdere_extend.lua");
+}
+function makepy(){
+getweb("./neta/ibetimer.py");
 }
 
 
@@ -448,6 +470,9 @@ M$より機械翻訳とはいえ
 <option value="">ユーザー設定(タブ区切り)</option>
 </select>
 <a href="OBSdere_sample.txt">ユーザー設定:</a><input type="text" name="" value="" id="user" maxlength="200"  size="50" ><br>
+</p>
+<p><b>pythonタイマー生成(要PY3.8以上):</b><br>
+<input type="Submit" value="python" generate"="" onclick="makepy();return false">
 </p>
 <p><b>クロマキー合成、背景色</b><br>
     <input type="button" value="緑色に変更する" onclick="changeBoxColor('#008000');">
