@@ -685,6 +685,7 @@ end
 end
 end
 
+
 stlen=tonumber(#imasb["proseka"])
 for i=1,stlen do
 local birth=imasb["proseka"][i][1]
@@ -707,6 +708,7 @@ end
 end
 end
 
+
 stlen=tonumber(#imasb["vocalo"])
 for i=1,stlen do
 local birth=imasb["vocalo"][i][1]
@@ -728,6 +730,7 @@ birthst[idol]=tmp
 end
 end
 end
+
 
 stlen=tonumber(#imasb["kinen"])
 for i=1,stlen do
@@ -755,16 +758,18 @@ end
 local tkeys = {}
 -- populate the table that holds the keys
 for k in pairs(birthst) do
-table.insert(tkeys, birthst[k])
+table.insert(tkeys, { birthst[k],string.match( birthst[k], "あと%d+")})
 end
 -- sort the keys
-table.sort(tkeys)
+--table.sort(tkeys)
+table.sort(tkeys,
+	function(a,b)
+		return (a[2] < b[2])
+	end)
 
 for i=1,#tkeys do
-   daystring=daystring .. tkeys[i]
+   daystring=daystring .. tkeys[i][1]
 end
-
-	return 1
 end
 
 function table.to_qs(arg)
