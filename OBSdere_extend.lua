@@ -4,7 +4,7 @@
 --現地時間%N%n日本時間%JST%n達成率%P%nS %S%nE %E%nSJ %SJ%nEJ %EJ"
 --拡張前　旧版残り時間だけのやつ　https://raw.githubusercontent.com/sokudon/deresute/2c8516d114a6500b0ad4e91d31a776f5b5d48891/OBSdere.lua
 
---みりした、でれすてのイベント時間　現行イベントのみ(event duration) ISO8601 recommanded☆ >>> unix >> localtime(OS)
+--みりした、LIVE Carnival Wish you Happiness！！のイベント時間　現行イベントのみ(event duration) ISO8601 recommanded☆ >>> unix >> localtime(OS)
 --http://sokudon.s17.xrea.com/sekai.html
 --http://sokudon.s17.xrea.com/sekai-dere.html
 
@@ -271,8 +271,12 @@ function set_time_text()
 	end
 	if(tonumber(prog)>100)then
 	prog=100
-	elaspted=get_timestring(parse_json_date_utc(finaltime)-parse_json_date_utc(starttime),format) 
+	elaspted=get_timestring(parse_json_date_utc(finaltime)-parse_json_date_utc(starttime),format)
+	if(end_text~="")then
+	left=end_text
+	else
 	left=get_timestring(0,format)
+	end
 	end
 	bar=makebar(prog)
 	end
@@ -318,14 +322,11 @@ function set_time_text()
 end
 
 function timer_callback()
-	if mode == "Countup" or mode == "Streaming timer" or mode == "Recording timer" then
-		total = total + 1
-	else
-		total = total - 1
-	end
+
+	total = total - 1
 
 	if total < 1 then
-		stop_timer()
+		--stop_timer()
 		total = 0
 	end
 
@@ -371,9 +372,6 @@ function activate(activating)
 		return
 	end
 
-	if (mode == "Streaming timer" or mode == "Recording timer") then
-		return
-	end
 
 	activated = activating
 
@@ -382,9 +380,6 @@ function activate(activating)
 			return
 		end
 
-		if mode == "Specific time" then
-			total_seconds = delta_time()
-		end
 
 		total = total_seconds
 
@@ -415,14 +410,6 @@ function reset(pressed)
 	if not pressed then
 		return
 	end
-
-	if mode == "Streaming timer" or mode == "Recording timer" then
-		return
-	end
-
-	if mode == "Specific time" then
-		total_seconds = delta_time()
-	end
 	
 	if mode == "Countdown" then
 	--local t= lefttime(finaltime)
@@ -439,14 +426,6 @@ function on_pause(pressed)
 		return
 	end
 
-	if total == 0 then
-		reset(true)
-	end
-
-	if mode == "Streaming timer" or mode == "Recording timer" then
-		return
-	end
-
 	if timer_active then
 		stop_timer()
 	else
@@ -454,6 +433,7 @@ function on_pause(pressed)
 		start_timer()
 	end
 end
+
 
 function pause_button_clicked(props, p)
 	on_pause(true)
@@ -464,7 +444,6 @@ function reset_button_clicked(props, p)
 	reset(true)
 	return false
 end
-
 
 function lefttime(dt)  
 	local t=parse_json_date_utc(dt)
@@ -501,7 +480,7 @@ function parse_json_date_utc(json_date)
         if(json_date:match(normal))then
         local year, month, day, hour, minute,
         seconds = json_date:match(normal)
-        json_date = year.."-"..month.."-"..day.."T"..hour..":"..minute..":00".. timezoneparse(json_date:match("%a%a+$$"))
+        json_date = year.."-"..month.."-"..day.."T"..hour..":"..minute..":00".. timezoneparse(json_date:match("%a%a+$"))
      end
     end
  
@@ -705,7 +684,7 @@ function script_properties()
 	obs.obs_property_list_add_string(p_a_mode, "Global (timer always active)", "global")
 	obs.obs_property_list_add_string(p_a_mode, "Start timer on activation", "start_reset")
 
-	local button_pause = obs.obs_properties_add_button(props, "pause_button", "Start/Stop", pause_button_clicked)
+	local button_pause = obs.obs_properties_add_button(props, "pause_button", "Start/Pause", pause_button_clicked)
 	local reset_button = obs.obs_properties_add_button(props, "reset_button", "Reset", reset_button_clicked)
 
 	obs.obs_property_set_visible(p_time_text, true)
