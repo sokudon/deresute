@@ -147,6 +147,7 @@ daystring     =""
 debugtxt1	  = ""
 debugtxt2	  = ""
 debugtxt3	  = ""
+daychange     = ""
 
 
 imashead ={"ゲーム名","稼働","機種","終わり"}
@@ -212,9 +213,11 @@ local dt = string.format("%04d",tonumber(y)).."-".. string.format("%02d",tonumbe
 end
 
 function JST(dt)
-
-
 return os.date('!%Y/%m/%dT%X(JST)%a',parse_json_date_utc(dt)+3600*9)
+end
+
+function JSTday()
+return os.date('!%d',os.time()+3600*9)
 end
 
 
@@ -368,7 +371,8 @@ function parse_jp_era(date)
   
   local t = os.time()
   
-  if(os.date("!%H%M",t)=="1500")then --0時のとき切り替え
+  --if(os.date("!%H%M",t)=="1500")then --0時のとき切り替え
+  if(daychange ~= JSTday())then
   findday()
   end
   
@@ -685,7 +689,6 @@ end
 end
 end
 
-
 stlen=tonumber(#imasb["proseka"])
 for i=1,stlen do
 local birth=imasb["proseka"][i][1]
@@ -708,7 +711,6 @@ end
 end
 end
 
-
 stlen=tonumber(#imasb["vocalo"])
 for i=1,stlen do
 local birth=imasb["vocalo"][i][1]
@@ -730,7 +732,6 @@ birthst[idol]=tmp
 end
 end
 end
-
 
 stlen=tonumber(#imasb["kinen"])
 for i=1,stlen do
@@ -758,18 +759,17 @@ end
 local tkeys = {}
 -- populate the table that holds the keys
 for k in pairs(birthst) do
-table.insert(tkeys, { birthst[k],string.match( birthst[k], "あと%d+")})
+table.insert(tkeys, birthst[k])
 end
 -- sort the keys
---table.sort(tkeys)
-table.sort(tkeys,
-	function(a,b)
-		return (a[2] < b[2])
-	end)
+table.sort(tkeys)
 
 for i=1,#tkeys do
-   daystring=daystring .. tkeys[i][1]
+   daystring=daystring .. tkeys[i]
 end
+
+daychange =  JSTday()
+	return 1
 end
 
 function table.to_qs(arg)

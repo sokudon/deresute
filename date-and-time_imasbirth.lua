@@ -180,6 +180,7 @@ daystring     =""
 debugtxt1	  = ""
 debugtxt2	  = ""
 debugtxt3	  = ""
+daychange     = ""
 
 --あいますようそがないので無理やり追加（）
 --https://script.googleusercontent.com/macros/echo?user_content_key=ETKjv48buN5rK2r4wpjCSZET2OQiIV-y3T_Yo1sO9RWDb2j2bNXU4Zw-vXPSLkT2PAEmtVq1qbpiIQBE2mWH2GtjwIj1WZRCm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnImdhCglA_bw00zKJV-3uMxFhM94xSIKcykYkHTwB1nSW4GadiCkn1G8mzDTCqnGIg&lib=Mp89x2A3ZSHn80Z0KafsZgXndBJ9ix56c
@@ -246,9 +247,11 @@ local dt = string.format("%04d",tonumber(y)).."-".. string.format("%02d",tonumbe
 end
 
 function JST(dt)
-
-
 return os.date('!%Y/%m/%dT%X(JST)%a',parse_json_date_utc(dt)+3600*9)
+end
+
+function JSTday()
+return os.date('!%d',os.time()+3600*9)
 end
 
 
@@ -403,7 +406,8 @@ function parse_jp_era(date)
   
   local t = os.time()
   
-  if(os.date("!%H%M",t)=="1500")then --0時のとき切り替え
+   --if(os.date("!%H%M",t)=="1500")then --0時のとき切り替え
+  if(daychange ~= JSTday())then
   findday()
   end
   
@@ -865,6 +869,7 @@ for i=1,#tkeys do
    daystring=daystring .. tkeys[i][1]
 end
 
+daychange =  JSTday()
 	return 1
 end
 
