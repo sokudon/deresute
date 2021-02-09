@@ -36,8 +36,8 @@ function get_count() {
 	if(t_offset<0){
 	t_offset_min=-t_offset_min;
 	}}
-   date_fm="YYYY/MM/DD(ddd) HH:mm:ssZ";
-   date_fm=date_fm.replace("Z","([" + tz.match(/G.T.\d\d:\d\d/) +"])");
+   date_fm="YYYY/MM/DD(ddd) HH:mm:ss([GMT]Z)";
+   date_fm=date_fm.replace("Z","[" + tz.match(/.\d\d:\d\d/) +"]");
 } 
    
       
@@ -127,15 +127,19 @@ date_fm=date_fm.replace(/\(J.+/,"");
 	var timest = "<font size=\"20\">"
 	+"現在時刻:"
 	if(ostime){
-	timest += now.format(date_fm.replace("%DST",addDST(now)))+"<br>";
+	var ost=moment.tz.guess();
+	timest += now.format(date_fm.replace("%TZ","["+ost+"]").replace("%DST",addDST(now)))+"<br>";
 	+"<br>";
 	}
 	else if(document.getElementById("usemoment").checked){
 	var tzst=tzJAP[document.gm.gm.selectedIndex][0];
+	date_fm=date_fm.replace("%TZ","["+tzst+"]");
 	timest +=  now.tz(tzst).format(date_fm.replace("%DST",addDSTtz(now,tzst)))+"<br>";
 	}
 	else{
-	date_fm=date_fm.replace("Z","([" + tz.match(/G.T.\d\d:\d\d/) +"])");
+	date_fm=date_fm.replace("%TZ","");
+	date_fm=date_fm.replace("zz","");
+	date_fm=date_fm.replace("Z","[" + tz.match(/.\d\d:\d\d/) +"]");
 	date_fm=date_fm.replace("z","");
 	timest += now.format(date_fm)+"<br>";
 	}
@@ -144,8 +148,8 @@ date_fm=date_fm.replace(/\(J.+/,"");
 	+zan +timetxt+"<br><br>";
 	
 	if(ostime){
-	timest +="開始時間:" +moment(ibekaishi).format(date_fm.replace("%DST",addDST(ibekaishi))).replace(/UTC(.\d\d)(\d\d)/,"UTC$1:$2")+"<br>";
-	timest +="終了時間:" +moment(ibeowari).format(date_fm.replace("%DST",addDST(ibeowari))).replace(/UTC(.\d\d)(\d\d)/,"UTC$1:$2")+"<br>";
+	timest +="開始時間:" +moment(ibekaishi).format(date_fm.replace("%TZ","["+ost+"]").replace("%DST",addDST(ibekaishi))).replace(/UTC(.\d\d)(\d\d)/,"UTC$1:$2")+"<br>";
+	timest +="終了時間:" +moment(ibeowari).format(date_fm.replace("%TZ","["+ost+"]").replace("%DST",addDST(ibeowari))).replace(/UTC(.\d\d)(\d\d)/,"UTC$1:$2")+"<br>";
 	}
 	else if(document.getElementById("usemoment").checked){
 	var tzst=tzJAP[document.gm.gm.selectedIndex][0];
@@ -170,14 +174,25 @@ if(ts!=""){tstring=ts;}
 
 	tstring=tstring.replace("%T",ibemie);
 	tstring=tstring.replace("%P",prog);
-	tstring=tstring.replace("%N",now.format(date_fm.replace("%DST",addDST(now))));
+	tstring=tstring.replace("%N",now.format(date_fm.replace("%TZ","["+ost+"]").replace("%DST",addDST(now))));
 	tstring=tstring.replace("%KS",kaishi);
 	tstring=tstring.replace("%K",esps);
 	tstring=tstring.replace("%LS",zan);
 	tstring=tstring.replace("%L",timetxt);
-	tstring=tstring.replace("%S",moment(ibekaishi).format(date_fm.replace("%DST",addDST(ibekaishi))).replace(/UTC(.\d\d)(\d\d)/,"UTC$1:$2"));
-	tstring=tstring.replace("%E",moment(ibeowari).format(date_fm.replace("%DST",addDST(ibeowari))).replace(/UTC(.\d\d)(\d\d)/,"UTC$1:$2"));
-	tstring=tstring.replace("%V",prog2);
+	if(ostime){
+	tstring=tstring.replace("%S",moment(ibekaishi).format(date_fm.replace("%TZ","["+ost+"]").replace("%DST",addDST(ibekaishi))).replace(/UTC(.\d\d)(\d\d)/,"UTC$1:$2"));
+	tstring=tstring.replace("%E",moment(ibeowari).format(date_fm.replace("%TZ","["+ost+"]").replace("%DST",addDST(ibeowari))).replace(/UTC(.\d\d)(\d\d)/,"UTC$1:$2"));
+	}
+	if(document.getElementById("usemoment").checked){
+	var tzst=tzJAP[document.gm.gm.selectedIndex][0];
+	tstring=tstring.replace("%S",moment(ibekaishi).tz(tzst).format(date_fm.replace("%DST",addDSTtz(ibekaishi,tzst))));
+	tstring=tstring.replace("%E",moment(ibeowari).tz(tzst).format(date_fm.replace("%DST",addDSTtz(ibeowari,tzst))));
+	}
+	else{
+	date_fm=date_fm.replace("%DST","");
+	tstring=tstring.replace("%S",moment.utc(ibekaishi).add("Hours",jtc).format(date_fm));
+	tstring=tstring.replace("%E",moment.utc(ibeowari).add("Hours",jtc).format(date_fm));	
+	}	tstring=tstring.replace("%V",prog2);
 	
 	tstring="<font size=\"20\">"+escapeHTML(tstring) +"</font>";
 	tstring=tstring.replace("%B",'<progress id="myProgress" value="' + prog +'" max="100"></progress>')
@@ -190,6 +205,13 @@ else{
 
 }
 
+
+function shortview(){
+document.getElementById("userdt").value="MM/DD HH:mmZ";
+document.getElementById("titlecs").value="%T%n現在:%N%n%KS%K(%P%%B)%n%LS%L%n開始:%S%n終了:%E%nイベ:%V";
+document.getElementById("CUSTOM").checked=true;
+return;
+}
 
 function addDST(t){
  var s="";
@@ -258,6 +280,27 @@ function escapeHTML(html) {
   return jQuery('<div>').text(html).html();
 }
 function parsedate(dt){
+var timezone=[["ACDT","+1030"],["ACST","+0930"],["AEDT","+1100"],["AEST","+1000"],["AFT","+0430"],["AKDT","-0800"],["AKST","-0900"],["ART","-0300"],["AWDT","+0900"],["AWST","+0800"],["BDT","+0600"],["BNT","+0800"],["BOT","-0400"],["BRT","-0300"],["BST","+0100"],["BTT","+0600"],["CAT","+0200"],["CCT","+0630"],["cDT","-0400"],["CDT","-0500"],["CEST","+0200"],["CET","+0100"],["CLST","-0300"],["CLT","-0400"],["COT","-0500"],["cst","+0800"],["cST","-0500"],["CST","-0600"],["ChST","+1000"],["EAT","+0300"],["ECT","-0500"],["EDT","-0400"],["EEST","+0300"],["EET","+0200"],["EST","-0500"],["FJST","+1300"],["FJT","+1200"],["GMT","+0000"],["GST","+0400"],["HKT","+0800"],["HST","-1000"],["ICT","+0700"],["IDT","+0300"],["iST","+0200"],["IST","+0530"],["IRDT","+0430"],["IRST","+0330"],["JST","+0900"],["KST","+0900"],["MDT","-0600"],["MMT","+0630"],["MST","-0700"],["MYT","+0800"],["NPT","+0545"],["NZDT","+1300"],["NZST","+1200"],["PDT","-0700"],["PET","-0500"],["PHT","+0800"],["PKT","+0500"],["PST","-0800"],["PWT","+0900"],["SST","-1100"],["UTC","+0000"],["UYT","-0300"],["WAT","+0100"],["WEST","+0100"],["WET","+0000"],["WIB","+0700"],["WIT","+0900"],["WITA","+0800"]];
+//%a%a+$ paturn fix
+
+if(dt.match(/(\d\d\d\d)[\/\-](\d\d)[\/\-](\d\d) +(\d\d):(\d\d) *[a-zA-Z][a-zA-Z]+$/)){
+var tzstring= dt.match(/[a-zA-Z][a-zA-Z]+$/);
+var offset=0;
+
+if(tzstring=="UU"){
+	var tz=document.tzone.owata.options[document.tzone.owata.selectedIndex].text;
+    offset=tz.match(/[\+\-]\d\d:?\d\d/);
+}
+else{
+for(var i=0;i<timezone.length;i++){
+if(tzstring==timezone[i][0]){
+offset=timezone[i][1];
+break;
+}}
+}
+dt=dt.replace(/(\d\d\d\d)[\/\-](\d\d)[\/\-](\d\d) +(\d\d):(\d\d) *[a-zA-Z][a-zA-Z]+$/,"$1-$2-$3T$4:$5:00"+offset);
+}
+
 var mm=moment(dt);
 if(moment.isMoment(mm)){
 return mm;
@@ -371,6 +414,9 @@ if( document.getElementById("usemoment").checked){
 if(document.getElementById("userdt").value!=""){
 s+=","+encodeURIComponent(document.getElementById("userdt").value);
 }
+else{
+s+=",";
+}
 var cs=document.getElementById("CUSTOM").checked;
 if(cs){
 var tstring="%T%n現在時刻:%N%n%KS%K(%P%%B)%n%LS%L%n開始時間:%S%n終了時間:%E%nイベ時間:%V"
@@ -412,6 +458,7 @@ TextDL(tmp,"hannyou_event.ics")
 }
 }
 
+
 function makeicsv(){
 var CSVHEAD=[
 "Subject",
@@ -438,6 +485,114 @@ tmp+= moment(ibeowari).format("MM-DD-YYYY")+","+moment(ibeowari).format("HH:mm")
 }
 TextDL(tmp,"hannyou_event.csv")
 }}
+
+function fix_url(a) {
+    if (a.indexOf("http") >= 0) {} else if (a.indexOf("ttp") >= 0) {
+        a = "h" + a;
+    } else {
+        a = "http" + a;
+    }
+    return a.replace("http://127.0.0.1:8823/thread/", "");
+}
+function parseData(data) {
+    stringfilter(data);
+}
+
+function getweb(urls) {
+        var local = new RegExp("(\.\/[a-zA-Z0-9_\-]+)\.(lua|py)");
+        var uri = new RegExp("(h?ttps?)?(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+)");
+        var lcmm = urls.match(local);
+        var urlm = urls.match(uri);
+        var text = "";
+        var your_url = "";
+        if (lcmm != null) {
+            your_url = lcmm[0];
+            $.get(your_url, parseData);
+        } else if (urlm != null) {
+            your_url = fix_url(urlm[0]);
+            text = "";
+            $.ajax({
+                url: your_url,
+                type: 'GET',
+                timeout: 10000,
+                success: function(res) {
+                    stringfilter(rmhtml(res));
+                }
+            });
+        }
+        return false;
+    }
+
+function stringfilter(data){
+
+if(data.match(/^from tkinter import/)){
+makepyscript(data);
+return;
+}
+
+var obs=[//miritate,kori,makao,mirdere,proseka
+"%d %hh:%mm:%ss(%hsH,%dsD)	%T%n経過時間%K%n残り時間%L%nイベント時間%I%n達成率%P%Q%n%n現地時間%N%n開始(OS)%S%n終了(OS)%E%n%n日本時間 %JST%n開始(JST)%SJ%n終了(JST)%EJ%n%nU-CLOCK %UTC%n開始(U?)%SU%n終了(U?)%EU	%Y-%m-%d(%a)%H:%M:%S(GMT%z)",
+//"%d %hh:%mm:%ss(%hsH,%dsD	%T%n経過時間%K%n残り時間%L%nイベント時間%I%n現地時間%N%n日本時間%JST%n達成率%P%nS %S%nE %E%n%nSJ %SJ%nEJ %EJ%n%nSU %SU%nEU %EU	%Y-%m-%dT%H:%M:%S%z (%a)",
+"%d %hh:%mm:%ss	miriKOREA%L(%P％)	%Y/%m/%d %H:%M:%S",
+"%d %hh:%mm:%ss	miriCN/TW;%L(%P％)	%Y/%m/%d %H:%M:%S",
+"%d %hh:%mm:%ss(%dsD)	ＯＳ時間:%N UTC+0000:%UTC%n経過時間:%K                %t日本時間:%JST  %n残り時間:%L                開始時間:%SJ%nイベ時間:%I              終了時間:%EJ                   %n%Q%P％  %T	%Y-%m-%d(%a)%H:%M:%S(GMT%z)",
+"%d %hh:%mm:%ss(%hsH,%dsD)	OS時間:%N      UTC:%UTC%n経過時間%K                %t日本時間:%JST  %n残り時間:%L              %t%t開始時間:%SJ%nイベント時間:%I        %t%t終了時間%EJ                    %T%P％%n%Q	%Y-%m-%dT%H:%M:%S%z (%a)",
+"%d %hh:%mm:%ss(%hsH,%dsD)	日本時間%JST%n経過時間%K%n残り時間%L%nイベント時間%I%n%T%P％%n%Q	%Y-%m-%dT%H:%M:%S%z (%a)",
+""
+];
+var sel=$("#obstxt").prop("selectedIndex");
+obs[6]=document.getElementById("user").value;
+
+var rptxt=obs[sel];
+var rp=rptxt.split("	");
+
+
+data = data.replace("2020-04-30T12:00:00+09:00",moment(ibekaishi).format());
+data = data.replace("2020-05-07T21:00:00+09:00",moment(ibeowari).format());
+data = data.replace("でれすて",ibemie);
+data = data.replace("でれすて",ibemie);
+data = data.replace("\"bar\", 1","\"bar\", 2");
+
+//"bar", 1
+
+if(rp.length==3){
+data = data.replace("%T%n経過時間%K%n残り時間%L%nイベント時間%I%n現地時間%N%n日本時間%JST%n達成率%P%nS %S%nE %E%n%nSJ %SJ%nEJ %EJ%n%nSU %SU%nEU %EU",rp[1]);
+data = data.replace("%H:%m:%s",rp[0]);
+data = data.replace("%Y/%m/%d %H:%M:%S",rp[2]);
+}
+else{
+data = data.replace("%H:%m:%s","%d %hh:%mm:%ss(%hsH,%dsD)");
+data = data.replace("%Y/%m/%d %H:%M:%S","%Y-%m-%dT%H:%M:%S%z (%a)");
+}
+data = data.replace("タイマー停止中(開始前/終了)","終了しました");
+
+TextDL(data,"obsduration_timer.lua")
+return;
+}
+
+function makepyscript(data){
+
+data = data.replace("ぷろせか",ibemie);
+
+//s = '2020-12-10T14:00:00+08:00'
+//ss = '2020-12-18T12:00:00Z'
+data = data.replace("2020-12-10T14:00:00+08:00",moment(ibekaishi).format());
+data = data.replace("2020-12-18T12:00:00Z",moment(ibeowari).format());
+
+TextDL(data,"pythonduration_timer_miri.py");
+        return false;
+}
+
+function makeplugin(){
+getweb("./OBSdere_extend.lua");
+}
+
+function makepy(){
+getweb("./ibetimer.py");
+}
+
+
+
 
 function TextDL(n,t){b=new Blob([n],{type:"text/plain"}),a=document.createElement("a"),a.download=t,a.href=window.URL.createObjectURL(b),e=document.createEvent("MouseEvent"),e.initEvent("click",!0,!0),a.dispatchEvent(e)}
 
@@ -470,13 +625,17 @@ return;
 <form name="tzone">
 
 <p align="center"><a href="javascript:toTwitter()"><img src="./imm_files/saved_resource" alt="Send to Twitter" width="61" height="61" border="0"></a></p>
-<b>タイムゾーン設定</b><br>
-<label for="OS"><input type="radio" checked="checked" name="hyouka" id="OS">OSのタイムゾーンを優先する</label>
-<label for="useutc"><input type="radio" name="hyouka" id="useutc"><a href="https://support.microsoft.com/ja-jp/help/973627/microsoft-time-zone-index-values">M$</a>のUTC固定時差情報を使う</label>
-<label for="usemoment"><input type="radio" name="hyouka" id="usemoment"><a href="https://momentjs.com/timezone/">もめんと</a>タイムゾーン（国）を使う</label><br>
 
+<p align=="left"><h4>タイムゾーン設定</h4>
+<table border="1">
+<tr><th rowspan="2">
+<label for="OS"><input type="radio" checked="checked" name="hyouka" id="OS">OSのタイムゾーンを優先する　</label><br>
+<label for="useutc"><input type="radio" name="hyouka" id="useutc"><a href="https://support.microsoft.com/ja-jp/help/973627/microsoft-time-zone-index-values">M$</a>のUTC固定時差情報を使う　</label><br>
+<label for="usemoment"><input type="radio" name="hyouka" id="usemoment"><a href="https://momentjs.com/timezone/">もめんと</a>タイムゾーン（国）を使う</label>
+</th>
+<th align=="left">
+<span id="msc"><font color="black"></span>//M$UTC固定時差設定</span><br>
 <form name="ms" id="msdiff">
-//UTCこていじさ<br>
 <select name="owata" id="utcdiff">
 <option>(GMT-12:00)国際日付変更線西側 日付変更線標準時,M$0</option>
 <option>(GMT-11:00)ミッドウェー島、サモア サモア標準時,M$1</option>
@@ -574,40 +733,66 @@ return;
 <option>(GMT+12:00)Petropavlovsk Kamchatsky カムチャツカ標準時,M$80000052</option>
 </select>
 </form>
-
+</th></tr>
+<tr><th align=="left">
+<span id="mtc"><font color="black"></span>//もーめんと時差設定（国都市をえらんでください）</font><br>
 <form name="gm" id="moment">
-//もめんとたいむぞーん<br>
 <select name="gm" id="sel1">
 </select><br>
-<input type="text" name="" value="日本" id="kuni" size="" maxlength=""><br>
+<input type="text" name="" value="日本" id="kuni" size="" maxlength="">
 <input type="Submit" value="検索" Generate" onclick="settz();return false"><br>
-<span id="RC">-----</span><br>
+<span id="RC">-----</span>
 </form>
+</th></tr></table>
+</p>
 
-<b>カレンダーアプリに登録する(iCalendar/CSV作成):</b>
+<h4>カレンダーアプリに登録する(iCalendar/CSV作成):</h4>
 <input type="Submit" value="iCalendar(推奨)" generate"="" onclick="makeical();return false">
-<input type="Submit" value="OutlookCSV(※OS現地時間になります)" generate"="" onclick="makeicsv();return false"><br>
+<input type="Submit" value="OutlookCSV(※OS現地時間になります)" generate"="" onclick="makeicsv();return false"><br><br>
 
-<p><b>クロマキー合成、背景色</b>
+<p><h4>OBSタイマープラグイン生成:</h4>
+<input type="Submit" value="OBSLUAtimerplugin" generate"="" onclick="makeplugin();return false">
+<a href="https://photos.app.goo.gl/anwmTnhhAua4p8aP9">obs設定さんぷる</a><select name="obs" id="obstxt">
+<option value="">ミリ縦</option>
+<option value="">ミリコリア</option>
+<option value="">ミリ台湾</option>
+<option selected="selected" value="">ミリデレ2</option>
+<option value="">ミリデレ</option>
+<option >プロセカ</option>
+<option value="">ユーザー設定(タブ区切り)</option>
+</select>
+<a href="../OBSdere_sample.txt">ユーザー設定:</a><input type="text" name="" value="" id="user" maxlength="200"  size="50" ><br>
+</p>
+
+<p><h4>pythonタイマー生成(要PY3.8以上):</h4>
+<input type="Submit" value="python" generate"="" onclick="makepy();return false">
+</p>
+
+<p><h4>たいまー設定（たいとる、かいししゅうりょうじかん）</h4>
+タイトル<br><input type="text" name="" value="" id="title" maxlength="50" size="100" ><br><br>
+開始時間(ISO8601かぐぐる入力で"日時,ないときは null か 空欄 <a href="https://github.com/sokudon/deresute/wiki/OBS-EVENT-DURATION-TIMER(luascript)#JST">日時JSTもいちおう可能</a>)<br>
+<input type="text" name="" value="" id="start"maxlength="30" size="20" ><br><br>終了時間(ISO8601かぐぐる入力で"日時,ないときは nullか 空欄 <a href="https://github.com/sokudon/deresute/wiki/OBS-EVENT-DURATION-TIMER(luascript)#JST">日時JSTもいちおう可能</a>)<br>
+<input type="text" name="" value="" id="end"maxlength="30" size="20" ><br>※ぐぐる入力で"日時"変換ででてくる　2020/04/05 15:00　とかはOS設定の現地時間になります（）<br><br>
+日時表示形式<input type="text" name="" value="" id="userdt" maxlength="30"width:200px;><a href="https://momentjs.com/docs/#/displaying/">もめんとの表示形式(例YYYY/MM-DD HH:mm:ssZz)</a>　
+%DST(独自拡張)で夏時間かどうか ％TZ都市名(OS,もめんとのみ) Z時差　zタイム損名前<br><br>
+標準出力は"YYYY/MM/DD(ddd) HH:mm:ss(UTC,Z%DST)です(M$はYYYY/MM/DD(ddd) HH:mm:ss([GMT]Z))<br>
+<input type="Submit" value="HTMLに反映" Generate" onclick="setting();return false"> <input type="Submit" value="URLにしてブックマーク（）" Generate" onclick="document.location.href=url();return false"><br>
+</p>
+
+<p><h4>表示おぷしょん</h4>
+<label for="CUSTOM"><input type="checkbox" name="hyouka" id="CUSTOM">カスタム表示</label>
+<input type="text" name="" value="%T%n現在時刻:%N%n%KS%K(%P%%B)%n%LS%L%n開始時間:%S%n終了時間:%E%nイベ時間:%V" id="titlecs" maxlength="100"  size="100" ><br>
+ツイッタ用の短い表示<input type="Submit" value="SHORTVIEW" generate"="" onclick="shortview();return false">
+</p>
+
+
+<p><h4>クロマキー合成、背景色</h4>
     <input type="button" value="緑色に変更する" onclick="changeBoxColor(&#39;#008000&#39;);">
     <input type="button" value="青色に変更する" onclick="changeBoxColor(&#39;#0000ff&#39;);">
     <input type="button" value="黄色に変更する" onclick="changeBoxColor(&#39;#ffff00&#39;);">
     <input type="button" value="赤色に変更する" onclick="changeBoxColor(&#39;#ff0000&#39;);">
     <input type="button" value="淡い緑色に戻す" onclick="changeBoxColor(&#39;#ccffcc&#39;);">
     <input type="button" value="白色に戻す"     onclick="changeBoxColor(&#39;#ffffff&#39;);">
-</p>
-<p><b>たいまー設定（たいとる、かいししゅうりょうじかん）</b><br>
-タイトル<input type="text" name="" value="" id="title" maxlength="50" size="100" ><br>
-開始時間<input type="text" name="" value="" id="start"maxlength="30" size="20" >(ISO8601かぐぐる入力で"日時,ないときは null か 空欄)<br>
-終了時間<input type="text" name="" value="" id="end"maxlength="30" size="20" >(ISO8601かぐぐる入力で"日時,ないときは nullか 空欄)<br>
-※ぐぐる入力で"日時"変換ででてくる　2020/04/05 15:00　とかはOSの現地時間になります（）<br>
-日時表示形式<input type="text" name="" value="" id="userdt" maxlength="30"width:200px;><a href="https://momentjs.com/docs/#/displaying/">もめんとの表示形式(例YYYY/MM-DD HH:mm:ssZz)</a>　%DST(独自拡張)で夏時間かどうか Z時差　zタイム損名前<br>
-標準出力は"YYYY/MM/DD(ddd) HH:mm:ss(UTC,Z%DST)です<br>
-<input type="Submit" value="HTMLに反映" Generate" onclick="setting();return false"> <input type="Submit" value="URLにしてブックマーク（）" Generate" onclick="document.location.href=url();return false"><br>
-</p>
-<p><b>表示おぷしょん</b><br>
-<label for="CUSTOM"><input type="checkbox" name="hyouka" id="CUSTOM">カスタム表示</label>
-<input type="text" name="" value="%T%n現在時刻:%N%n%KS%K(%P%%B)%n%LS%L%n開始時間:%S%n終了時間:%E%nイベ時間:%V" id="titlecs" maxlength="100"  size="100" ><br>
 </p>
 </body>
 </html>
