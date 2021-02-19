@@ -70,13 +70,16 @@ function get_count() {
 	var now=moment.utc().add("Hours",jtc);	
 
 	
-	var left_time=moment.utc(ibeowari.replace(/\d\d:\d\d/,"00:00"))-moment.utc();//命日計算、HH:mmは除去
+	var left_timetJST=moment.utc(ibeowari).add("Hours",jtc).format("YYYY-MM-DDTHH:MM:00+09:00");
+	var left_time=moment.utc(left_timetJST.replace(/\d\d:\d\d/,"00:00"))-moment.utc();//命日計算、HH:mmは除去
 	
-	var zan="残り時間:"
+	
+	var zan="サ終まで:";
 	if(left_time<0){
 	left_time=-left_time;
 	zan="サ終から:"
 	}
+	
 	
 	
 	
@@ -142,6 +145,15 @@ function get_count() {
 	}
 	
 	var syunen = moment.utc().add("Hours",jtc).format("YYYY-")+moment.utc(ibekaishi).add("Hours",jtc).format("MM-DDT00:00:00+09:00");
+	if(ibemie.match(/ミリシタ海外版/)){
+	var syunen = moment.utc().add("Hours",jtc).format("YYYY-")+moment.utc("2020-06-29T00:00:00+09:00").add("Hours",jtc).format("MM-DDT00:00:00+09:00");
+	if(ibemie.match(/台湾/)){
+	syunen=moment(syunen).add("h",1).format();
+	}
+   date_fm="YYYY/MM/DD(ddd) HH:mm:ss ([UTC]Z)";//現在時刻フォーマット
+	timest +="周年日:" +moment(syunen).format(date_fm)+"<br>";
+	}
+	
 	esps=(moment.utc(syunen)-moment.utc())/1000;
 	kaishi="周年まで:";
 	if(esps<0){	esps=-esps;	kaishi="周年から:"}
@@ -149,7 +161,7 @@ function get_count() {
 
 	timest +=kaishi +espst+"<br>";
 	if(ibeowari!=""){
-	var syunen = moment.utc().add("Hours",jtc).format("YYYY-")+moment.utc(ibeowari).add("Hours",jtc).format("MM-DDT00:00:00Z");
+	syunen=moment.utc().add("Hours",jtc).format("YYYY-")+moment.utc(ibeowari).add("Hours",jtc).format("MM-DDT00:00:00+09:00");
 	esps=(-moment.utc()+ moment.utc(syunen))/1000;
 	kaishi="命日まで:";
 	if(esps<0){	esps=-esps;	kaishi="命日から:"}
@@ -220,7 +232,7 @@ function toTwitter() {
 <span id="ibe">ibe</span><br>
 <span id="cdt_now">text</span><br><br>
 
-<p align="center"><a href="javascript:toTwitter()"><img src="./" alt="Send to Twitter" width="61" height="23" border="0"></a></p>
+<p align="center"><a href="javascript:toTwitter()"><img src="./neta/imm_files/saved_resource" alt="Send to Twitter" width="61" height="61" border="0"></a></p>
 
 <form name="gm">
 <select name="gm" id="sel1" onChange="getind();">
