@@ -1,0 +1,274 @@
+<html>
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name=viewport content="width=device-width, initial-scale=1">
+<meta name="keywords" content="CGSS　ぼーだー　ボーダー　border">
+<title>デレステボーダー/CGSSBORDER(GOOGLECHART)</title>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-124912501-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-124912501-1');
+</script>
+    <!--"https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['annotationchart']}]}" -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+	<script src="./LIB/moment-with-locales.js"></script>
+	<script type="text/javascript" src="https://script.googleusercontent.com/macros/echo?user_content_key=A1l-53q7kgr4DBgBYIWm5oeffruVDIIwYGX3aedvshFTSMU9cFW7OB-GYqW3v77gEVYHxHkIELH84ry4DvMEcAEh30hgMfBSm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnGKh3zNhMPhxFpeWk62_WthuY0orIuSjKPc_nj-5tRdqQ5h9vBjr7duM7QXb_K3E0A&lib=MyDejei_RVnq-PkU5jUkxnYFpGDg2vV9V"></script>
+    <script type='text/javascript'>
+<!--
+var ibeend=moment("2020/01/01");
+var ibestart=moment("2019/12/31");
+var ibe="";
+var title="デレステ選挙";
+
+
+google.charts.load("current",{packages:["annotationchart"]}),google.charts.setOnLoadCallback(drawChart);
+var column_data=[["date","日付"]],jisoku=[];
+function convert_google(e){for(var n=1;
+n<e[0].length;
+n++)column_data[n]=[],column_data[n][0]="number",column_data[n][1]=e[0][n];
+column_data.length=e[0].length;
+for(var t=[],o=0;
+o<e.length-1;
+o++){t[o]=[],t[o][0]=new Date(moment(e[o+1][0]).valueOf());
+for(n=1;
+n<e[0].length;
+n++)""==e[o+1][n]?t[o][n]=void 0:t[o][n]=e[o+1][n]}return t}function drawChart(){var l=new google.visualization.DataTable;
+
+document.getElementById("title").innerHTML="<h3>デレステ選挙）</h3>";
+var e=convert_google(BD);
+e.sort(function(e,n){return e[0]<n[0]?1:e[0]>n[0]?-1:0});
+var n=document.getElementById("SP").checked,t=document.TZ.HM.options[document.TZ.HM.selectedIndex].text;
+t="^"+t+"$",jisoku=[];
+for(var o=[],a="",i=0,r=0;
+i<e.length;
+i++)(a=(a=e[i][0]).getHours()+":"+("0"+a.getMinutes()).slice(-2)).match(t)&&(o[r]=i,r++);
+var u=[1];
+for(i=0;
+i<maxlen;
+i++)document.chbox.elements[i].checked?u[i+1]=1:u[i+1]=0;
+if(n){l.addColumn(column_data[0][0],column_data[0][1]);
+for(i=1;
+i<column_data.length;
+i++)u[i]&&(l.addColumn(column_data[i][0],column_data[i][1]),l.addColumn(column_data[i][0],"速度"));
+var c=0;
+if(0<o.length){for(i=0;
+i<o.length-1;
+i++){var d=1;
+jisoku[i]=[],jisoku[i][0]=e[o[i]][0];
+for(r=1;
+r<column_data.length;
+r++)u[r]&&(jisoku[i][2*d-1]=e[o[i]][r],0==(c=e[o[i]][r]-e[o[i+1]][r])&&(c=void 0),jisoku[i][2*d]=c,d++)}d=1;
+jisoku[i]=[],jisoku[i][0]=e[o[i]][0];
+for(r=1;
+r<column_data.length;
+r++)u[r]&&(jisoku[i][2*d-1]=e[o[i]][r],jisoku[i][2*d]=void 0,d++)}}else{for(i=0;
+i<column_data.length;
+i++)u[i]&&l.addColumn(column_data[i][0],column_data[i][1]);
+if(0<o.length)for(i=0;
+i<o.length;
+i++){d=1;
+jisoku[i]=[],jisoku[i][0]=e[o[i]][0];
+for(r=1;
+r<column_data.length;
+r++)u[r]&&(0<e[o[i]][r]?jisoku[i][d]=e[o[i]][r]:jisoku[i][d]=void 0,d++)}}l.addRows(jisoku),new google.visualization.DateFormat({pattern:"yyyy/MM/dd HH:mm"}).format(l,0);
+var m=new google.visualization.NumberFormat({pattern:"###,###"});
+if(n)for(i=1;
+i<2*(d-1)+1;
+i++)m.format(l,i);
+else for(i=1;
+i<d;
+i++)m.format(l,i);
+var s=new google.visualization.Table(document.getElementById("table_div"));
+s.draw(l,{sort:"disable",sortColumn:0,sortAscending:!1,page:"enable",pageSize:10,pagingSymbols:{prev:"前",next:"次"}});
+var g=new google.visualization.DataView(l),f=new google.visualization.AnnotationChart(document.getElementById("chart_div")),v={displayAnnotations:!0};
+f.draw(g,v),google.visualization.events.addListener(s,"select",function(){f.setSelection(s.getSelection())}),google.visualization.events.addListener(f,"select",function(){for(var e=f.getSelection(),n=0;
+n<e.length;
+n++)e[n].column=null;
+var t=f.getSelection()[0];
+if(null!=t){var o=t.row,a={sort:"disable",sortColumn:0,page:"enable",pageSize:10,pagingSymbols:{prev:"前",next:"次"},sortAscending:!0,startPage:parseInt(o/10)};
+s.draw(l,a)}s.setSelection(e)}),google.visualization.events.addListener(s,"sort",function(e){l.sort([{column:e.column,desc:!e.ascending}]),f.draw(l,v),table_option.sortAscending=e.ascending,table_option.sortColumn=e.column,s.draw(g,t_option),s.setSelection(null)})}var rank=[],maxlen=0;
+
+function CHmai(){rank=BD[0],maxlen=BD[0].length-1;
+for(var e=0;
+e<maxlen;
+e++)document.getElementById("L"+(e+1)).innerHTML=rank[e+1];
+return!1}
+
+window.onload=function(){
+CHmai();
+moment();
+if(title.indexOf("Parede")>0){
+//CHitimai(1,score);
+}
+else{
+//CHitimai(1,rankmai);
+}}
+
+var rankmai=["501位","2001位","10001位","20001位","60001位","120001位","300001位"],end=["1位","2位","3位","9位","10位","11位"];
+var score = ["スコア1位","スコア10位","スコア11位","スコア5001位","スコア10001位","スコア40001位","スコア50001位"]
+function CHitimai(e,n){var t=n;
+if(null!=n){for(var o=0;
+o<maxlen;
+o++)document.chbox.elements[o].checked=!1;
+for(var a=0;
+a<t.length;
+a++)for(o=0;
+o<maxlen;
+o++)if(t[a]==document.getElementById("L"+(o+1)).innerHTML){document.chbox.elements[o].checked=!0;
+break}}
+else for(o=0;
+o<maxlen;
+o++)document.chbox.elements[o].checked=!0;
+return e&&drawChart(),!1}
+
+function getHEAD(){for(var e=[],n=document.getElementById("SP").checked,t=[1],o=0;
+o<maxlen;
+o++)document.chbox.elements[o].checked?t[o+1]=1:t[o+1]=0;
+if(n){e.push(column_data[0][1]);
+for(o=1;
+o<column_data.length;
+o++)t[o]&&(e.push(column_data[o][1]),e.push("速度"))}else for(o=0;
+o<column_data.length;
+o++)t[o]&&e.push(column_data[o][1]);
+return e}
+function DLCSV(){for(var e="",n=getHEAD(),t=0;
+t<n.length;
+t++)e+=n[t]+",";
+e=e.slice(0,-1),e+="\r\n";
+for(var o=0;
+o<jisoku.length;
+o++){e+=moment(jisoku[o][0]).format("YYYY/MM/DD HH:mm")+",";
+for(t=1;t<jisoku[o].length;t++)e+=jisoku[o][t]+",";
+e=e.slice(0,-1),e+="\r\n"}TextDL(e,"border.csv")}function DLJSON(){var e=[];
+e[0]=[],e[0]=getHEAD(),TextDL(JSON.stringify(e.concat(jisoku)),"tokikdoru.txt")}function TextDL(n,t){b=new Blob([n],{type:"text/plain"}),a=document.createElement("a"),a.download=t,a.href=window.URL.createObjectURL(b),e=document.createEvent("MouseEvent"),e.initEvent("click",!0,!0),a.dispatchEvent(e)}
+
+setInterval("get_count()",1000);
+function get_count() {
+var t=moment(ibeend);var now=moment();var left_time=t-now;t= moment(left_time).valueOf()/1000;
+var timetxt= Math.floor(t/(3600*24)) +"日" +Math.floor( (t%(3600*24))/3600) + "時間"+Math.floor((t%3600)/60)+ "分" +Math.floor(t%60)+ "秒";
+var date=moment(ibeend).format();
+
+var prog=(moment.utc()-moment.utc(ibestart))/(moment.utc(ibeend)-moment.utc(ibestart))*100;
+
+var zan="終了:"+date +"まで残り"+timetxt +"("+prog.toFixed(2)+"%)";
+if(left_time<0){
+zan=date + "に終了しました～";
+}
+if(ibeend==""){
+zan ="イベント終了日が未確定です"
+}
+document.getElementById("left").innerHTML= "";//zan;
+}
+
+-->
+</script>
+</head>
+<body>
+    <div id='title'></div>
+    <div id='left'></div>
+    <!--<div id='chart_div' style='width: 1200px; height: 600px;'></div>
+    <div id='table_div' style='width: 1200px; height: 400px;'></div>-->
+    <div id='chart_div' style='height: 400px;'></div>
+    <div id='table_div'></div>
+<input type="Submit" value="CSVダウンロード"   Generate" onclick="DLCSV();return false">
+<input type="Submit" value="JSONダウンロード"   Generate" onclick="DLJSON();return false">
+<form name="TZ">
+時間:
+<select name="HM" onChange="drawChart()">
+<option selected="selected" value="">(※制限なし)?[0-9]{1,2}:[0-9]{1,2}</option>
+<option value="">(※日次,0時起点)?^0:00</option>
+
+</select>
+</form>
+<label for="SP"><input type="checkbox" value="SP" id="SP" onChange="drawChart()">速度表示</label>
+<form name="chbox" onChange="drawChart()">
+<b>表示対象</b><br>
+
+<label for="R1"><input type="checkbox"  checked="checked "value="S1" id="R1"><div id="L1" style="display: inline-block; _display: inline;">キュート</div></label>
+<label for="R2"><input type="checkbox"  value="S2" id="R2"><div id="L2" style="display: inline-block; _display: inline;">クール</div></label>
+<label for="R3"><input type="checkbox"  value="S3" id="R3"><div id="L3" style="display: inline-block; _display: inline;">パッション</div></label>
+<label for="R4"><input type="checkbox"  value="S4" id="R4"><div id="L4" style="display: inline-block; _display: inline;">全タイプ</div></label><br>
+<label for="R5"><input type="checkbox"  value="S5" id="R5"><div id="L5" style="display: inline-block; _display: inline;">合計</div> </label>
+<label for="R6"><input type="checkbox"  value="S6" id="R6"><div id="L6" style="display: inline-block; _display: inline;">ドリンク</div></label>
+<label for="R7"><input type="checkbox"  value="S7" id="R7"><div id="L7" style="display: inline-block; _display: inline;">スコア</div></label>
+<label for="R8"><input type="checkbox"  value="S8" id="R8"><div id="L8" style="display: inline-block; _display: inline;">ファン数</div></label><br>
+<label for="R9"><input type="checkbox"  value="S9" id="R9"><div id="L9" style="display: inline-block; _display: inline;">ランク9</div></label>
+
+<label for="R10"><input type="checkbox"  value="S10" id="R10"><div id="L10" style="display: inline-block; _display: inline;">ランク10</div></label>
+<label for="R11"><input type="checkbox"  value="S11" id="R11"><div id="L11" style="display: inline-block; _display: inline;">キュート</div></label>
+<label for="R12"><input type="checkbox"  value="S12" id="R12"><div id="L12" style="display: inline-block; _display: inline;">クール</div></label>
+<label for="R13"><input type="checkbox"  value="S13" id="R13"><div id="L13" style="display: inline-block; _display: inline;">パッション</div></label>
+<label for="R14"><input type="checkbox"  value="S14" id="R14"><div id="L14" style="display: inline-block; _display: inline;">全タイプ</div></label><br>
+<label for="R15"><input type="checkbox"  value="S15" id="R15"><div id="L15" style="display: inline-block; _display: inline;">合計</div> </label>
+<label for="R16"><input type="checkbox"  value="S16" id="R16"><div id="L16" style="display: inline-block; _display: inline;">ドリンク</div></label>
+<label for="R17"><input type="checkbox"  value="S17" id="R17"><div id="L17" style="display: inline-block; _display: inline;">スコア</div></label>
+<label for="R18"><input type="checkbox"  value="S18" id="R18"><div id="L18" style="display: inline-block; _display: inline;">ファン数</div></label><br>
+<label for="R19"><input type="checkbox"  value="S19" id="R19"><div id="L19" style="display: inline-block; _display: inline;">ランク19</div></label>
+
+<label for="R20"><input type="checkbox"  value="S20" id="R20"><div id="L20" style="display: inline-block; _display: inline;">ランク210</div></label>
+<label for="R21"><input type="checkbox"  value="S21" id="R21"><div id="L21" style="display: inline-block; _display: inline;">キュート</div></label>
+<label for="R22"><input type="checkbox"  value="S22" id="R22"><div id="L22" style="display: inline-block; _display: inline;">クール</div></label>
+<label for="R23"><input type="checkbox"  value="S23" id="R23"><div id="L23" style="display: inline-block; _display: inline;">パッション</div></label>
+<label for="R24"><input type="checkbox"  value="S24" id="R24"><div id="L24" style="display: inline-block; _display: inline;">全タイプ</div></label><br>
+<label for="R25"><input type="checkbox"  value="S25" id="R25"><div id="L25" style="display: inline-block; _display: inline;">合計</div> </label>
+<label for="R26"><input type="checkbox"  value="S26" id="R26"><div id="L26" style="display: inline-block; _display: inline;">ドリンク</div></label>
+<label for="R27"><input type="checkbox"  value="S27" id="R27"><div id="L27" style="display: inline-block; _display: inline;">スコア</div></label>
+<label for="R28"><input type="checkbox"  value="S28" id="R28"><div id="L28" style="display: inline-block; _display: inline;">ファン数</div></label><br>
+<label for="R29"><input type="checkbox"  value="S29" id="R29"><div id="L29" style="display: inline-block; _display: inline;">ランク29</div></label>
+
+
+<label for="R30"><input type="checkbox"  value="S30" id="R30"><div id="L30" style="display: inline-block; _display: inline;">ランク310</div></label>
+<label for="R31"><input type="checkbox"  value="S31" id="R31"><div id="L31" style="display: inline-block; _display: inline;">キュート</div></label>
+<label for="R32"><input type="checkbox"  value="S32" id="R32"><div id="L32" style="display: inline-block; _display: inline;">クール</div></label>
+<label for="R33"><input type="checkbox"  value="S33" id="R33"><div id="L33" style="display: inline-block; _display: inline;">パッション</div></label>
+<label for="R34"><input type="checkbox"  value="S34" id="R34"><div id="L34" style="display: inline-block; _display: inline;">全タイプ</div></label><br>
+<label for="R35"><input type="checkbox"  value="S35" id="R35"><div id="L35" style="display: inline-block; _display: inline;">合計</div> </label>
+<label for="R36"><input type="checkbox"  value="S36" id="R36"><div id="L36" style="display: inline-block; _display: inline;">ドリンク</div></label>
+<label for="R37"><input type="checkbox"  value="S37" id="R37"><div id="L37" style="display: inline-block; _display: inline;">スコア</div></label>
+<label for="R38"><input type="checkbox"  value="S38" id="R38"><div id="L38" style="display: inline-block; _display: inline;">ファン数</div></label><br>
+<label for="R39"><input type="checkbox"  value="S39" id="R39"><div id="L39" style="display: inline-block; _display: inline;">ランク39</div></label>
+
+<label for="R40"><input type="checkbox"  value="S40" id="R40"><div id="L40" style="display: inline-block; _display: inline;">ランク410</div></label>
+<label for="R41"><input type="checkbox"  value="S41" id="R41"><div id="L41" style="display: inline-block; _display: inline;">キュート</div></label>
+<label for="R42"><input type="checkbox"  value="S42" id="R42"><div id="L42" style="display: inline-block; _display: inline;">クール</div></label>
+<label for="R43"><input type="checkbox"  value="S43" id="R43"><div id="L43" style="display: inline-block; _display: inline;">パッション</div></label>
+<label for="R44"><input type="checkbox"  value="S44" id="R44"><div id="L44" style="display: inline-block; _display: inline;">全タイプ</div></label><br>
+<label for="R45"><input type="checkbox"  value="S45" id="R45"><div id="L45" style="display: inline-block; _display: inline;">合計</div> </label>
+<label for="R46"><input type="checkbox"  value="S46" id="R46"><div id="L46" style="display: inline-block; _display: inline;">ドリンク</div></label>
+<label for="R47"><input type="checkbox"  value="S47" id="R47"><div id="L47" style="display: inline-block; _display: inline;">スコア</div></label>
+<label for="R48"><input type="checkbox"  value="S48" id="R48"><div id="L48" style="display: inline-block; _display: inline;">ファン数</div></label><br>
+<label for="R49"><input type="checkbox"  value="S49" id="R49"><div id="L49" style="display: inline-block; _display: inline;">ランク49</div></label>
+
+
+<label for="R50"><input type="checkbox"  value="S50" id="R50"><div id="L50" style="display: inline-block; _display: inline;">ランク510</div></label>
+<label for="R51"><input type="checkbox"  value="S51" id="R51"><div id="L51" style="display: inline-block; _display: inline;">キュート</div></label>
+<label for="R52"><input type="checkbox"  value="S52" id="R52"><div id="L52" style="display: inline-block; _display: inline;">クール</div></label>
+<label for="R53"><input type="checkbox"  value="S53" id="R53"><div id="L53" style="display: inline-block; _display: inline;">パッション</div></label>
+<label for="R54"><input type="checkbox"  value="S54" id="R54"><div id="L54" style="display: inline-block; _display: inline;">全タイプ</div></label><br>
+<label for="R55"><input type="checkbox"  value="S55" id="R55"><div id="L55" style="display: inline-block; _display: inline;">合計</div> </label>
+<label for="R56"><input type="checkbox"  value="S56" id="R56"><div id="L56" style="display: inline-block; _display: inline;">ドリンク</div></label>
+<label for="R57"><input type="checkbox"  value="S57" id="R57"><div id="L57" style="display: inline-block; _display: inline;">スコア</div></label>
+<label for="R58"><input type="checkbox"  value="S58" id="R58"><div id="L58" style="display: inline-block; _display: inline;">ファン数</div></label><br>
+<label for="R59"><input type="checkbox"  value="S59" id="R59"><div id="L59" style="display: inline-block; _display: inline;">ランク59</div></label>
+
+
+<label for="R60"><input type="checkbox"  value="S60" id="R60"><div id="L60" style="display: inline-block; _display: inline;">ランク610</div></label>
+<label for="R61"><input type="checkbox"  value="S61" id="R61"><div id="L61" style="display: inline-block; _display: inline;">キュート</div></label>
+<label for="R62"><input type="checkbox"  value="S62" id="R62"><div id="L62" style="display: inline-block; _display: inline;">クール</div></label>
+<label for="R63"><input type="checkbox"  value="S63" id="R63"><div id="L63" style="display: inline-block; _display: inline;">パッション</div></label>
+<label for="R64"><input type="checkbox"  value="S64" id="R64"><div id="L64" style="display: inline-block; _display: inline;">全タイプ</div></label><br>
+<label for="R65"><input type="checkbox"  value="S65" id="R65"><div id="L65" style="display: inline-block; _display: inline;">全タイプ</div></label><br>
+<label for="R66"><input type="checkbox"  value="S66" id="R66"><div id="L66" style="display: inline-block; _display: inline;">ドリンク</div></label>
+<label for="R67"><input type="checkbox"  value="S67" id="R67"><div id="L67" style="display: inline-block; _display: inline;">スコア</div></label>
+<label for="R68"><input type="checkbox"  value="S68" id="R68"><div id="L68" style="display: inline-block; _display: inline;">ファン数</div></label><br>
+<label for="R69"><input type="checkbox"  value="S69" id="R69"><div id="L69" style="display: inline-block; _display: inline;">ランク69</div></label>
+
+
+</form>
+<input type="Submit" value="なし"   Generate" onclick="CHitimai(1,"なし");return false">
+</body>
+</html>
