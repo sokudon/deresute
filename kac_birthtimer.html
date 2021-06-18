@@ -8,7 +8,7 @@
 <script>
 <!--
 
-var datastring="%M/%Dまであと%L日 %G:%I";
+var datastring="%M/%Dまであと%L日 %I -%Y";
 var dsn=["ML","CG","SIDEM","SHINY","DS","GAME"];
 
 window.onload = function() {
@@ -104,6 +104,7 @@ dtab[j][2]=  games;
 dtab[j][3]=moment.utc(tmp).add("Hours",9).format("M");
 dtab[j][4]=moment.utc(tmp).add("Hours",9).format("D");
 dtab[j][5]= kanaToHira(dtab[j][1]);
+dtab[j][6]=moment.utc(gamedata[i][1]).add("Hours",9).format("YYYY");
 j++;
 //st +=t+"日前"+ gamedata[i][0]+"("+gamedata[i][2]+")<br>"
 }}
@@ -117,7 +118,9 @@ dtab.sort(function(a, b) {
 
 
 for(var i=0;i<dtab.length;i++){
-var tmp=datastring.replace("%M",dtab[i][3]).replace("%D",dtab[i][4]).replace("%L",dtab[i][0]).replace("%G",dtab[i][2]).replace("%I",dtab[i][1]).replace("%i",dtab[i][5]);
+var tmp=datastring.replace("%M",dtab[i][3]).replace("%D",dtab[i][4])
+		.replace("%L",dtab[i][0]).replace("%G",dtab[i][2]).replace("%I",dtab[i][1])
+		.replace("%i",dtab[i][5]).replace("%Y",dtab[i][6]).replace("()","");
 st += escapeHTML(tmp)+"<br>";
 }
 
@@ -177,17 +180,11 @@ function toTwitter() {
 <form name="gg">
 %Gの表記:
 <select name="nn" id="selectgg" onChange="nearaniv();">
-<option selected="selected">ML,CG,SIDEM,SHINY,DS,GAME</option>
-<option>ミリオン,デレマス,サイドM,シャニマス,ディアリー,ゲーム</option>
-<option>ミリオンライブ,シンデレラガールズ,サイドM,シャイニーカラーズ,ディアリースターズ,ゲーム</option>
-<option>ﾐﾘｵﾝ,ﾃﾞﾚﾏｽ,ｻｲﾄﾞM,ｼｬﾆﾏｽ,ﾃﾞｨｱﾘｰ,ｹﾞｰﾑ</option>
-<option>ﾐﾘｵﾝﾗｲﾌﾞ,ｼﾝﾃﾞﾚﾗｶﾞｰﾙｽﾞ,ｻｲﾄﾞM,ｼｬｲﾆｰｶﾗｰｽﾞ,ﾃﾞｨｱﾘｰｽﾀｰｽﾞ,ｹﾞｰﾑ</option>
-<option>みりおん,でれます,さいどえむ,しゃにます,でぃありー,げーむ</option>
-<option>みりおんらいぶ,しんでれらがーるず,さいどえむ,しゃいにーからーず,でぃありーすたーず,げーむ</option>
+<option selected="selected">GAME,GAME,GAME,GAME,GAME,KONAMI</option>
 </select>
 </form>
 
-表示形式(でふぉると "%M/%Dまであと%L日 %G:%I" %iはひらがな名)<input type="text" name="" value="" id="title" maxlength="50"　width:300px;><br>
+表示形式(でふぉると "%M/%Dまであと%L日 %I -%Y" %iはひらがな名,%G　GAME)<input type="text" name="" value="" id="title" maxlength="50"　width:300px;><br>
 <input type="Submit" value="反映" Generate" onclick="setting();return false">
 <input type="Submit" value="URLにしてブックマーク（）" Generate" onclick="document.location.href=url();return false"><br>
 
