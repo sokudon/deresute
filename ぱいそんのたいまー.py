@@ -47,12 +47,15 @@ def show_time():
     nn=time.time()
     elapsed=dtime(nn-sttmp)
     left= dtime(entmp-nn)
-    x = abs(nn-sttmp)/abs(entmp-sttmp)*100
+    x = (nn-sttmp)/abs(entmp-sttmp)*100
     n = 2
     y = math.floor(x * 10 ** n) / (10 ** n)
     progress = y
     if y>100:
              y=100
+    if y<0:
+             y=0
+             
     tm=time.strftime(timefm)
     buff.set(ibe +'\n'+ tm+'\n' +ts +'\n'+te+"\n" +str(span)+"\n"+elapsed+"\n"+left+"\n"+str(y)+"%")
     root.after(1000, show_time)
