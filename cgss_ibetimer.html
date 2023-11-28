@@ -2,7 +2,7 @@
 <title>でれすていべたいまー改</title>
 <head>
 </head>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
 <script src="./LIB/moment-with-locales.js"></script>
 <script src="https://script.google.com/macros/s/AKfycbz55fDemdeSdeoURqPp_WWJJ4n3nBIuT1_PsBGVx8zUJDRET6LA/exec"></script>
 <!--<script src="settei.txt"></script>-->
@@ -272,7 +272,7 @@ data = data.replace("でれすて",ibemie);
 data = data.replace("\"bar\", 1","\"bar\", 2");
 
 if(rp.length==3){
-data = data.replace("%T%n経過時間%K%n残り時間%L%nイベント時間%I%n現地時間%N%n日本時間%JST%n達成率%P%nS %S%nE %E%n%nSJ %SJ%nEJ %EJ%n%nSU %SU%nEU %EU",rp[1]);
+data = data.replace("%T%n経過時間%K%n残り時間%L%nイベント時間%I%n現地時間%N%n日本時間%JST%n達成率%P%nS %S%nE %E%n%nSJ %SJ%nEJ %EJ%n%nSU %SU%nEU %EU",rp[1].replace(/%n/gm,"\\n"));
 data = data.replace("%H:%m:%s",rp[0]);
 data = data.replace("%Y/%m/%d %H:%M:%S",rp[2]);
 }
@@ -374,8 +374,9 @@ M$より機械翻訳とはいえ
 。ニュージーランド
 がきになる
  -->
-
+<!--
 <p align="center"><a href="javascript:toTwitter()"><img src="./neta/imm_files/saved_resource" alt="Send to Twitter" width="61" height="61" border="0"></a></p>
+-->
 <p><b>タイムゾーン</b><br>
 <label for="OF"><input type="checkbox" checked="checked" value="NEW" id="OF"">OSのタイムゾーンを優先する<br></label>
 <select name="owata">
@@ -463,7 +464,8 @@ M$より機械翻訳とはいえ
 <input type="Submit" value="iCalendar"" generate"="" onclick="makeical();return false">
 <a href="./dere_event_calender.html">GOOGLEカレンダー向け</a>
 </p>
-<p><b>OBSタイマープラグイン生成:</b><br>
+
+<p><b>OBSタイマープラグイン生成<a href="./cgss_ibetimer_old.html">※OBS旧版用,改行コード違い</a>:</b><br>
 <input type="Submit" value="OBSLUAtimerplugin" generate"="" onclick="makeplugin();return false">
 <a href="https://photos.app.goo.gl/anwmTnhhAua4p8aP9">obs設定さんぷる</a><select name="obs" id="obstxt">
 <option value="">ミリ縦</option>

@@ -1,10 +1,10 @@
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>プロセカいべたいまー改</title>
+<title>みりしたいべたいまー改</title>
 <head>
 </head>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
 <script src="./LIB/moment-with-locales.js"></script>
-<script src="https://script.google.com/macros/s/AKfycbyQcx1oVrb6npnIptpeUpnk5NyZpljcnex9IHxboBGeMBw6qvu8/exec"></script>
+<script src="https://script.google.com/macros/s/AKfycbyZbP4x6lww_pAMHd4bajB9MvCh3kY_H__E_0AKk9CBkCPJa-dK/exec"></script>
 <!--<script src="settei.txt"></script>-->
 <script>
 <!--
@@ -204,6 +204,7 @@ function fix_url(a) {
     }
     return a.replace("http://127.0.0.1:8823/thread/", "");
 }
+
 function parseData(data) {
     stringfilter(data);
 }
@@ -263,6 +264,8 @@ data = data.replace("でれすて",ibemie);
 data = data.replace("でれすて",ibemie);
 data = data.replace("\"bar\", 1","\"bar\", 2");
 
+//"bar", 1
+
 if(rp.length==3){
 data = data.replace("%T%n経過時間%K%n残り時間%L%nイベント時間%I%n現地時間%N%n日本時間%JST%n達成率%P%nS %S%nE %E%n%nSJ %SJ%nEJ %EJ%n%nSU %SU%nEU %EU",rp[1].replace(/%n/gm,"\\n"));
 data = data.replace("%H:%m:%s",rp[0]);
@@ -274,7 +277,7 @@ data = data.replace("%Y/%m/%d %H:%M:%S","%Y-%m-%dT%H:%M:%S%z (%a)");
 }
 data = data.replace("タイマー停止中(開始前/終了)","終了しました");
 
-TextDL(data,"obsduration_timer_39.lua");
+TextDL(data,"obsduration_timer_miri.lua");
         return false;
 }
 
@@ -287,7 +290,7 @@ data = data.replace("ぷろせか",ibemie);
 data = data.replace("2020-12-10T14:00:00+08:00",moment(ibekaishi).format());
 data = data.replace("2020-12-18T12:00:00Z",moment(ibeowari).format());
 
-TextDL(data,"pythonduration_timer_39.py");
+TextDL(data,"pythonduration_timer_miri.py");
         return false;
 }
 
@@ -298,7 +301,6 @@ getweb("./neta/OBSdere_extend.lua");
 function makepy(){
 getweb("./neta/ibetimer.py");
 }
-
 
 
 function makeical(){
@@ -328,7 +330,7 @@ else{
 tmp=tmp.replace(/DTEND:\d+T\d+Z/,"DTEND:"+moment.utc(ibeowari).format("YYYYMMDDTHHmmss[Z]"));
 }
 tmp=tmp.replace(/SUMMARY:うづき/,"SUMMARY:"+ibemie);
-TextDL(tmp,"proseka_event.ics")
+TextDL(tmp,"mirisita_event.ics")
 }
 }
 function TextDL(n,t){b=new Blob([n],{type:"text/plain"}),a=document.createElement("a"),a.download=t,a.href=window.URL.createObjectURL(b),e=document.createEvent("MouseEvent"),e.initEvent("click",!0,!0),a.dispatchEvent(e)}
@@ -343,7 +345,7 @@ function toTwitter() {
 	s=s.replace(/<br>/gm,"\r\n");
 	s=s.replace(/<.*?>/gm,"");
 	s=s.replace(/\r\n\r\n/gm,"\r\n");
-	s=s+"\r\nhttp://sokudon.s17.xrea.com/miku_ibetimer.html\r\n#プロセカタイマー";
+	s=s+"\r\nhttp://sokudon.s17.xrea.com/ibetimer.html\r\n#みりしたタイマー";
 	
 	if (url == "") {
 		url = "http://twitter.com/share?text=" + encodeURIComponent(s);
@@ -355,7 +357,7 @@ function toTwitter() {
 
 </script>
 <body id="bg">
-<h1>プロセカいべたいまー改</h1>
+<h1>ミリシタいべたいまー改</h1>
 <span id="ibe">ibe</span><br>
 <span id="cdt_now">text</span><br><br>
 
@@ -369,8 +371,7 @@ M$より機械翻訳とはいえ
  -->
 <!--
 <p align="center"><a href="javascript:toTwitter()"><img src="./neta/imm_files/saved_resource" alt="Send to Twitter" width="61" height="61" border="0"></a></p>
--->
-<p><b>タイムゾーン</b><br>
+--><p><b>タイムゾーン</b><br>
 <label for="OF"><input type="checkbox" checked="checked" value="NEW" id="OF"">OSのタイムゾーンを優先する<br></label>
 <select name="owata">
 <option value="">UTC -12:00　国際日付変更線西側</option>
@@ -455,17 +456,17 @@ M$より機械翻訳とはいえ
 </p>
 <p><b>カレンダーアプリに登録する(iCalender作成):</b><br>
 <input type="Submit" value="iCalendar"" generate"="" onclick="makeical();return false">
-<a href="./miku_event_calender.html">GOOGLEカレンダー向け</a>
+<a href="./miri_event_calender.html">GOOGLEカレンダー向け</a>
 </p>
-<p><b>OBSタイマープラグイン生成<a href="./miku_ibetimer_old.html">※OBS旧版用,改行コード違い</a>:</b><br>
-<input type="Submit" value="OBSLUAtimerplugin" generate"="" onclick="makeplugin();return false"> 
+<p><b>OBSタイマープラグイン生成:<a href="./cgss_ibetimer_old.html">※OBS旧版用,改行コード違い</a>:</b><br>
+<input type="Submit" value="OBSLUAtimerplugin" generate"="" onclick="makeplugin();return false">
 <a href="https://photos.app.goo.gl/anwmTnhhAua4p8aP9">obs設定さんぷる</a><select name="obs" id="obstxt">
 <option value="">ミリ縦</option>
 <option value="">ミリコリア</option>
-<option value="">台湾</option>
-<option value="">ミリデレ2</option>
-<option value="">ミリミリデレ</option>
-<option selected="selected">プロセカ</option>
+<option value="">ミリ台湾</option>
+<option selected="selected" value="">ミリデレ2</option>
+<option value="">ミリデレ</option>
+<option >プロセカ</option>
 <option value="">ユーザー設定(タブ区切り)</option>
 </select>
 <a href="OBSdere_sample.txt">ユーザー設定:</a><input type="text" name="" value="" id="user" maxlength="200"  size="50" ><br>
