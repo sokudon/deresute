@@ -14,7 +14,14 @@
 var ibemie="雨上がりの一番星";
 var ibekaishi="2020-10-09T15:00:00+09:00";
 var ibeowari ="2020-10-18T21:00:00+09:00";
-var date_fm="YYYY/MM/DD(ddd) HH:mm:ss ([JST,UTC+9:00])"
+var date_fm="YYYY/MM/DD(ddd) HH:mm:ss ([JST,UTC+9:00])";
+
+var gameselecter=0;
+var worldtimer=[
+["jp",ibekaishi,ibeowari],
+["ks",ibekaishi,ibeowari],
+["hz",ibekaishi,ibeowari],
+["usa",ibekaishi,ibeowari]];
 
 var nomal="YYYY/MM/DD HH:mm:ss";
 var iso="YYYY-MM-DDTHH:mm:ss";
@@ -268,6 +275,18 @@ function get_count() {
 	var Pst=  (parseInt(moment(ts).utc().add("h",9).format("YYYY")) +1) + moment(ts).utc().add("h",9).format("-MM-DD HH:mm:ss");
 	var Ptt=  (parseInt(moment(ts).utc().add("h",9).format("YYYY")) +1) + moment(tt).utc().add("h",9).format("-MM-DD HH:mm:ss");
 	
+	worldtimer[0][1]=ts;
+	worldtimer[0][2]=tt;
+	
+	worldtimer[1][1]=moment(kst).format(); 
+	worldtimer[1][2]=moment(ken).format();
+	
+	worldtimer[2][1]=moment(kst).add("h",1).format(); 
+	worldtimer[2][2]= moment(ken).add("h",1).format();
+	
+	worldtimer[3][1]=moment(moment.tz(Pst,tzPST)).local().format(); 
+	worldtimer[3][2]= moment(moment.tz(Ptt,tzPST)).local().format();
+	
 	st=st.replace("韓国版",moment(kst).format() + "～" +moment(ken).format());
 	st=st.replace("香港版", moment(kst).add("h",1).format() +"～" + moment(ken).add("h",1).format());
 	st=st.replace("北米版",moment(moment.tz(Pst,tzPST)).local().format() +"～" + moment(moment.tz(Ptt,tzPST)).local().format());
@@ -305,6 +324,8 @@ function get_count() {
 	
 	//画面出力
 	document.getElementById("tt").innerHTML =st;
+	
+
 }
 
 
@@ -320,7 +341,8 @@ ibetime();
 }
 }
 function setend(){
-document.gmm.gmm.options.selectedIndex=document.gmm.gmm.options.length-1;update();
+document.gmm.gmm.options.selectedIndex=document.gmm.gmm.options.length-1;
+update();
 }
 
 function setoversea(){
@@ -333,11 +355,104 @@ event=i-evnetskip+1;
 document.getElementById("kuni").value=data[i][2];
 break;
 }}
-document.gmm.gmm.options.selectedIndex=event;update();
-
+document.gmm.gmm.options.selectedIndex=event;
+update();
 }
 
 
+function makeplugin(){
+getweb("./neta/OBSdere_extend.lua");
+}
+function parseData(data) {
+    stringfilter(data);
+}
+function getweb(urls) {
+        var local = new RegExp("(\.\/neta\/[a-zA-Z0-9_\-]+)\.(lua|py)");
+        var uri = new RegExp("(h?ttps?)?(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+)");
+        var lcmm = urls.match(local);
+        var urlm = urls.match(uri);
+        var text = "";
+        var your_url = "";
+        if (lcmm != null) {
+            your_url = lcmm[0];
+            $.get(your_url, parseData);
+        } else if (urlm != null) {
+            your_url = fix_url(urlm[0]);
+            text = "";
+            $.ajax({
+                url: your_url,
+                type: 'GET',
+                timeout: 10000,
+                success: function(res) {
+                    stringfilter(rmhtml(res));
+                }
+            });
+        }
+        return false;
+    }
+
+function mkjp(){
+gameselecter=0;
+makeplugin();
+}
+
+function mkks(){
+gameselecter=1;
+makeplugin();
+}
+
+function mkhz(){
+gameselecter=2;
+makeplugin();
+}
+
+function mkusa(){
+gameselecter=3;
+makeplugin();
+}
+
+
+function stringfilter(data){
+
+var obs=[//miritate,kori,makao,mirdere,proseka
+"%d %hh:%mm:%ss(%hsH,%dsD)	%T%n経過時間%K%n残り時間%L%nイベント時間%I%n達成率%P%Q%n%n現地時間%N%n開始(OS)%S%n終了(OS)%E%n%n日本時間 %JST%n開始(JST)%SJ%n終了(JST)%EJ%n%nU-CLOCK %UTC%n開始(U?)%SU%n終了(U?)%EU	%Y-%m-%d(%a)%H:%M:%S(GMT%z)",
+//"%d %hh:%mm:%ss(%hsH,%dsD	%T%n経過時間%K%n残り時間%L%nイベント時間%I%n現地時間%N%n日本時間%JST%n達成率%P%nS %S%nE %E%n%nSJ %SJ%nEJ %EJ%n%nSU %SU%nEU %EU	%Y-%m-%dT%H:%M:%S%z (%a)",
+"%d %hh:%mm:%ss	miriKOREA%L(%P％)	%Y/%m/%d %H:%M:%S",
+"%d %hh:%mm:%ss	miriCN/TW;%L(%P％)	%Y/%m/%d %H:%M:%S",
+"%d %hh:%mm:%ss(%dsD)	ＯＳ時間:%N UTC+0000:%UTC%n経過時間:%K                 日本時間:%JST  %n残り時間:%L                開始時間:%SJ%nイベ時間:%I              終了時間:%EJ                   %n%Q%P％  %T	%Y-%m-%d(%a)%H:%M:%S(GMT%z)",
+"%d %hh:%mm:%ss(%hsH,%dsD)	OS時間:%N      UTC:%UTC%n経過時間%K                 日本時間:%JST  %n残り時間:%L                開始時間:%SJ%nイベント時間:%I          終了時間%EJ                    %T%P％%n%Q	%Y-%m-%dT%H:%M:%S%z (%a)",
+"%d %hh:%mm:%ss(%hsH,%dsD)	日本時間%JST%n経過時間%K%n残り時間%L%nイベント時間%I%n%T%P％%n%Q	%Y-%m-%dT%H:%M:%S%z (%a)",
+""
+];
+
+
+var rptxt=obs[5];
+var rp=rptxt.split("	");
+
+
+data = data.replace("2020-04-30T12:00:00+09:00",moment(worldtimer[gameselecter][1]).format());
+data = data.replace("2020-05-07T21:00:00+09:00",moment(worldtimer[gameselecter][2]).format());
+data = data.replace("でれすて",ibemie);
+data = data.replace("でれすて",ibemie);
+data = data.replace("\"bar\", 1","\"bar\", 2");
+
+if(rp.length==3){
+data = data.replace("%T%n経過時間%K%n残り時間%L%nイベント時間%I%n現地時間%N%n日本時間%JST%n達成率%P%nS %S%nE %E%n%nSJ %SJ%nEJ %EJ%n%nSU %SU%nEU %EU",rp[1].replace(/%n/gm,"\\n"));
+data = data.replace("%H:%m:%s",rp[0]);
+data = data.replace("%Y/%m/%d %H:%M:%S",rp[2]);
+}
+else{
+data = data.replace("%H:%m:%s","%d %hh:%mm:%ss(%hsH,%dsD)");
+data = data.replace("%Y/%m/%d %H:%M:%S","%Y-%m-%dT%H:%M:%S%z (%a)");
+}
+data = data.replace("タイマー停止中(開始前/終了)","終了しました");
+
+
+TextDL(data,"obsduration_timer_39"+worldtimer[gameselecter][0]+".lua");
+        return false;
+}
+
+function TextDL(n,t){b=new Blob([n],{type:"text/plain"}),a=document.createElement("a"),a.download=t,a.href=window.URL.createObjectURL(b),e=document.createEvent("MouseEvent"),e.initEvent("click",!0,!0),a.dispatchEvent(e)}
 
 
 -->
@@ -349,6 +464,13 @@ document.gmm.gmm.options.selectedIndex=event;update();
 
 <span class="black">海外のイベント予想時間　開始時刻(START)～終了時刻(END)、日本版JST,韓国版KST,香港版HKT,北米版PST/PDT</span>;
 <span id="tt"></span>
+
+<p><b>OBSタイマープラグイン生成:</b><br>
+<input type="Submit" value="日本" generate"="" onclick="mkjp();return false"> 
+<input type="Submit" value="韓国" generate"="" onclick="mkks();return false"> 
+<input type="Submit" value="香港" generate"="" onclick="mkhz();return false"> 
+<input type="Submit" value="北米" generate"="" onclick="mkusa();return false"> 
+</p>
 
 イベント
 <form name="gmm">
