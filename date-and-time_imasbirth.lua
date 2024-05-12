@@ -175,6 +175,7 @@ cgn           = 1
 smn        	  = 1
 scn           = 1
 dsn           = 1
+gan           = 1
 daylim 		  =7
 daystring     =""
 debugtxt1	  = ""
