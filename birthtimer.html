@@ -1,8 +1,9 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html>
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>あいますばーすでーたいまー改</title>
 <head>
 </head>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
 <script src="./LIB/moment-with-locales.js"></script>
 <script  type="text/javascript" src="https://script.googleusercontent.com/macros/echo?user_content_key=yKlNtB0m82El8ySZ1t46GKNi2YI2JtH6_Ba8Bj3CYA_tq7weSpuYxFibPYVf0-h3jzkXaKbaeLHra79trL501FNd7_VJh7UNm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnPrjrzOqG57A42W18Wxz1WDP-eBihPx5SsKk9bfVywybSSQhmxvfOQqhL5HLwlai3E9OlGKLMLnt&lib=MvrSijJWbMSM_kaRZox9WvnndBJ9ix56c"></script>
 <script  type="text/javascript" src="https://script.googleusercontent.com/macros/echo?user_content_key=y26MKGO6KrGvdbHl13r9fBslGLG7tCPiA6FJnZh4Jsyk2lBN_XG4jI_Wyv2NVQGFzWV2wrx89p3TYooV2Yx8nXCb8HvrtA1wm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnPuihn6KSAqYQajIiGBerRjxT7-n1zx1nVP2RTPbsLWMYTqYZhIACZwYZpTak_o22Q&lib=MmHolKhlrk4LP8GJAw1lMwYFpGDg2vV9V"></script>
@@ -10,7 +11,7 @@
 <!--
 
 var datastring="%M/%Dまであと%L日 %G:%I";
-var dsn=["ML","CG","SIDEM","SHINY","DS","GAME"];
+var dsn=["ML","CG","SIDEM","SHINY","DS","GA","GAME"];
 
 window.onload = function() {
 get_web_para();
@@ -76,7 +77,7 @@ var dtab=[];
 var j=0;
 var g=  $('#selectgg option:selected').text();
 dsn = g.split(",");
-var games=dsn[5];
+var games=dsn[6];
 for(var i=1;i<gamedata.length;i++){
 var tmp=gamedata[i][1].replace(/^\d\d\d\d/gm,year);
 var tmp2=gamedata[i][1].replace(/^\d\d\d\d/gm,yearn);
@@ -108,8 +109,8 @@ dtab[j][5]= kanaToHira(dtab[j][1]);
 j++;
 //st +=t+"日前"+ gamedata[i][0]+"("+gamedata[i][2]+")<br>"
 }}
-var ds=["ml","cg","sm","sc","ds"];
-for(var k=0;k<5;k++){
+var ds=["ml","cg","sm","sc","ds","ga"];
+for(var k=0;k<6;k++){
 var data=birthday[ds[k]];
 for(var i=0;i<data.length;i++){
 var tmp=data[i][0].replace(/^\d\d\d\d/gm,year);
@@ -183,7 +184,6 @@ function toTwitter() {
 <span id="now">text</span><br>
 <span id="cdt_now">text</span><br><br>
 
-<p align="center"><a href="javascript:toTwitter()"><img src="./neta/imm_files/saved_resource" alt="Send to Twitter" width="61" height="61" border="0"></a></p>
 
 <form name="gm">
 周年の何日前まで表示:
@@ -197,13 +197,13 @@ function toTwitter() {
 <form name="gg">
 %Gの表記:
 <select name="nn" id="selectgg" onChange="nearaniv();">
-<option selected="selected">ML,CG,SIDEM,SHINY,DS,GAME</option>
-<option>ミリオン,デレマス,サイドM,シャニマス,ディアリー,ゲーム</option>
-<option>ミリオンライブ,シンデレラガールズ,サイドM,シャイニーカラーズ,ディアリースターズ,ゲーム</option>
-<option>ﾐﾘｵﾝ,ﾃﾞﾚﾏｽ,ｻｲﾄﾞM,ｼｬﾆﾏｽ,ﾃﾞｨｱﾘｰ,ｹﾞｰﾑ</option>
-<option>ﾐﾘｵﾝﾗｲﾌﾞ,ｼﾝﾃﾞﾚﾗｶﾞｰﾙｽﾞ,ｻｲﾄﾞM,ｼｬｲﾆｰｶﾗｰｽﾞ,ﾃﾞｨｱﾘｰｽﾀｰｽﾞ,ｹﾞｰﾑ</option>
-<option>みりおん,でれます,さいどえむ,しゃにます,でぃありー,げーむ</option>
-<option>みりおんらいぶ,しんでれらがーるず,さいどえむ,しゃいにーからーず,でぃありーすたーず,げーむ</option>
+<option selected="selected">ML,CG,SIDEM,SHINY,DS,GA,GAME</option>
+<option>ミリオン,デレマス,サイドM,シャニマス,ディアリー,学園,ゲーム</option>
+<option>ミリオンライブ,シンデレラガールズ,サイドM,シャイニーカラーズ,ディアリースターズ,学園,ゲーム</option>
+<option>ﾐﾘｵﾝ,ﾃﾞﾚﾏｽ,ｻｲﾄﾞM,ｼｬﾆﾏｽ,ﾃﾞｨｱﾘｰ,ｶﾞｸｴﾝ,ｹﾞｰﾑ</option>
+<option>ﾐﾘｵﾝﾗｲﾌﾞ,ｼﾝﾃﾞﾚﾗｶﾞｰﾙｽﾞ,ｻｲﾄﾞM,ｼｬｲﾆｰｶﾗｰｽﾞ,ﾃﾞｨｱﾘｰｽﾀｰｽﾞ,ｶﾞｸｴﾝ,ｹﾞｰﾑ</option>
+<option>みりおん,でれます,さいどえむ,しゃにます,でぃありー,がくえん,げーむ</option>
+<option>みりおんらいぶ,しんでれらがーるず,さいどえむ,しゃいにーからーず,でぃありーすたーず、がくえん,げーむ</option>
 </select>
 </form>
 
