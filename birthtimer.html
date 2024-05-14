@@ -83,9 +83,14 @@ var tmp=gamedata[i][1].replace(/^\d\d\d\d/gm,year);
 var tmp2=gamedata[i][1].replace(/^\d\d\d\d/gm,yearn);
 var t=moment(tmp)-moment();
 var tt=moment(tmp2)-moment();
+if(game>4){
+var yy=moment().format("YYYY/");
+t=moment(tmp)-moment(yy+(game-4)+"/01");
+tt=moment(tmp2)-moment(yy+(game-4)+"/01");
+daycalc=31;
+}
 t=Math.ceil(t/1000/3600/24);
 tt=Math.ceil(tt/1000/3600/24);
-
 if((t>=0 && t<=daycalc) || (tt>=0 && tt<=daycalc)){}
 else if(gamedata[i][4]!=""){
 tmp=gamedata[i][4].replace(/^\d\d\d\d/gm,year);
@@ -94,18 +99,25 @@ t=moment(tmp)-moment();
 tt=moment(tmp2)-moment();
 t=Math.ceil(t/1000/3600/24);
 tt=Math.ceil(tt/1000/3600/24);
-gamedata[i][2]=(gamedata[i][2]+",ゲーム内実周年日").replace(/(,ゲーム内実周年日)*$/,",ゲーム内実周年日");
+//gamedata[i][2]=(gamedata[i][2]+",ゲーム内実周年日").replace(/(,ゲーム内実周年日)*$/,",ゲーム内実周年日");
 }
 
 if((t>=0 && t<=daycalc) || (tt>=0 && tt<=daycalc)){
 dtab[j]=[];
 dtab[j][0]=t;
+if(game>4){
+t=moment(tmp)-moment();
+tt=moment(tmp2)-moment();
+t=Math.ceil(t/1000/3600/24);
+tt=Math.ceil(tt/1000/3600/24);
+}
 if(t<0){dtab[j][0]=tt;}
 dtab[j][1]= gamedata[i][0]+"("+gamedata[i][2]+")";
 dtab[j][2]=  games;
 dtab[j][3]=moment.utc(tmp).add("Hours",9).format("M");
 dtab[j][4]=moment.utc(tmp).add("Hours",9).format("D");
 dtab[j][5]= kanaToHira(dtab[j][1]);
+dtab[j][6]= gamedata[i][4]+"("+gamedata[i][2]+")";
 j++;
 //st +=t+"日前"+ gamedata[i][0]+"("+gamedata[i][2]+")<br>"
 }}
@@ -117,17 +129,30 @@ var tmp=data[i][0].replace(/^\d\d\d\d/gm,year);
 var tmp2=data[i][0].replace(/^\d\d\d\d/gm,yearn);
 var t=moment(tmp)-moment();
 var tt=moment(tmp2)-moment();
+if(game>4){
+var yy=moment().format("YYYY/");
+t=moment(tmp)-moment(yy+(game-4)+"/01");
+tt=moment(tmp2)-moment(yy+(game-4)+"/01");
+daycalc=31;
+}
 t=Math.ceil(t/1000/3600/24);
 tt=Math.ceil(tt/1000/3600/24);
 if((t>=0 && t<=daycalc) || (tt>=0 && tt<=daycalc)){
 dtab[j]=[];
 dtab[j][0]=t;
+if(game>4){
+t=moment(tmp)-moment();
+tt=moment(tmp2)-moment();
+t=Math.ceil(t/1000/3600/24);
+tt=Math.ceil(tt/1000/3600/24);
+}
 if(t<0){dtab[j][0]=tt;}
 dtab[j][1]=  data[i][1];
 dtab[j][2]=  dsn[k];
 dtab[j][3]=moment.utc(tmp).add("Hours",9).format("M");
 dtab[j][4]=moment.utc(tmp).add("Hours",9).format("D");
 dtab[j][5]=  data[i][2];
+dtab[j][6]=  data[i][3];
 j++;
 //st += data[i][1]+t+"日前<br>"
 }}}
@@ -138,7 +163,7 @@ dtab.sort(function(a, b) {
 
 
 for(var i=0;i<dtab.length;i++){
-var tmp=datastring.replace("%M",dtab[i][3]).replace("%D",dtab[i][4]).replace("%L",dtab[i][0]).replace("%G",dtab[i][2]).replace("%I",dtab[i][1]).replace("%i",dtab[i][5]);
+var tmp=datastring.replace("%M",dtab[i][3]).replace("%D",dtab[i][4]).replace("%L",dtab[i][0]).replace("%G",dtab[i][2]).replace("%I",dtab[i][1]).replace("%i",dtab[i][5]).replace("%E",dtab[i][6]);
 st += escapeHTML(tmp)+"<br>";
 }
 
@@ -192,6 +217,19 @@ function toTwitter() {
 <option>1日</option>
 <option selected="selected">7日</option>
 <option>30日</option>
+<option>--月ごと--</option>
+<option>1月</option>
+<option>2月</option>
+<option>3月</option>
+<option>4月</option>
+<option>5月</option>
+<option>6月</option>
+<option>7月</option>
+<option>8月</option>
+<option>9月</option>
+<option>10月</option>
+<option>11月</option>
+<option>12月</option>
 </select>
 </form>
 <form name="gg">
@@ -207,7 +245,8 @@ function toTwitter() {
 </select>
 </form>
 
-表示形式(でふぉると "%M/%Dまであと%L日 %G:%I" %iはひらがな名)<input type="text" name="" value="" id="title" maxlength="50"　width:300px;><br>
+表示形式(でふぉると "%M/%Dまであと%L日 %G:%I"　 %iはひらがな名 %E英名　英語だと　%L days left until %M/%D  %G:%E)<br><input type="text" name="" value="" id="title" maxlength="50"　width:300px;>
+<br>
 <input type="Submit" value="反映" Generate" onclick="setting();return false">
 <input type="Submit" value="URLにしてブックマーク（）" Generate" onclick="document.location.href=url();return false"><br>
 
