@@ -11,7 +11,7 @@
 <!--
 
 var datastring="%M/%Dまであと%L日 %G:%I";
-var dsn=["ML","CG","SIDEM","SHINY","DS","GA","GAME"];
+var dsn=["ML","CG","SIDEM","SHINY","DS","GA","VA","GAME"];
 
 window.onload = function() {
 get_web_para();
@@ -77,7 +77,7 @@ var dtab=[];
 var j=0;
 var g=  $('#selectgg option:selected').text();
 dsn = g.split(",");
-var games=dsn[6];
+var games=dsn[dsn.length-1];
 for(var i=1;i<gamedata.length;i++){
 var tmp=gamedata[i][1].replace(/^\d\d\d\d/gm,year);
 var tmp2=gamedata[i][1].replace(/^\d\d\d\d/gm,yearn);
@@ -121,8 +121,8 @@ dtab[j][6]= gamedata[i][4]+"("+gamedata[i][2]+")";
 j++;
 //st +=t+"日前"+ gamedata[i][0]+"("+gamedata[i][2]+")<br>"
 }}
-var ds=["ml","cg","sm","sc","ds","ga"];
-for(var k=0;k<6;k++){
+var ds=["ml","cg","sm","sc","ds","ga","va"];
+for(var k=0;k<ds.length;k++){
 var data=birthday[ds[k]];
 for(var i=0;i<data.length;i++){
 var tmp=data[i][0].replace(/^\d\d\d\d/gm,year);
@@ -235,13 +235,13 @@ function toTwitter() {
 <form name="gg">
 %Gの表記:
 <select name="nn" id="selectgg" onChange="nearaniv();">
-<option selected="selected">ML,CG,SIDEM,SHINY,DS,GA,GAME</option>
-<option>ミリオン,デレマス,サイドM,シャニマス,ディアリー,学園,ゲーム</option>
-<option>ミリオンライブ,シンデレラガールズ,サイドM,シャイニーカラーズ,ディアリースターズ,学園,ゲーム</option>
-<option>ﾐﾘｵﾝ,ﾃﾞﾚﾏｽ,ｻｲﾄﾞM,ｼｬﾆﾏｽ,ﾃﾞｨｱﾘｰ,ｶﾞｸｴﾝ,ｹﾞｰﾑ</option>
-<option>ﾐﾘｵﾝﾗｲﾌﾞ,ｼﾝﾃﾞﾚﾗｶﾞｰﾙｽﾞ,ｻｲﾄﾞM,ｼｬｲﾆｰｶﾗｰｽﾞ,ﾃﾞｨｱﾘｰｽﾀｰｽﾞ,ｶﾞｸｴﾝ,ｹﾞｰﾑ</option>
-<option>みりおん,でれます,さいどえむ,しゃにます,でぃありー,がくえん,げーむ</option>
-<option>みりおんらいぶ,しんでれらがーるず,さいどえむ,しゃいにーからーず,でぃありーすたーず、がくえん,げーむ</option>
+<option selected="selected">ML,CG,SIDEM,SHINY,DS,GA,VA,GAME</option>
+<option>ミリオン,デレマス,サイドM,シャニマス,ディアリー,学園,ヴィアラ,ゲーム</option>
+<option>ミリオンライブ,シンデレラガールズ,サイドM,シャイニーカラーズ,ディアリースターズ,学園,ヴィアライブ,ゲーム</option>
+<option>ﾐﾘｵﾝ,ﾃﾞﾚﾏｽ,ｻｲﾄﾞM,ｼｬﾆﾏｽ,ﾃﾞｨｱﾘｰ,ｶﾞｸｴﾝ,ｳﾞｨｱﾗﾞ,ｹﾞｰﾑ</option>
+<option>ﾐﾘｵﾝﾗｲﾌﾞ,ｼﾝﾃﾞﾚﾗｶﾞｰﾙｽﾞ,ｻｲﾄﾞM,ｼｬｲﾆｰｶﾗｰｽﾞ,ﾃﾞｨｱﾘｰｽﾀｰｽﾞ,ｶﾞｸｴﾝ,ｳﾞｨｱﾗｲﾌ,ｹﾞｰﾑ</option>
+<option>みりおん,でれます,さいどえむ,しゃにます,でぃありー,がくえん,ゔぃあら,げーむ</option>
+<option>みりおんらいぶ,しんでれらがーるず,さいどえむ,しゃいにーからーず,でぃありーすたーず,がくえん,ゔぃあらいぶ,げーむ</option>
 </select>
 </form>
 
