@@ -1078,7 +1078,10 @@ end
 local tkeys = {}
 -- populate the table that holds the keys
 for k in pairs(birthst) do
-table.insert(tkeys, { birthst[k],string.match( birthst[k], "あと%d+")})
+tmp =string.match( birthst[k], "あと%d+")
+tmp = string.gsub(tmp, "あと","")
+table.insert(tkeys, { birthst[k],tonumber(tmp)})
+
 end
 -- sort the keys
 --table.sort(tkeys)
